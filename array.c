@@ -15,7 +15,7 @@ struct array * array_init(void) {
 		printf("information: string init failure!\n");
 		return NULL;
 	}
-	long capacity = 64;
+	long capacity = 32;
 	array->store = malloc(sizeof(void *) * capacity);
 	array->capacity = capacity;
 	array->count = 0;
