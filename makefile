@@ -9,4 +9,5 @@ build2:
 	@clang -S main.c -o main.s
 
 clean:
-	@rm *.i *.out *.s
+	@rm *.i *.out *.s 
+	@rm -fr *.dSYM/

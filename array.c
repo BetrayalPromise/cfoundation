@@ -9,7 +9,7 @@
 
 void array_capacity(struct array * array, unsigned long multiple);
 
-struct array * array_init(int size) {
+struct array * array_init(void) {
 	struct array * array = malloc(sizeof(struct array));
 	if (array == NULL) {
 		printf("information: string init failure!\n");
@@ -19,7 +19,6 @@ struct array * array_init(int size) {
 	array->store = malloc(sizeof(void *) * capacity);
 	array->capacity = capacity;
 	array->count = 0;
-	array->size = size;
 	return array;
 }
 
@@ -27,7 +26,7 @@ long array_count(struct array * array) {
 	return array->count;
 }
 
-bool array_insert(struct array * array, void * data, long position) {
+bool array_insert(struct array * array, void * dataaddress, long position) {
 	if (array == NULL) {
 		printf("information: string is NULL!\n");
 		return false;
@@ -44,13 +43,13 @@ bool array_insert(struct array * array, void * data, long position) {
 	}
 
 	if (array->count == 0) {
-		array->store[0] = data;
+		array->store[0] = dataaddress;
 		array->count ++;
 		return true;
 	}
 
 	if (position > array->count) {
-		array->store[array->count] = data;
+		array->store[array->count] = dataaddress;
 		array->count ++;
 		return true;
 	}
@@ -60,7 +59,7 @@ bool array_insert(struct array * array, void * data, long position) {
 		array->store[i + 1] = array->store[i];
 	}
 	//将数据插入到指定位置
-	array->store[position] = data;
+	array->store[position] = dataaddress;
 	//更新数组大小
 	array->count ++;
 	return true;
@@ -68,11 +67,11 @@ bool array_insert(struct array * array, void * data, long position) {
 
 bool array_remove(struct array * array, long position) {
 	if (array == NULL) {
-		printf("information: array is null, operation has no effect!\n");
+		printf("information: array is null!\n");
 		return false;
 	}
 	if (position < 0 || position > array->count - 1) {
-		printf("information: position(%ld) is out of range(0-%ld), operation has no effect!\n", position, array->count - 1);
+		printf("information: position(%ld) is out of range(0-%ld)!\n", position, array->count - 1);
 		return false; 
 	}
 	//删除指定元素	从后往前移动
@@ -84,6 +83,10 @@ bool array_remove(struct array * array, long position) {
 }
 
 void * array_index(struct array * array, long position) {
+	if (array == NULL) {
+		printf("information: array is null!\n");
+		return NULL;
+	}
 	if (position < 0 || position > array->count) {
 		return NULL;
 	}
@@ -98,5 +101,85 @@ void array_capacity(struct array * array, unsigned long multiple) {
 	array->store = newspace;
 	array->capacity = newcapacity;
 }
+
+void array_free(struct array * array) {
+	if (array == NULL) {
+		printf("information: array is null!\n");
+		return;
+	}
+	if (array->store != NULL) {
+		free(array->store);
+		array->store = NULL;
+		free(array);
+		array = NULL;
+	}
+}
+
+void array_swap(struct array * array, long i, long j) {
+	if (array == NULL) {
+		printf("information: index error!\n");
+		return;
+	}
+	if (0 <= i && i < array->count && 0 <= j && j < array->count) {
+		void * temp = array->store[i];
+    	array->store[i] = array->store[j];
+    	array->store[j] = temp;
+	}
+}
+
+// void array_insert_sort(struct array * array) {
+// 	for (int i = 0; i < array->count - 1; i++) {
+// 		int end = i;
+// 		void * tmp = array->store[end + 1];
+// 		while (end >= 0) {
+// 			if (array->store[end] > tmp) {
+// 				array->store[end + 1] = array->store[end]; 
+// 				end--;
+// 			} else {
+// 				break;
+// 			}
+// 		}
+// 		array->store[end + 1] = tmp; 
+// 	}
+// }
+
+// void array_shell_sort(struct array * array) {
+// 	int gap = array->count; 
+// 	while (gap > 1) {
+// 		gap = gap / 3 + 1;
+// 		for (int i = 0; i < array->count - gap; ++i) {
+// 			int end = i;
+// 			void * tmp = array->store[end + gap];
+// 			while (end >= 0) {
+// 				if (array->store[end] > tmp) {
+// 					array->store[end + gap] = array->store[end];
+// 					end -= gap;
+// 				} else {
+// 					break;
+// 				}
+// 			}
+// 			array->store[end + gap] = tmp;
+// 		}
+// 	}
+// }
+
+// void array_select_sort(struct array * array) {
+// 	int begin = 0, end = array->count - 1;
+// 	while (begin < end) {
+// 		int max = begin, min = begin;
+// 		for (int i = begin; i <= end; i ++) {
+// 			if (array->store[i] > array->store[max])
+// 				max = i;
+// 			if (array->store[i] < array->store[min])
+// 				min = i;
+// 		}
+// 		if (begin == max) //若最大数据在begin位置，与begin下标重合，则需进行修正
+// 			max = min;
+// 		array_swap(array, begin, min); //进行交换
+// 		array_swap(array, end, max);
+// 		begin++;
+// 		end--;
+// 	}
+// }
 
 #endif

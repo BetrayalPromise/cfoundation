@@ -11,7 +11,7 @@ int main(int argc, char ** argv) {
 	// printf("sizeof(void **) = %lu\n", sizeof(void * *));
 	int p = 8;
 	printf("%p\n", &p);
-	struct array * array = array_init(sizeof(int));
+	struct array * array = array_init();
 	array_insert(array, &p, 0);
 	int p1 = 9;
 	printf("%p\n", &p1);
@@ -20,5 +20,6 @@ int main(int argc, char ** argv) {
 	for (int i = 0; i < array->count; i ++) {
 		printf("%p=%d\n", array->store[i], *(int *)array_index(array, i));
 	}
+	array_free(array);
 	return EXIT_SUCCESS;
 }
