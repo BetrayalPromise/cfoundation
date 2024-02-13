@@ -12,7 +12,7 @@ struct array {
 
 /*
 	@return		返回指向struct array的指针
-	@parameter	array数组
+	@parameter	itemsize元素字长,itemsize小于等于0,数组存储指向元素的指针;itemsize等于sizeof(T),T:char,bool,int,double...,复制元素
 */ 
 extern struct array * array_init(long itemsize);
 
@@ -26,23 +26,23 @@ extern long array_count(struct array * array);
 	@return		操作是否成功
 	@parameter	array数组
 	@parameter	dataaddress元素的地址
-	@parameter	position插入位置
+	@parameter	index插入位置
 */
-extern bool array_insert(struct array * array, void * dataaddress, long position);
+extern bool array_insert(struct array * array, void * dataaddress, long index);
 
 /*
 	@return		操作是否成功
 	@parameter	array数组
-	@parameter	position插入位置
+	@parameter	index插入位置
 */
-extern bool array_remove(struct array * array, long position);
+extern bool array_remove(struct array * array, long index);
 
 /*
 	@return		索引地址
 	@parameter	array数组
-	@parameter	position插入位置
+	@parameter	index插入位置
 */
-extern void * array_index(struct array * array, long position);
+extern void * array_index(struct array * array, long index);
 
 /*
 	@parameter	array数组
