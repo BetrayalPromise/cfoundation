@@ -9,7 +9,7 @@
 
 void array_capacity(struct array * array, unsigned long multiple);
 
-struct array * array_init(void) {
+struct array * array_init(long itemsize) {
 	struct array * array = malloc(sizeof(struct array));
 	if (array == NULL) {
 		printf("information: string init failure!\n");
@@ -19,11 +19,16 @@ struct array * array_init(void) {
 	array->store = malloc(sizeof(void *) * capacity);
 	array->capacity = capacity;
 	array->count = 0;
+	array->itemsize = itemsize;
 	return array;
 }
 
 long array_count(struct array * array) {
 	return array->count;
+}
+
+bool array_append(struct array * array, void * dataaddress) {
+	return array_insert(array, dataaddress, array->count);
 }
 
 bool array_insert(struct array * array, void * dataaddress, long position) {
@@ -88,6 +93,7 @@ void * array_index(struct array * array, long position) {
 		return NULL;
 	}
 	if (position < 0 || position > array->count) {
+		printf("information: index error!\n");
 		return NULL;
 	}
 	return array->store[position];
@@ -127,7 +133,8 @@ void array_swap(struct array * array, long i, long j) {
 	}
 }
 
-// void array_insert_sort(struct array * array) {
+// 插入排序
+// void insert_sort(struct array * array) {
 // 	for (int i = 0; i < array->count - 1; i++) {
 // 		int end = i;
 // 		void * tmp = array->store[end + 1];
@@ -143,7 +150,7 @@ void array_swap(struct array * array, long i, long j) {
 // 	}
 // }
 
-// void array_shell_sort(struct array * array) {
+// void shell_sort(struct array * array) {
 // 	int gap = array->count; 
 // 	while (gap > 1) {
 // 		gap = gap / 3 + 1;
@@ -163,7 +170,7 @@ void array_swap(struct array * array, long i, long j) {
 // 	}
 // }
 
-// void array_select_sort(struct array * array) {
+// void select_sort(struct array * array) {
 // 	int begin = 0, end = array->count - 1;
 // 	while (begin < end) {
 // 		int max = begin, min = begin;
@@ -173,9 +180,9 @@ void array_swap(struct array * array, long i, long j) {
 // 			if (array->store[i] < array->store[min])
 // 				min = i;
 // 		}
-// 		if (begin == max) //若最大数据在begin位置，与begin下标重合，则需进行修正
+// 		if (begin == max)
 // 			max = min;
-// 		array_swap(array, begin, min); //进行交换
+// 		array_swap(array, begin, min);
 // 		array_swap(array, end, max);
 // 		begin++;
 // 		end--;

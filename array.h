@@ -4,15 +4,17 @@
 #include <stdbool.h>
 
 struct array {
+	long itemsize;	// readonly item字长
 	long count;		// readonly 存储数量
 	long capacity;	// readonly 默认存储容量
-	void ** store;	// readonly 存储位置
+	void ** store;	// readonly 存储位置 存储的均为指针
 };
 
 /*
 	@return		返回指向struct array的指针
+	@parameter	array数组
 */ 
-extern struct array * array_init(void);
+extern struct array * array_init(long itemsize);
 
 /*
 	@return		返回数组的元素数量
