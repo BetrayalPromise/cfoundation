@@ -17,7 +17,6 @@ int main(int argc, char ** argv) {
 	// array_insert(array, &p1, 0);
 	// char c = 'a';
 	// array_insert(array, &c, 0);
-
 	// for (int i = 0; i < array->count; i ++) {
 	// 	if (i == 0) {
 	// 		printf("%p=%c\n", array->store[i], *(char *)array_index(array, i));
@@ -27,10 +26,20 @@ int main(int argc, char ** argv) {
 	// }
 	// array_free(array);
 
-	struct array * array = array_init(sizeof(int));
-	int p = 8;
-	array_insert(array, &p, 0);
+	// struct array * array = array_init(sizeof(int));
+	// int p = 1314;
+	// for (int i = 0; i < 4; i ++) {
+	// 	array_insert(array, &p, 0);
+	// }
+	// for (int i = 0; i < array->count; i ++) {
+	// 	printf("%p=%d\n", array_index(array, i), *(int *)array_index(array, i));
+	// }
+	// for (int i = 0; i < array->count; i ++) {
+	// 	printf("%d\n", *(int *)*(&array->store[0] + array->typesize * i));
+	// }
+	// array_free(array);
 
-	printf("%d\n", (int)array_index(array, 0));
+	cchars_t * string = cchars_init();
+	
 	return EXIT_SUCCESS;
 }

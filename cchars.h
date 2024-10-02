@@ -8,6 +8,7 @@ typedef struct cchars {
 	long capacity;
 	// public readonly 数组元素个数
 	long count;
+	// public readonly 存储元素首地址
 	char * store;
 } cchars_t;
 
@@ -17,6 +18,7 @@ extern void cchars_free(cchars_t * cs);
 extern long cchars_length(cchars_t * cs);
 extern bool cchars_insert(cchars_t * cs, long position, char data);
 extern bool cchars_remove(cchars_t * cs, long position);
+// extern cchars_t * cchars_copy(cchars_t * cs);
 
 #define CCHARS(name, string)\
 	struct cchars name = { -1, -1, NULL };\

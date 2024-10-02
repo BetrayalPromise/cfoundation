@@ -10,22 +10,22 @@
 void array_capacity(struct array * array, unsigned long multiple);
 static bool test(struct array * array);
 
-struct array * array_init(long itemsize) {
-	printf("sizeof(void)   = %lu\n", sizeof(void));
-	printf("sizeof(void *) = %lu\n", sizeof(void *));
+struct array * array_init(long typesize) {
+	// printf("sizeof(void)   = %lu\n", sizeof(void));
+	// printf("sizeof(void *) = %lu\n", sizeof(void *));
 	struct array * array = malloc(sizeof(struct array));
 
 	if (!test(array)) { return NULL; }
 
 	long capacity = 32;
-	if (itemsize > 0) {
-		array->store = malloc(itemsize * capacity);
+	if (typesize > 0) {
+		array->store = malloc(typesize * capacity);
 	} else {
 		array->store = malloc(sizeof(void *) * capacity);
 	}
 	array->capacity = capacity;
 	array->count = 0;
-	array->itemsize = itemsize;
+	array->typesize = typesize;
 	return array;
 }
 
@@ -33,8 +33,8 @@ long array_count(struct array * array) {
 	return array->count;
 }
 
-bool array_append(struct array * array, void * dataaddress) {
-	return array_insert(array, dataaddress, array->count);
+bool array_append(struct array * array, void * address) {
+	return array_insert(array, address, array->count);
 }
 
 static bool test(struct array * array) {
@@ -44,55 +44,43 @@ static bool test(struct array * array) {
 	return array != NULL ? true : false;
 }
 
-bool array_insert(struct array * array, void * dataaddress, long index) {
+
+bool array_copy_address(struct array * array, void * address, long index) {
+	int start = array->count - 1;
+	for (int i = start; i >= index; i --) {
+		array->store[i + 1] = array->store[i];
+	}
+	array->store[index] = address;
+	array->count ++;
+	return true;
+}
+
+bool array_copy_value(struct array * array, void * address, long index) {
+	int size = array->count - index;
+	if (size > 0) {
+		memcpy(&array->store[0] + array->typesize * (index + 1), &array->store[0] + array->typesize * index, array->typesize * size);
+	}
+	memcpy(&array->store[0] + array->typesize * index, address, array->typesize);
+	array->count ++;
+	return true;
+}
+
+bool array_insert(struct array * array, void * address, long index) {
 	if (!test(array)) { return false; }
 	// 数组扩容
 	while (array->count + 1 > array->capacity) {
 		array_capacity(array, 2);
 	}
-
-	if (index <= 0) {
+	// index[0, array->count]
+	if (index < 0) {
 		index = 0;
 	} else if (index > array->count) {
 		index = array->count;
 	}
-
-	if (array->itemsize <= 0) {
-		if (array->count == 0) {
-			array->store[0] = dataaddress;
-			array->count ++;
-			return true;
-		}
-		if (index > array->count) {
-			array->store[array->count] = dataaddress;
-			array->count ++;
-			return true;
-		}
-		int start = array->count - 1;
-		for (int i = start; i >= index; i --) {
-			array->store[i + 1] = array->store[i];
-		}
-		array->store[index] = dataaddress;
-		array->count ++;
-		return true;
+	if (array->typesize > 0) {
+		return array_copy_value(array, address, index);
 	} else {
-		if (array->count == 0) {
-			memcpy(&array->store[0], dataaddress, array->itemsize);
-			array->count ++;
-			return true;
-		}
-		if (index > array->count) {
-			memcpy(&array->store[0] + array->itemsize * index, dataaddress, array->itemsize);
-			array->count ++;
-			return true;
-		}
-		int start = array->count - 1;
-		for (int i = start; i >= index; i --) {
-			array->store[i + 1] = array->store[i];
-		}
-		memcpy(&array->store[0] + array->itemsize * index, dataaddress, array->itemsize);
-		array->count ++;
-		return true;
+		return array_copy_address(array, address, index);
 	}
 }
 
@@ -106,7 +94,7 @@ bool array_remove(struct array * array, long index) {
 	for (int i = index; i < array->count; i++) {
 		array->store[i] = array->store[i + 1];
 	}
-	--array->count;
+	-- array->count;
 	return true;
 }
 
@@ -116,15 +104,20 @@ void * array_index(struct array * array, long index) {
 		printf("information: index(%ld) is out of range(0-%ld)!\n", index, array->count - 1);
 		return NULL;
 	}
-	if (array->itemsize <= 0) {
+	if (array->typesize <= 0) {
 		return array->store[index];
 	} else {
-		return array->store[0] + array->itemsize * index;
+		return &array->store[0] + array->typesize * index;
 	}
 }
 
 void array_capacity(struct array * array, unsigned long multiple) {
 	int newcapacity = array->capacity * multiple;
+	if (array->typesize <= 0) {
+	
+	} else {
+	
+	}
 	void * newspace = malloc(sizeof(void *) * newcapacity);
 	memcpy(newspace, array->store, sizeof(void *) * array->capacity);
 	free(array->store);

@@ -10,10 +10,18 @@
 void cchars_capacity(cchars_t * cs, unsigned long multiple);
 static int cchars_compare(void * input0, void * input1);
 
+static bool check(cchars_t * cs) {
+	if (cs == NULL) {
+		printf("information: string is null, operation has no effect!\n");
+		return false;
+	} else {
+		return true;
+	}
+}
+
 cchars_t * cchars_init() {
 	cchars_t * cs = malloc(sizeof(cchars_t));
-	if (cs == NULL) {
-		printf("information: string init failure, operation has no effect!\n");
+	if (check(cs)) {
 		return NULL;
 	}
 	//给属性初始化
@@ -29,8 +37,7 @@ cchars_t * cchars_string(const char * str, long count) {
 		return NULL;
 	}
 	cchars_t * cs = malloc(sizeof(cchars_t));
-	if (cs == NULL) {
-		printf("information: chars init failure, operation has no effect!\n");
+	if (check(cs)) {
 		return NULL;
 	}
 	long capacity = count > 0 ? count : strlen(str);
@@ -44,8 +51,7 @@ cchars_t * cchars_string(const char * str, long count) {
 }
 
 void cchars_free(cchars_t * cs) {
-	if (cs == NULL) {
-		printf("information: string is null, operation has no effect!\n");
+	if (check(cs)) {
 		return;
 	}
 	//内部维护在堆区数组指针先释放
@@ -67,8 +73,7 @@ long cchars_length(cchars_t * cs) {
 }
 
 bool cchars_insert(cchars_t * cs, long position, char data) {
-	if (cs == NULL) {
-		printf("information: string is null, operation has no effect!\n");
+	if (check(cs)) {
 		return false;
 	}
 	// 数组扩容
@@ -105,8 +110,7 @@ bool cchars_insert(cchars_t * cs, long position, char data) {
 }
 
 bool cchars_remove(cchars_t * cs, long position) {
-	if (cs == NULL) {
-		printf("information: array is null, operation has no effect!\n");
+	if (check(cs)) {
 		return false;
 	}
 	if (position < 0 || position > cs->count - 1) {
@@ -119,6 +123,11 @@ bool cchars_remove(cchars_t * cs, long position) {
 	}
 	--cs->count;
 	return true;
+}
+
+cchars_t * cchars_copy(cchars_t * cs) {
+	// todo:
+	return NULL;
 }
 
 void cchars_capacity(cchars_t * cs, unsigned long multiple) {
