@@ -2,6 +2,7 @@
 #define __CCHARS_C__
 
 #include "cchars.h"
+#include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -19,39 +20,32 @@ static bool check(cchars_t * cs) {
 	}
 }
 
-cchars_t * cchars_init() {
+cchars_t * cchars_init(const char * str, long count) {
 	cchars_t * cs = malloc(sizeof(cchars_t));
-	if (check(cs)) {
+	if (!check(cs)) {
 		return NULL;
 	}
-	//给属性初始化
-	long capacity = 64;
-	cs->capacity = capacity;
-	cs->store = (char *)malloc(sizeof(char) * capacity);
-	cs->count = 0;
-	return cs;
-}
-
-cchars_t * cchars_string(const char * str, long count) {
-	if (count < 0) {
-		return NULL;
+	if (str == NULL) {
+		// 默认初始化
+		long capacity = 64;
+		cs->capacity = capacity;
+		cs->store = (char *)malloc(sizeof(char) * capacity);
+		cs->count = 0;
+		return cs;
+	} else {
+		long capacity = count > 0 ? count : strlen(str);
+		cs->capacity = capacity;
+		cs->store = (char *)malloc(sizeof(char) * capacity);
+		cs->count = capacity;
+		for (int i = 0; i < capacity; ++ i) {
+			cs->store[i] = str[i];
+		}
+		return cs;
 	}
-	cchars_t * cs = malloc(sizeof(cchars_t));
-	if (check(cs)) {
-		return NULL;
-	}
-	long capacity = count > 0 ? count : strlen(str);
-	cs->capacity = capacity;
-	cs->store = (char *)malloc(sizeof(char) * capacity);
-	cs->count = capacity;
-	for (int i = 0; i < capacity; ++ i) {
-		cs->store[i] = str[i];
-	}
-	return cs;
 }
 
 void cchars_free(cchars_t * cs) {
-	if (check(cs)) {
+	if (!check(cs)) {
 		return;
 	}
 	//内部维护在堆区数组指针先释放
@@ -73,7 +67,7 @@ long cchars_length(cchars_t * cs) {
 }
 
 bool cchars_insert(cchars_t * cs, long position, char data) {
-	if (check(cs)) {
+	if (!check(cs)) {
 		return false;
 	}
 	// 数组扩容
@@ -109,8 +103,20 @@ bool cchars_insert(cchars_t * cs, long position, char data) {
 	return true;
 }
 
+bool cchars_change(cchars_t * cs, long position, char data) {
+	if (!check(cs)) {
+		return false;
+	}
+	if (position < 0 || position > cs->count - 1) {
+		printf("information: position(%ld) is out of range(0-%ld), operation has no effect!\n", position, cs->count - 1);
+		return false; 
+	}
+	cs->store[position] = data;
+	return true;
+}
+
 bool cchars_remove(cchars_t * cs, long position) {
-	if (check(cs)) {
+	if (!check(cs)) {
 		return false;
 	}
 	if (position < 0 || position > cs->count - 1) {

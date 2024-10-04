@@ -1,9 +1,12 @@
-#include <stdbool.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/_types/_size_t.h>
 #include "cchars.h"
 #include "array.h"
+
+void a(int array[]);
 
 int main(int argc, char ** argv) {
 	// printf("sizeof(void) = %lu\n", sizeof(void));
@@ -39,7 +42,16 @@ int main(int argc, char ** argv) {
 	// }
 	// array_free(array);
 
-	cchars_t * string = cchars_init();
-	
+	// CCHARS(a, "\0\0\0");
+	// printf("%ld\n", a);
+	// 在栈中
+	char array[] = "\09\0";
+	cchars_t * cs = __CCHARS_INIT__(cs, array);
+
+	// char * p0 = array;
+	// printf("%lu\n", sizeof(array));
+	// printf("%lu\n", strlen(p0));
+	// cchars_t * t = cchars_init(p0, -1);
+	// printf("%p\n", t);
 	return EXIT_SUCCESS;
 }
