@@ -45,8 +45,12 @@ int main(int argc, char ** argv) {
 	// CCHARS(a, "\0\0\0");
 	// printf("%ld\n", a);
 	// 在栈中
-	char array[] = "\09\0";
-	cchars_t * cs = __CCHARS_INIT__(cs, array);
+	char array[] = "\0\09\09\0\0\09\09\0";
+	char * p = array;
+	cchars_t * cs = __CCHARS_INIT__(array);
+	cchars_description(cs);
+	cchars_remove_character(cs, 0x00);
+	cchars_description(cs);
 
 	// char * p0 = array;
 	// printf("%lu\n", sizeof(array));

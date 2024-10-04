@@ -66,10 +66,8 @@ long cchars_length(cchars_t * cs) {
 	return cs->count;
 }
 
-bool cchars_insert(cchars_t * cs, long position, char data) {
-	if (!check(cs)) {
-		return false;
-	}
+bool cchars_insert_character(cchars_t * cs, long position, char data) {
+	if (!check(cs)) { return false; }
 	// 数组扩容
 	while (cs->count + 1 > cs->capacity) {
 		cchars_capacity(cs, 2);
@@ -99,14 +97,49 @@ bool cchars_insert(cchars_t * cs, long position, char data) {
 	}
 	//将数据插入到指定位置
 	cs->store[position] = data;
-	//更新数组大小
 	return true;
 }
 
-bool cchars_change(cchars_t * cs, long position, char data) {
-	if (!check(cs)) {
-		return false;
-	}
+// bool cchars_insert_cstring(cchars_t * cs, long position, char * str) {
+// 	if (!check(cs)) { return false; }
+
+// 	while (cs->count + strlen(str) + 1 > cs->capacity) {
+// 		cchars_capacity(cs, 2);
+// 	}
+
+// 	if (position <= 0) {
+// 		position = 0;
+// 	} else if (position > cs->count) {
+// 		position = cs->count;
+// 	}
+
+// 	if (cs->count == 0) {
+// 		for (int i = 0; i < strlen(str) + 1; i ++) {
+// 			cs->store[i] = *str ++;
+// 			++ cs->count;
+// 		}
+// 		return true;
+// 	}
+
+// 	if (position > cs->count) {
+// 		for (int i = 0; i < strlen(str) + 1; i ++) {
+// 			cs->store[cs->count - 1] = *str ++;
+// 			++ cs->count;
+// 		}
+// 		return true;
+// 	}
+
+// 	int start = cs->count - 1;
+// 	for (int i = start; i >= position; i --) {
+// 		cs->store[i + 1] = cs->store[i];
+// 	}
+// 	//将数据插入到指定位置
+// 	cs->store[position] = data;
+// 	return true;
+// }
+
+bool cchars_change_character(cchars_t * cs, long position, char data) {
+	if (!check(cs)) { return false; }
 	if (position < 0 || position > cs->count - 1) {
 		printf("information: position(%ld) is out of range(0-%ld), operation has no effect!\n", position, cs->count - 1);
 		return false; 
@@ -115,10 +148,8 @@ bool cchars_change(cchars_t * cs, long position, char data) {
 	return true;
 }
 
-bool cchars_remove(cchars_t * cs, long position) {
-	if (!check(cs)) {
-		return false;
-	}
+bool cchars_remove_position(cchars_t * cs, long position) {
+	if (!check(cs)) { return false; }
 	if (position < 0 || position > cs->count - 1) {
 		printf("information: position(%ld) is out of range(0-%ld), operation has no effect!\n", position, cs->count - 1);
 		return false; 
@@ -129,6 +160,52 @@ bool cchars_remove(cchars_t * cs, long position) {
 	}
 	--cs->count;
 	return true;
+}
+
+bool cchars_remove_character(cchars_t * cs, char data) {
+	if (!check(cs)) { return false; }
+
+	int j = 0;
+	int time = 0;
+    for(int i = 0; i < cs->count; i ++) {
+		if (cs->store[i] != data) {
+			cs->store[j ++] = cs->store[i];
+		} else {
+			++ time;
+		}
+    }
+	cs->count -= time;
+	for (; j < cs->count; j ++) {
+		cs->store[j] = 0x00;
+	}
+	return true;
+}
+
+bool cchars_remove_cchars(cchars_t * cs, cchars_t *c) {
+	if (!check(cs) && !check(c)) { return false; }
+
+	return true;
+}
+
+char * cchars_mutate_cstring(cchars_t * cs) {
+	if (!check(cs)) { return NULL; }
+	char * c = malloc(sizeof(char) * cs->count + 1);
+	c[cs->count] = '\0';
+	for (int i = 0; i < cs->count; i ++) {
+		c[i] = cs->store[i];
+	}
+	return c;
+}
+
+void cchars_description(cchars_t * cs) {
+	for (int i = 0; i < cs->count; i ++) {
+		if (cs->store[i] == '\0') {
+			printf("'\\0' ");
+		} else {
+			printf("'%c' ", cs->store[i]);
+		}
+	}
+	printf("\n");
 }
 
 cchars_t * cchars_copy(cchars_t * cs) {
