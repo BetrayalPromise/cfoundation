@@ -25,7 +25,7 @@ cchars_t * cchars_init(const char * str, long count) {
 	if (!check(cs)) {
 		return NULL;
 	}
-	if (str == NULL) {
+	if (str == NULL || strlen(str) == 0) {
 		// 默认初始化
 		long capacity = 64;
 		cs->capacity = capacity;
@@ -198,14 +198,19 @@ char * cchars_mutate_cstring(cchars_t * cs) {
 }
 
 void cchars_description(cchars_t * cs) {
+	printf("CCHARS.count = %ld, size = %lu Byte.\n[\n", cs->count, sizeof(char));
 	for (int i = 0; i < cs->count; i ++) {
-		if (cs->store[i] == '\0') {
-			printf("'\\0' ");
-		} else {
-			printf("'%c' ", cs->store[i]);
-		}
+		char * show = i == cs->count - 1 ? "\t(D:%03d  H:0x%02x  C:%c)" : "\t(D:%03d  H:0x%02x  C:%c),";
+		printf(show, cs->store[i], cs->store[i], cs->store[i]);
 	}
-	printf("\n");
+	printf("\n]\n");
+}
+
+void cchars_ascii() {
+	printf("Dec   Hex    Char\n");
+	for (int i = 0; i < 128; i ++) {
+		printf("%03d   0x%02x   %c\n", i, i, i);
+	}
 }
 
 cchars_t * cchars_copy(cchars_t * cs) {

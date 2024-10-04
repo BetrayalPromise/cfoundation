@@ -45,17 +45,22 @@ int main(int argc, char ** argv) {
 	// CCHARS(a, "\0\0\0");
 	// printf("%ld\n", a);
 	// 在栈中
-	char array[] = "\0\09\09\0\0\09\09\0";
+	char array[] = "";
 	char * p = array;
 	cchars_t * cs = __CCHARS_INIT__(array);
+	cchars_insert_character(cs, -1, '9');
 	cchars_description(cs);
-	cchars_remove_character(cs, 0x00);
-	cchars_description(cs);
+
+	// cchars_description(cs);
+	// cchars_remove_character(cs, 0x00);
+	// cchars_description(cs);
 
 	// char * p0 = array;
 	// printf("%lu\n", sizeof(array));
 	// printf("%lu\n", strlen(p0));
 	// cchars_t * t = cchars_init(p0, -1);
 	// printf("%p\n", t);
+
+	// cchars_ascii();
 	return EXIT_SUCCESS;
 }

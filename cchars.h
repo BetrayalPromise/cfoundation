@@ -12,6 +12,7 @@ typedef struct cchars {
 	char * store;
 } cchars_t;
 
+extern void 		cchars_ascii();
 extern cchars_t * 	cchars_init(const char * str, long count);
 extern void 		cchars_free(cchars_t * cs);
 extern long 		cchars_length(cchars_t * cs);
