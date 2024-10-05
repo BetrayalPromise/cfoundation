@@ -168,7 +168,8 @@ bool cchars_change_character(cchars_t * cs, long position, char data) {
 	return true;
 }
 
-bool cchars_remove_position(cchars_t * cs, long position) {
+// TODO:
+bool cchars_remove_boundary(cchars_t * cs, long position, long size) {
 	if (!check(cs)) { return false; }
 	if (position < 0 || position > cs->count - 1) {
 		printf("information: position(%ld) is out of range(0-%ld), operation has no effect!\n", position, cs->count - 1);

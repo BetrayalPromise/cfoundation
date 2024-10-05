@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 
+// 字符串数组结构
 typedef struct cchars {
 	// public readonly, 数组容量
 	long capacity;
@@ -12,6 +13,7 @@ typedef struct cchars {
 	char * store;
 } cchars_t;
 
+// 查询存储结构
 typedef struct cchars_flag {
 	// public readonly, 起始位置
 	int * start;
@@ -27,14 +29,17 @@ extern void 			cchars_description(cchars_t * cs, long ctrl);
 
 extern bool 			cchars_insert_character(cchars_t * cs, long position, char data);
 extern bool 			cchars_append_character(cchars_t * cs, char data);
+// need free(chart_flag_t)
 extern cchars_flag_t * 	cchars_search_character(cchars_t * cs, char data);
 extern bool 			cchars_change_character(cchars_t * cs, long position, char data);
 extern bool 			cchars_remove_character(cchars_t * cs, char data);
-extern bool 			cchars_remove_position(cchars_t * cs, long position);
+extern bool 			cchars_remove_boundary(cchars_t * cs, long position, long size);
 
 extern bool 			cchars_insert_cchars(cchars_t * cs, long position, cchars_t * data);
-extern bool 			cchars_append_cchars(cchars_t * cs, cchars_t * insert);
+extern bool 			cchars_append_cchars(cchars_t * cs, cchars_t * data);
+// need free(chart_flag_t)
 extern cchars_flag_t * 	cchars_search_cchars(cchars_t * cs, cchars_t * data);
+// extern bool 			cchars_change_cchars(cchars_t * cs, long position, cchars_t * data);
 
 extern char * 			cchars_mutate_cstring(cchars_t * cs);
 
