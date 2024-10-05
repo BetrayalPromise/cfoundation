@@ -21,27 +21,30 @@ typedef struct cchars_flag {
 	int count;
 } cchars_flag_t;
 
-extern void 			cchars_ascii_form();
-extern cchars_t * 		cchars_init(const char * str, long count);
-extern void 			cchars_free(cchars_t * cs);
-extern long 			cchars_length(cchars_t * cs);
-extern void 			cchars_description(cchars_t * cs, long ctrl);
+extern void			cchars_ascii_form();
+extern cchars_t *	cchars_init(const char * str, long count);
+extern void			cchars_free(cchars_t * cs);
+extern long			cchars_length(cchars_t * cs);
+extern void			cchars_description(cchars_t * cs, long ctrl);
+extern void			cchars_search_description(long * info);
 
-extern bool 			cchars_insert_character(cchars_t * cs, long position, char data);
-extern bool 			cchars_append_character(cchars_t * cs, char data);
-// need free(chart_flag_t)
-extern cchars_flag_t * 	cchars_search_character(cchars_t * cs, char data);
-extern bool 			cchars_change_character(cchars_t * cs, long position, char data);
-extern bool 			cchars_remove_character(cchars_t * cs, char data);
-extern bool 			cchars_remove_boundary(cchars_t * cs, long position, long size);
+extern bool			cchars_insert_character(cchars_t * cs, long position, char data);
+extern bool			cchars_append_character(cchars_t * cs, char data);
+/*
+	(long *)[count][index0][index1]...
+*/ 
+extern long *		cchars_search_character(cchars_t * cs, char data);
+extern bool			cchars_change_character(cchars_t * cs, long position, char data);
+extern bool			cchars_remove_character(cchars_t * cs, char data);
+extern bool			cchars_remove_boundary(cchars_t * cs, long position, long size);
 
-extern bool 			cchars_insert_cchars(cchars_t * cs, long position, cchars_t * data);
-extern bool 			cchars_append_cchars(cchars_t * cs, cchars_t * data);
-// need free(chart_flag_t)
-extern cchars_flag_t * 	cchars_search_cchars(cchars_t * cs, cchars_t * data);
-// extern bool 			cchars_change_cchars(cchars_t * cs, long position, cchars_t * data);
-
-extern char * 			cchars_mutate_cstring(cchars_t * cs);
+extern bool			cchars_insert_cchars(cchars_t * cs, long position, cchars_t * data);
+extern bool			cchars_append_cchars(cchars_t * cs, cchars_t * data);
+/*
+	(long *)[count][index0][index1]...
+*/
+extern long * 		cchars_search_cchars(cchars_t * cs, cchars_t * data);
+extern char *		cchars_mutate_cstring(cchars_t * cs);
 
 
 // extern cchars_t * cchars_copy(cchars_t * cs);

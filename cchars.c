@@ -212,29 +212,25 @@ bool cchars_remove_cchars(cchars_t * cs, cchars_t * data) {
 	return true;
 }
 
-cchars_flag_t * cchars_search_character(cchars_t * cs, char data) {
+long * cchars_search_character(cchars_t * cs, char data) {
 	if (!check(cs)) { return NULL; }
-	cchars_flag_t * info = malloc(sizeof(cchars_flag_t));
-	info->start = malloc(sizeof(int) * cs->count);
-	info->count = 0;
+	long * info = malloc(sizeof(long) * cs->count + 1);
+	info[0] = 0;
 	for (int i = 0; i < cs->count; i ++) {
 		if (cs->store[i] == data) {
-			info->start[info->count] = i;
-			info->count ++;
+			info[info[0] + 1] = i;
+			info[0] += 1;
 		}
 	}
 	return info;
 }
 
-cchars_flag_t * cchars_search_cchars(cchars_t * cs, cchars_t * data) {
-	cchars_flag_t * info = malloc(sizeof(cchars_flag_t));
-	if (!check(cs) && !check(data) || data->count > cs->count) { 
-		info->start = NULL;
-		info->count = 0;
-		return info;
+long * cchars_search_cchars(cchars_t * cs, cchars_t * data) {
+	if (!check(cs) && !check(data) || data->count > cs->count) {
+		return NULL;
 	}
-	info->start = malloc(sizeof(int) * cs->count);
-	info->count = 0;
+	long * info = malloc(sizeof(long) * cs->count + 1);
+	info[0] = 0;
 	int i = 0;
 	int j = 0;
 	int index = -1;
@@ -257,8 +253,10 @@ cchars_flag_t * cchars_search_cchars(cchars_t * cs, cchars_t * data) {
 					j = 0;
 					i = index + 1;
 					// printf("index: %d\n", index);
-					info->start[info->count] = index;
-					info->count += 1;
+					// info->start[info->count] = index;
+					// info->count += 1;
+					info[info[0] + 1] = index;
+					info[0] += 1;
 					index = -1;
 					break;
 				}
@@ -285,6 +283,15 @@ void cchars_description(cchars_t * cs, long ctrl) {
 	for (int i = 0; i < cs->count; i ++) {
 		char * show = i == cs->count - 1 ? "\t(D:%03d  H:0x%02x  C:%c)\n" : "\t(D:%03d  H:0x%02x  C:%c),\n";
 		printf(show, cs->store[i], cs->store[i], cs->store[i]);
+	}
+	printf("]\n");
+}
+
+void cchars_search_description(long * info) {
+	printf("search.size = %ld\n[\n", info[0]);
+	for (int i = 0; i < info[0]; i ++) {
+		char * show = i == info[0] - 1 ? "\t(index: %ld)\n" : "\t(index: %ld),\n";
+		printf(show, info[i + 1]);
 	}
 	printf("]\n");
 }

@@ -48,15 +48,12 @@ int main(int argc, char ** argv) {
 
 	// cchars_t * cs = __CCHARS_INIT__("\090\080\080");
 	// cchars_t * c = __CCHARS_INIT__("80");
-	// cchars_t * cs = __CCHARS_INIT__("aaaaa");
-	// cchars_t * c = __CCHARS_INIT__("aaaaa");
+	cchars_t * cs = __CCHARS_INIT__("aaaaa");
+	cchars_t * c = __CCHARS_INIT__("aaaaa");
 	// // cchars_description(cs);
 	// cchars_description(c);
-	// cchars_flag_t * info = cchars_search_cchars(cs, c);
-	// for (int i = 0; i < info->count; i ++) {
-	// 	printf("%d\n", info->start[i]);
-	// }
-
+	long * info = cchars_search_cchars(cs, c);
+	cchars_search_description(info);
 	// cchars_description(cs);
 	// cchars_remove_character(cs, 0x00);
 	// cchars_description(cs);
@@ -69,8 +66,13 @@ int main(int argc, char ** argv) {
 
 	// cchars_ascii();
 
-	printf("%lu\n", sizeof(int));
-	printf("%lu\n", sizeof(long));
+	// printf("%lu\n", sizeof(int));
+	// printf("%lu\n", sizeof(long));
+
+	// cchars_t * cs = __CCHARS_INIT__("\090\080\080");
+	// long * a = cchars_search_character(cs, '\0');
+
+	// cchars_search_description(a);
 
 	return EXIT_SUCCESS;
 }
