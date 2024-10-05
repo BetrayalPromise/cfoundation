@@ -45,11 +45,17 @@ int main(int argc, char ** argv) {
 	// CCHARS(a, "\0\0\0");
 	// printf("%ld\n", a);
 	// 在栈中
-	char array[] = "";
-	char * p = array;
-	cchars_t * cs = __CCHARS_INIT__(array);
-	cchars_insert_character(cs, -1, '9');
-	cchars_description(cs);
+
+	// cchars_t * cs = __CCHARS_INIT__("\090\080\080");
+	// cchars_t * c = __CCHARS_INIT__("80");
+	cchars_t * cs = __CCHARS_INIT__("aaaaa");
+	cchars_t * c = __CCHARS_INIT__("aaaaa");
+	// cchars_description(cs);
+	// cchars_description(c);
+	cchars_flag_t * info = cchars_search_cchars(cs, c);
+	for (int i = 0; i < info->count; i ++) {
+		printf("%d\n", info->start[i]);
+	}
 
 	// cchars_description(cs);
 	// cchars_remove_character(cs, 0x00);

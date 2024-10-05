@@ -22,15 +22,16 @@ static bool check(cchars_t * cs) {
 
 cchars_t * cchars_init(const char * str, long count) {
 	cchars_t * cs = malloc(sizeof(cchars_t));
-	if (!check(cs)) {
-		return NULL;
-	}
+	if (!check(cs)) { return NULL; }
 	if (str == NULL || strlen(str) == 0) {
 		// 默认初始化
 		long capacity = 64;
 		cs->capacity = capacity;
 		cs->store = (char *)malloc(sizeof(char) * capacity);
-		cs->count = 0;
+		cs->count = count;
+		for (int i = 0; i < count; i ++) {
+			cs->store[i] = str[i];
+		}
 		return cs;
 	} else {
 		long capacity = count > 0 ? count : strlen(str);
@@ -62,6 +63,15 @@ void cchars_free(cchars_t * cs) {
 	cs = NULL;
 }
 
+void cchars_flag_free(cchars_flag_t * cfs) {
+	if (cfs == NULL) { return; }
+	free(cfs->start);
+	cfs->start = NULL;
+	cfs->count = 0;
+	free(cfs);
+	cfs = NULL;
+}
+
 long cchars_length(cchars_t * cs) {
 	return cs->count;
 }
@@ -81,13 +91,13 @@ bool cchars_insert_character(cchars_t * cs, long position, char data) {
 
 	if (cs->count == 0) {
 		cs->store[0] = data;
-		cs->count ++;
+		++ cs->count;
 		return true;
 	}
 
 	if (position > cs->count) {
 		cs->store[cs->count] = data;
-		cs->count ++;
+		++ cs->count;
 		return true;
 	}
 
@@ -97,46 +107,56 @@ bool cchars_insert_character(cchars_t * cs, long position, char data) {
 	}
 	//将数据插入到指定位置
 	cs->store[position] = data;
+	++ cs->count;
 	return true;
 }
 
-// bool cchars_insert_cstring(cchars_t * cs, long position, char * str) {
-// 	if (!check(cs)) { return false; }
+bool cchars_append_character(cchars_t * cs, char data) {
+	return cchars_insert_character(cs, cs->count, data);
+}
 
-// 	while (cs->count + strlen(str) + 1 > cs->capacity) {
-// 		cchars_capacity(cs, 2);
-// 	}
+bool cchars_insert_cchars(cchars_t * cs, long position, cchars_t * data) {
+	if (!check(cs)) { return false; }
 
-// 	if (position <= 0) {
-// 		position = 0;
-// 	} else if (position > cs->count) {
-// 		position = cs->count;
-// 	}
+	while (cs->count + data->count > cs->capacity) {
+		cchars_capacity(cs, 2);
+	}
 
-// 	if (cs->count == 0) {
-// 		for (int i = 0; i < strlen(str) + 1; i ++) {
-// 			cs->store[i] = *str ++;
-// 			++ cs->count;
-// 		}
-// 		return true;
-// 	}
+	if (position <= 0) {
+		position = 0;
+	} else if (position > cs->count) {
+		position = cs->count;
+	}
 
-// 	if (position > cs->count) {
-// 		for (int i = 0; i < strlen(str) + 1; i ++) {
-// 			cs->store[cs->count - 1] = *str ++;
-// 			++ cs->count;
-// 		}
-// 		return true;
-// 	}
+	if (cs->count == 0) {
+		for (int i = 0; i < data->count; i ++) {
+			cs->store[i] = data->store[i];
+			++ cs->count;
+		}
+		return true;
+	}
 
-// 	int start = cs->count - 1;
-// 	for (int i = start; i >= position; i --) {
-// 		cs->store[i + 1] = cs->store[i];
-// 	}
-// 	//将数据插入到指定位置
-// 	cs->store[position] = data;
-// 	return true;
-// }
+	if (position > cs->count) {
+		for (int i = 0; i < data->count; i ++) {
+			cs->store[cs->count - 1] = data->store[i];
+			++ cs->count;
+		}
+		return true;
+	}
+
+	int start = cs->count - 1;
+	for (int i = start; i >= position; i --) {
+		cs->store[i + 1] = cs->store[i];
+	}
+	//将数据插入到指定位置
+	// cs->store[position] = data;
+
+	for (int i = 0; i < data->count; i ++) {
+		cs->store[position + i] =data->store[i];
+	}
+	cs->count += data->count;
+	return true;
+}
 
 bool cchars_change_character(cchars_t * cs, long position, char data) {
 	if (!check(cs)) { return false; }
@@ -162,6 +182,10 @@ bool cchars_remove_position(cchars_t * cs, long position) {
 	return true;
 }
 
+bool cchars_append_cchars(cchars_t * cs, cchars_t * data) {
+	return cchars_insert_cchars(cs, cs->count, data);
+}
+
 bool cchars_remove_character(cchars_t * cs, char data) {
 	if (!check(cs)) { return false; }
 
@@ -181,10 +205,68 @@ bool cchars_remove_character(cchars_t * cs, char data) {
 	return true;
 }
 
-bool cchars_remove_cchars(cchars_t * cs, cchars_t *c) {
-	if (!check(cs) && !check(c)) { return false; }
+bool cchars_remove_cchars(cchars_t * cs, cchars_t * data) {
+	if (!check(cs) && !check(data)) { return false; }
 
 	return true;
+}
+
+cchars_flag_t * cchars_search_character(cchars_t * cs, char data) {
+	if (!check(cs)) { return NULL; }
+	cchars_flag_t * info = malloc(sizeof(cchars_flag_t));
+	info->start = malloc(sizeof(int) * cs->count);
+	info->count = 0;
+	for (int i = 0; i < cs->count; i ++) {
+		if (cs->store[i] == data) {
+			info->start[info->count] = i;
+			info->count ++;
+		}
+	}
+	return info;
+}
+
+cchars_flag_t * cchars_search_cchars(cchars_t * cs, cchars_t * data) {
+	cchars_flag_t * info = malloc(sizeof(cchars_flag_t));
+	if (!check(cs) && !check(data) || data->count > cs->count) { 
+		info->start = NULL;
+		info->count = 0;
+		return info;
+	}
+	info->start = malloc(sizeof(int) * cs->count);
+	info->count = 0;
+	int i = 0;
+	int j = 0;
+	int index = -1;
+	for (; i < cs->count - data->count + 1;) {
+		for (; j < data->count;) {
+			if (cs->store[i] != data->store[j]) {
+				if (index == -1) {
+					++ i;
+				} else {
+					i = index + 1;
+				}
+				index = -1;
+				j = 0;
+				break;
+			} else {
+				if (index == -1) {
+					index = i;
+				}
+				if (j + 1 == data->count) {
+					j = 0;
+					i = index + 1;
+					// printf("index: %d\n", index);
+					info->start[info->count] = index;
+					info->count += 1;
+					index = -1;
+					break;
+				}
+				++ j;
+				++ i;
+			}
+		}
+	}
+	return info;
 }
 
 char * cchars_mutate_cstring(cchars_t * cs) {
@@ -197,16 +279,16 @@ char * cchars_mutate_cstring(cchars_t * cs) {
 	return c;
 }
 
-void cchars_description(cchars_t * cs) {
-	printf("CCHARS.count = %ld, size = %lu Byte.\n[\n", cs->count, sizeof(char));
+void cchars_description(cchars_t * cs, long ctrl) {
+	printf("CCHARS(%p).count = %ld\nCCHARS(%p).capacity = %ld\nsize = %lu Byte\n[\n", cs, cs->count, cs, cs->capacity, sizeof(char));
 	for (int i = 0; i < cs->count; i ++) {
-		char * show = i == cs->count - 1 ? "\t(D:%03d  H:0x%02x  C:%c)" : "\t(D:%03d  H:0x%02x  C:%c),";
+		char * show = i == cs->count - 1 ? "\t(D:%03d  H:0x%02x  C:%c)\n" : "\t(D:%03d  H:0x%02x  C:%c),\n";
 		printf(show, cs->store[i], cs->store[i], cs->store[i]);
 	}
-	printf("\n]\n");
+	printf("]\n");
 }
 
-void cchars_ascii() {
+void cchars_ascii_form() {
 	printf("Dec   Hex    Char\n");
 	for (int i = 0; i < 128; i ++) {
 		printf("%03d   0x%02x   %c\n", i, i, i);
