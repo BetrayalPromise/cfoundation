@@ -63,15 +63,6 @@ void cchars_free(cchars_t * cs) {
 	cs = NULL;
 }
 
-void cchars_flag_free(cchars_flag_t * cfs) {
-	if (cfs == NULL) { return; }
-	free(cfs->start);
-	cfs->start = NULL;
-	cfs->count = 0;
-	free(cfs);
-	cfs = NULL;
-}
-
 long cchars_length(cchars_t * cs) {
 	return cs->count;
 }
@@ -168,18 +159,49 @@ bool cchars_change_character(cchars_t * cs, long position, char data) {
 	return true;
 }
 
-// TODO:
 bool cchars_remove_boundary(cchars_t * cs, long position, long size) {
-	if (!check(cs)) { return false; }
-	if (position < 0 || position > cs->count - 1) {
-		printf("information: position(%ld) is out of range(0-%ld), operation has no effect!\n", position, cs->count - 1);
-		return false; 
+	if (!check(cs) && size > 0) { return false; }
+	// if (position < 0 || position > cs->count - 1) {
+	// 	printf("information: position(%ld) is out of range(0-%ld), operation has no effect!\n", position, cs->count - 1);
+	// 	return false; 
+	// }
+	// //删除指定元素	从后往前移动
+	// for (int i = position; i < cs->count; i++) {
+	// 	cs->store[i] = cs->store[i + 1];
+	// }
+	// --cs->count;
+
+	/*
+	   9876543210123456789
+				987654321
+			        4  
+			        123456   
+	*/
+
+	long start = 0;
+	long stop = 0;
+
+	if (position < 0) {
+		if (position + size - 1 < 0) { return false; }
+		start = 0;
+		stop = position + size - 1 > cs->count - 1 ? cs->count - 1 : position + size - 1;
+	} else if (position == 0) {
+		start = position;
+		stop = position + size - 1 > cs->count -1 ? cs->count - 1 : position + size - 1;
+	} else {
+		if (position > cs->count - 1) { return false; }
+		start = position;
+		stop = position + size - 1 > cs->count -1 ? cs->count - 1 : position + size - 1;
 	}
-	//删除指定元素	从后往前移动
-	for (int i = position; i < cs->count; i++) {
-		cs->store[i] = cs->store[i + 1];
+	printf("start = %ld, stop = %ld\n", start, stop);
+
+	long i = start;
+	long j = stop;
+	for (; i < cs->count - (stop - start + 1); i ++) {
+		cs->store[i] = cs->store[stop - start + 1 + i];
+		cs->store[stop - start + 1 + i] = 0x00;
 	}
-	--cs->count;
+	cs->count -= stop - start + 1;
 	return true;
 }
 
@@ -268,13 +290,63 @@ long * cchars_search_cchars(cchars_t * cs, cchars_t * data) {
 	return info;
 }
 
+bool cchars_change_cchars(cchars_t * cs, long position, cchars_t * data) {
+	if (!check(cs) && !check(data)) { return false; }
+	if (cs->count <= 0 || data->count <= 0) { return false; }
+
+	long location = 0;
+
+	long index = 0;
+	long size = 0;
+
+	if (position < 0) {
+		if (position + data->count <= 0) {
+			return false;
+		} else {
+			index = labs(position);
+			size = position + data->count < cs->count ? position + data->count : cs->count;
+			location = 0;
+		}
+	} else if (position == 0) {
+		index = 0;
+		size = cs->count > data->count ? data->count : cs->count;
+		location = 0;
+	} else {
+		if (position >= cs->count) {
+			return false;
+		} else {
+			index = 0;
+			size = position + data->count < cs->count ? data->count : cs->count - position;
+			location = position;
+		}
+	}
+	printf("location:%ld, index: %ld, size: %ld\n", location, index, size);
+	long i = location;
+	long j = index;
+
+	/*
+	9876543210123456789
+	         aaaaa
+			    87
+	*/
+
+	for (; i < size + location; i ++) {
+		cs->store[i] = data->store[j];
+		j ++;
+	}
+
+	return false;
+}
+
 char * cchars_mutate_cstring(cchars_t * cs) {
 	if (!check(cs)) { return NULL; }
-	char * c = malloc(sizeof(char) * cs->count + 1);
-	c[cs->count] = '\0';
+	long size = sizeof(long);
+	char * c = malloc(sizeof(char) * cs->count + size + 1);
+	*(long *)c = cs->count;
 	for (int i = 0; i < cs->count; i ++) {
-		c[i] = cs->store[i];
+		c[i + size] = cs->store[i];
 	}
+	c[cs->count + size] = 0x00;
 	return c;
 }
 
@@ -304,8 +376,15 @@ void cchars_ascii_form() {
 }
 
 cchars_t * cchars_copy(cchars_t * cs) {
-	// todo:
-	return NULL;
+	if (!check(cs)) { return NULL; } 
+	cchars_t * init = malloc(sizeof(cchars_t));
+	init->count = cs->count;
+	init->capacity = cs->capacity;
+	init->store = malloc(sizeof(char) * cs->capacity);
+	for (int i = 0; i < cs->count; i ++) {
+		init->store[i] = cs->store[i];
+	}
+	return init;
 }
 
 void cchars_capacity(cchars_t * cs, unsigned long multiple) {

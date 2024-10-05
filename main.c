@@ -48,12 +48,12 @@ int main(int argc, char ** argv) {
 
 	// cchars_t * cs = __CCHARS_INIT__("\090\080\080");
 	// cchars_t * c = __CCHARS_INIT__("80");
-	cchars_t * cs = __CCHARS_INIT__("aaaaa");
-	cchars_t * c = __CCHARS_INIT__("aaaaa");
+	// cchars_t * cs = __CCHARS_INIT__("aaaaa");
+	// cchars_t * c = __CCHARS_INIT__("aaaaa");
 	// // cchars_description(cs);
 	// cchars_description(c);
-	long * info = cchars_search_cchars(cs, c);
-	cchars_search_description(info);
+	// long * info = cchars_search_cchars(cs, c);
+	// cchars_search_description(info);
 	// cchars_description(cs);
 	// cchars_remove_character(cs, 0x00);
 	// cchars_description(cs);
@@ -73,6 +73,23 @@ int main(int argc, char ** argv) {
 	// long * a = cchars_search_character(cs, '\0');
 
 	// cchars_search_description(a);
+
+	// cchars_t * cs = __CCHARS_INIT__("aaaaa");
+	cchars_t * cs = __CCHARS_INIT__("987654321");
+	
+
+	// cchars_change_cchars(cs, 5, c);
+	// cchars_description(cs, 0b111);
+
+	/*
+	9876543210123456789
+	         987654321
+	        [
+		      ]
+	*/
+
+	cchars_remove_boundary(cs, 3, 3);
+	cchars_description(cs, 0b111);
 
 	return EXIT_SUCCESS;
 }
