@@ -13,7 +13,7 @@ typedef struct cchars {
 	char * store;
 } cchars_t;
 
-extern void			cchars_ascii_form();
+extern void			ASCII_form();
 extern cchars_t *	cchars_init(const char * str, long count);
 extern cchars_t *   cchars_copy(cchars_t * cs);
 extern void			cchars_free(cchars_t * cs);
@@ -23,7 +23,7 @@ extern void			cchars_search_description(long * info);
 
 extern bool			cchars_insert_character(cchars_t * cs, long position, char data);
 extern bool			cchars_append_character(cchars_t * cs, char data);
-// (long *)[count][index0][index1]...
+// (long *)[count][index0][index1]..., need free
 extern long *		cchars_search_character(cchars_t * cs, char data);
 extern bool			cchars_change_character(cchars_t * cs, long position, char data);
 extern bool			cchars_remove_character(cchars_t * cs, char data);
@@ -31,13 +31,13 @@ extern bool			cchars_remove_character(cchars_t * cs, char data);
 
 extern bool			cchars_insert_cchars(cchars_t * cs, long position, cchars_t * data);
 extern bool			cchars_append_cchars(cchars_t * cs, cchars_t * data);
-//(long *)[count][index0][index1]...
+//(long *)[count][index0][index1]..., need free
 extern long * 		cchars_search_cchars(cchars_t * cs, cchars_t * data);
 extern bool 		cchars_change_cchars(cchars_t * cs, long position, cchars_t * data);
-// TODO:
 extern bool			cchars_remove_cchars(cchars_t * cs, cchars_t * data);
+
 extern bool			cchars_remove_boundary(cchars_t * cs, long position, long size);
-// [8byte=length][xxx...]
+// [8byte=length][c0][c1]..., need free
 extern char *		cchars_mutate_cstring(cchars_t * cs);
 
 // #define CCHARS(name, string)\

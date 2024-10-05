@@ -228,6 +228,7 @@ bool cchars_remove_character(cchars_t * cs, char data) {
 	return true;
 }
 
+// TODO:
 bool cchars_remove_cchars(cchars_t * cs, cchars_t * data) {
 	if (!check(cs) && !check(data)) { return false; }
 
@@ -383,10 +384,10 @@ void cchars_search_description(long * info) {
 	printf("]\n");
 }
 
-void cchars_ascii_form() {
-	printf("Dec   Hex    Char\n");
+void ASCII_form() {
+	printf("Hex    Dec   Char\n");
 	for (int i = 0; i < 128; i ++) {
-		printf("%03d   0x%02x   %c\n", i, i, i);
+		printf("0x%02x   %03d   %c\n", i, i, i);
 	}
 }
 
