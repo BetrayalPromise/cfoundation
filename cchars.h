@@ -18,7 +18,7 @@ extern cchars_t *	cchars_init(const char * str, long count);
 extern cchars_t *   cchars_copy(cchars_t * cs);
 extern void			cchars_free(cchars_t * cs);
 extern long			cchars_length(cchars_t * cs);
-extern void			cchars_description(cchars_t * cs, long ctrl);
+extern void			cchars_description(cchars_t * cs, long flag);
 extern void			cchars_search_description(long * info);
 
 extern bool			cchars_insert_character(cchars_t * cs, long position, char data);

@@ -88,8 +88,9 @@ int main(int argc, char ** argv) {
 		      ]
 	*/
 
-	cchars_remove_boundary(cs, 3, 3);
-	cchars_description(cs, 0b111);
+	// cchars_remove_boundary(cs, 3, 3);
+	// cchars_description(cs, 0b111);
 
+	cchars_description(cs, 0b011);
 	return EXIT_SUCCESS;
 }

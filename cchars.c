@@ -350,11 +350,26 @@ char * cchars_mutate_cstring(cchars_t * cs) {
 	return c;
 }
 
-void cchars_description(cchars_t * cs, long ctrl) {
+void cchars_description(cchars_t * cs, long flag) {
 	printf("CCHARS(%p).count = %ld\nCCHARS(%p).capacity = %ld\nsize = %lu Byte\n[\n", cs, cs->count, cs, cs->capacity, sizeof(char));
+	char * show = NULL;
+	switch (flag) {
+	case 0b111: show = "    (H:0x%02x  D:%03d  C:%c)"; break;
+	case 0b110: show = "    (H:0x%02x  D:%03d)"; break;
+	case 0b101: show = "    (H:0x%02x  C:%c)"; break;
+	case 0b011: show = "    (D:%03d  C:%c)"; break;
+	case 0b100: show = "    (H:0x%02x)"; break;
+	case 0b010: show = "    (D:%03d)"; break;
+	case 0b001: show = "    (C:%c)"; break;
+	default:    show = "    (H:0x%02x  D:%03d  C:%c)"; break;
+	}
 	for (int i = 0; i < cs->count; i ++) {
-		char * show = i == cs->count - 1 ? "\t(D:%03d  H:0x%02x  C:%c)\n" : "\t(D:%03d  H:0x%02x  C:%c),\n";
 		printf(show, cs->store[i], cs->store[i], cs->store[i]);
+		if (i != cs->count - 1) {
+			printf(",\n");
+		} else {
+			printf("\n");
+		}
 	}
 	printf("]\n");
 }
@@ -362,7 +377,7 @@ void cchars_description(cchars_t * cs, long ctrl) {
 void cchars_search_description(long * info) {
 	printf("search.size = %ld\n[\n", info[0]);
 	for (int i = 0; i < info[0]; i ++) {
-		char * show = i == info[0] - 1 ? "\t(index: %ld)\n" : "\t(index: %ld),\n";
+		char * show = i == info[0] - 1 ? "    (index: %ld)\n" : "    (index: %ld),\n";
 		printf(show, info[i + 1]);
 	}
 	printf("]\n");
