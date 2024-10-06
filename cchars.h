@@ -20,6 +20,7 @@ extern void			cchars_free(cchars_t * cs);
 extern long			cchars_length(cchars_t * cs);
 extern void			cchars_description(cchars_t * cs, long flag);
 extern void			cchars_search_description(long * info);
+extern bool			cchars_compare(cchars_t * cs, cchars_t * data);
 
 extern bool			cchars_insert_character(cchars_t * cs, long position, char data);
 extern bool			cchars_append_character(cchars_t * cs, char data);

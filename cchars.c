@@ -9,7 +9,7 @@
 #include <string.h>
 
 void cchars_capacity(cchars_t * cs, unsigned long multiple);
-static int cchars_compare(void * input0, void * input1);
+// static int cchars_compare(void * input0, void * input1);
 
 static bool check(cchars_t * cs) {
 	if (cs == NULL) {
@@ -412,23 +412,40 @@ void cchars_capacity(cchars_t * cs, unsigned long multiple) {
 	cs->capacity = newcapacity;
 }
 
-static int cchars_compare(void * input0, void * input1) {
-	cchars_t * source0 = input0;
-	cchars_t * source1 = input1;
-	if (source0 != NULL && source1 != NULL) {
+// static int cchars_compare(void * input0, void * input1) {
+// 	cchars_t * source0 = input0;
+// 	cchars_t * source1 = input1;
+// 	if (source0 != NULL && source1 != NULL) {
 	
-	}
-	if (source0->count == source1->count) {
-		for (int i = 0; i < source0->count; i ++) {
-			if (source0->store[i] == source1->store[i]) {
+// 	}
+// 	if (source0->count == source1->count) {
+// 		for (int i = 0; i < source0->count; i ++) {
+// 			if (source0->store[i] == source1->store[i]) {
+// 				continue;
+// 			} else {
+// 				return -1;
+// 			}
+// 		}
+// 		return 0;
+// 	}
+// 	return -1;
+// }
+
+bool cchars_compare(cchars_t * cs, cchars_t * data) {
+	if (!check(cs) && !check(data)) { return false; }
+
+	if (cs->count != data->count) { 
+		return false; 
+	} else {
+		for (int i = 0; i < cs->count; i ++) {
+			if (cs->store[i] == data->store[i]) {
 				continue;
 			} else {
-				return -1;
+				return false;
 			}
 		}
-		return 0;
+		return true;
 	}
-	return -1;
 }
 
 #endif /* cchars.c */
