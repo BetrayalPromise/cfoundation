@@ -51,15 +51,6 @@ extern bool			cchars_remove_boundary(cchars_t * cs, long position, long size);
 // [8byte=length][c0][c1]..., need free
 extern char *		cchars_mutate_cstring(cchars_t * cs);
 
-// #define CCHARS(name, string)\
-// 	struct cchars name = { -1, -1, NULL };\
-// 	do {\
-// 		char array[] = string;\
-// 		name.capacity = sizeof(array)/sizeof(char) - 1;\
-// 		name.count = sizeof(array)/sizeof(char) - 1;\
-// 		name.store = NULL;\
-// 	} while(0);
-
 #define __CONNECT__(a,b) a##b
 // 只适用于字面量
 #define __CSTRING__(a) #a

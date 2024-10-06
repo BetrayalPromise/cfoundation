@@ -5,8 +5,7 @@
 #include <sys/_types/_size_t.h>
 #include "cchars.h"
 #include "array.h"
-
-void a(int array[]);
+#include "cstring.h"
 
 int main(int argc, char ** argv) {
 	// printf("sizeof(void) = %lu\n", sizeof(void));
@@ -93,13 +92,17 @@ int main(int argc, char ** argv) {
 
 	// cchars_description(cs, 0b011);
 
-	cchars_t * c = __CCHARS_INIT__("aaaaa");
+	// cchars_t * c = __CCHARS_INIT__("aaaaa");
 	// cchars_t * d = __CCHARS_INIT__("aa");
 	// long * result = cchars_search_cchars(c, d, 0b01);
 	// cchars_description(result, search_type, 0b111);
+	// char * cstring = cchars_mutate_cstring(c);
+	// cchars_description(cstring, string_type, 0b111);
 
-	char * cstring = cchars_mutate_cstring(c);
-	cchars_description(cstring, string_type, 0b111);
-
+	char * p = "0000";
+	char * p0 = cstring(p);
+	// printf("%ld\n", cstringlength(p0));
+	cstringdescribe(p0, 0b100);
 	return EXIT_SUCCESS;
 }
+
