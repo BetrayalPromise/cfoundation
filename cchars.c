@@ -161,15 +161,6 @@ bool cchars_change_character(cchars_t * cs, long position, char data) {
 
 bool cchars_remove_boundary(cchars_t * cs, long position, long size) {
 	if (!check(cs) && size > 0) { return false; }
-	// if (position < 0 || position > cs->count - 1) {
-	// 	printf("information: position(%ld) is out of range(0-%ld), operation has no effect!\n", position, cs->count - 1);
-	// 	return false; 
-	// }
-	// //删除指定元素	从后往前移动
-	// for (int i = position; i < cs->count; i++) {
-	// 	cs->store[i] = cs->store[i + 1];
-	// }
-	// --cs->count;
 
 	/*
 	   9876543210123456789
@@ -193,7 +184,7 @@ bool cchars_remove_boundary(cchars_t * cs, long position, long size) {
 		start = position;
 		stop = position + size - 1 > cs->count -1 ? cs->count - 1 : position + size - 1;
 	}
-	printf("start = %ld, stop = %ld\n", start, stop);
+	// printf("start = %ld, stop = %ld\n", start, stop);
 
 	long i = start;
 	long j = stop;
