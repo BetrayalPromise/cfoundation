@@ -17,6 +17,7 @@ typedef enum information {
 	unknow_type,
 	cchars_type,
 	search_type,
+	string_type,
 } information_t;
 
 extern void			ASCII_form();
@@ -24,8 +25,12 @@ extern cchars_t *	cchars_init(const char * str, long count);
 extern cchars_t *   cchars_copy(cchars_t * cs);
 extern void			cchars_free(cchars_t * cs);
 extern long			cchars_length(cchars_t * cs);
-extern void 		cchars_description(void * object, information_t info, long flag);
 extern bool			cchars_compare(cchars_t * cs, cchars_t * data);
+/*
+
+*/
+extern void 		cchars_description(void * object, information_t info, long flag);
+
 
 extern bool			cchars_insert_character(cchars_t * cs, long position, char data);
 extern bool			cchars_append_character(cchars_t * cs, char data);
