@@ -75,7 +75,7 @@ int main(int argc, char ** argv) {
 	// cchars_search_description(a);
 
 	// cchars_t * cs = __CCHARS_INIT__("aaaaa");
-	cchars_t * cs = __CCHARS_INIT__("987654321");
+	// cchars_t * cs = __CCHARS_INIT__("987654321");
 	
 
 	// cchars_change_cchars(cs, 5, c);
@@ -91,6 +91,12 @@ int main(int argc, char ** argv) {
 	// cchars_remove_boundary(cs, 3, 3);
 	// cchars_description(cs, 0b111);
 
-	cchars_description(cs, 0b011);
+	// cchars_description(cs, 0b011);
+
+	cchars_t * c = __CCHARS_INIT__("aaaaa");
+	cchars_t * d = __CCHARS_INIT__("aaaaa");
+	long * result = cchars_search_cchars(c, d, 0b01);
+	cchars_description(result, search_type, 0b010);
+
 	return EXIT_SUCCESS;
 }

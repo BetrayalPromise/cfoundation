@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <sys/_types/_va_list.h>
+#include <stdarg.h>
 
 void cchars_capacity(cchars_t * cs, unsigned long multiple);
 // static int cchars_compare(void * input0, void * input1);
@@ -239,10 +241,16 @@ long * cchars_search_character(cchars_t * cs, char data) {
 	return info;
 }
 
-long * cchars_search_cchars(cchars_t * cs, cchars_t * data) {
+long * cchars_search_cchars(cchars_t * cs, cchars_t * data, long flag) {
 	if (!check(cs) && !check(data) || data->count > cs->count) {
 		return NULL;
 	}
+
+	switch (flag) {
+	case 0b01: break;
+	case 0b10: break;
+	}
+
 	long * info = malloc(sizeof(long) * cs->count + 1);
 	info[0] = 0;
 	int i = 0;
@@ -266,9 +274,6 @@ long * cchars_search_cchars(cchars_t * cs, cchars_t * data) {
 				if (j + 1 == data->count) {
 					j = 0;
 					i = index + 1;
-					// printf("index: %d\n", index);
-					// info->start[info->count] = index;
-					// info->count += 1;
 					info[info[0] + 1] = index;
 					info[0] += 1;
 					index = -1;
@@ -342,37 +347,57 @@ char * cchars_mutate_cstring(cchars_t * cs) {
 	return c;
 }
 
-void cchars_description(cchars_t * cs, long flag) {
-	printf("CCHARS(%p).count = %ld\nCCHARS(%p).capacity = %ld\nsize = %lu Byte\n[\n", cs, cs->count, cs, cs->capacity, sizeof(char));
-	char * show = NULL;
-	switch (flag) {
-	case 0b111: show = "    (H:0x%02x  D:%03d  C:%c)"; break;
-	case 0b110: show = "    (H:0x%02x  D:%03d)"; break;
-	case 0b101: show = "    (H:0x%02x  C:%c)"; break;
-	case 0b011: show = "    (D:%03d  C:%c)"; break;
-	case 0b100: show = "    (H:0x%02x)"; break;
-	case 0b010: show = "    (D:%03d)"; break;
-	case 0b001: show = "    (C:%c)"; break;
-	default:    show = "    (H:0x%02x  D:%03d  C:%c)"; break;
-	}
-	for (int i = 0; i < cs->count; i ++) {
-		printf(show, cs->store[i], cs->store[i], cs->store[i]);
-		if (i != cs->count - 1) {
-			printf(",\n");
-		} else {
-			printf("\n");
+void cchars_description(void * object, information_t info, long flag) {
+	if (info == cchars_type) {
+		cchars_t * cs = object;
+		printf("CCHARS(%p).count = %ld\nCCHARS(%p).capacity = %ld\nsize = %lu Byte\n[\n", cs, cs->count, cs, cs->capacity, sizeof(char));
+		char * show = NULL;
+		switch (flag) {
+		case 0b111: show = "    (H:0x%02x  D:%03d  C:%c)"; break;
+		case 0b110: show = "    (H:0x%02x  D:%03d)"; break;
+		case 0b101: show = "    (H:0x%02x  C:%c)"; break;
+		case 0b011: show = "    (D:%03d  C:%c)"; break;
+		case 0b100: show = "    (H:0x%02x)"; break;
+		case 0b010: show = "    (D:%03d)"; break;
+		case 0b001: show = "    (C:%c)"; break;
+		default:    show = "    (H:0x%02x  D:%03d  C:%c)"; break;
 		}
+		for (int i = 0; i < cs->count; i ++) {
+			printf(show, cs->store[i], cs->store[i], cs->store[i]);
+			if (i != cs->count - 1) {
+				printf(",\n]\n");
+			} else {
+				printf("\n]\n");
+			}
+		}
+	} else if (info == search_type) {
+		long * result = object; 
+		printf("[long]: (%p)\n[\n", result);
+		char * show = NULL;
+		switch (flag) {
+		case 0b111: show = "    (H:0x%02x  D:%03d  C:%c)"; break;
+		case 0b110: show = "    (H:0x%02x  D:%03d)"; break;
+		case 0b101: show = "    (H:0x%02x  C:%c)"; break;
+		case 0b011: show = "    (D:%03d  C:%c)"; break;
+		case 0b100: show = "    (H:0x%02x)"; break;
+		case 0b010: show = "    (D:%03d)"; break;
+		case 0b001: show = "    (C:%c)"; break;
+		default:    show = "    (H:0x%02x  D:%03d  C:%c)"; break;
+		}
+		for (int i = 0; i < result[0]; i ++) {
+			if (i == 0) {
+				printf("    (count: %ld),\n", result[0]);
+			}
+			printf(show, result[i + 1]);
+			if (i != result[0] - 1) {
+				printf(",\n]\n");
+			} else {
+				printf("\n]\n");
+			}
+		}
+	} else {
+		printf("information: unknow type");
 	}
-	printf("]\n");
-}
-
-void cchars_search_description(long * info) {
-	printf("search.size = %ld\n[\n", info[0]);
-	for (int i = 0; i < info[0]; i ++) {
-		char * show = i == info[0] - 1 ? "    (index: %ld)\n" : "    (index: %ld),\n";
-		printf(show, info[i + 1]);
-	}
-	printf("]\n");
 }
 
 void ASCII_form() {

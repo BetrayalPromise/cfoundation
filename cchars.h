@@ -13,13 +13,18 @@ typedef struct cchars {
 	char * store;
 } cchars_t;
 
+typedef enum information {
+	unknow_type,
+	cchars_type,
+	search_type,
+} information_t;
+
 extern void			ASCII_form();
 extern cchars_t *	cchars_init(const char * str, long count);
 extern cchars_t *   cchars_copy(cchars_t * cs);
 extern void			cchars_free(cchars_t * cs);
 extern long			cchars_length(cchars_t * cs);
-extern void			cchars_description(cchars_t * cs, long flag);
-extern void			cchars_search_description(long * info);
+extern void 		cchars_description(void * object, information_t info, long flag);
 extern bool			cchars_compare(cchars_t * cs, cchars_t * data);
 
 extern bool			cchars_insert_character(cchars_t * cs, long position, char data);
@@ -33,7 +38,7 @@ extern bool			cchars_remove_character(cchars_t * cs, char data);
 extern bool			cchars_insert_cchars(cchars_t * cs, long position, cchars_t * data);
 extern bool			cchars_append_cchars(cchars_t * cs, cchars_t * data);
 //(long *)[count][index0][index1]..., need free
-extern long * 		cchars_search_cchars(cchars_t * cs, cchars_t * data);
+extern long * 		cchars_search_cchars(cchars_t * cs, cchars_t * data, long flag);
 extern bool 		cchars_change_cchars(cchars_t * cs, long position, cchars_t * data);
 extern bool			cchars_remove_cchars(cchars_t * cs, cchars_t * data);
 
