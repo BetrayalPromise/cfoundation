@@ -357,14 +357,14 @@ void cchars_description(void * object, information_t info, long flag) {
 		printf("CCHARS(%p).count = %ld\nCCHARS(%p).capacity = %ld\nsize = %lu Byte\n[\n", cs, cs->count, cs, cs->capacity, sizeof(char));
 		char * show = NULL;
 		switch (flag) {
-		case 0b111: show = "    (H:0x%02x  D:%04d  C:%c)"; break;
-		case 0b110: show = "    (H:0x%02x  D:%04d)"; break;
-		case 0b101: show = "    (H:0x%02x  C:%c)"; break;
-		case 0b011: show = "    (D:%04d  C:%c)"; break;
-		case 0b100: show = "    (H:0x%02x)"; break;
-		case 0b010: show = "    (D:%04d)"; break;
+		case 0b111: show = "    (H:0x%016lx  D:%032ld  C:%c)"; break;
+		case 0b110: show = "    (H:0x%016lx  D:%032ld)"; break;
+		case 0b101: show = "    (H:0x%016lx  C:%c)"; break;
+		case 0b011: show = "    (D:%032ld  C:%c)"; break;
+		case 0b100: show = "    (H:0x%016lx)"; break;
+		case 0b010: show = "    (D:%032ld)"; break;
 		case 0b001: show = "    (C:%c)"; break;
-		default:    show = "    (H:0x%02x  D:%04d  C:%c)"; break;
+		default:    show = "    (H:0x%016lx  D:%032ld  C:%c)"; break;
 		}
 		for (int i = 0; i < cs->count; i ++) {
 			printf(show, cs->store[i], cs->store[i], cs->store[i]);
@@ -379,21 +379,19 @@ void cchars_description(void * object, information_t info, long flag) {
 		printf("[long]: (%p)\n[\n", result);
 		char * show = NULL;
 		switch (flag) {
-		case 0b111: show = "    (%ld Byte, H:0x%02x  D:%04d  C:%c)"; break;
-		case 0b110: show = "    (%ld Byte, H:0x%02x  D:%04d)"; break;
-		case 0b101: show = "    (%ld Byte, H:0x%02x  C:%c)"; break;
-		case 0b011: show = "    (%ld Byte, D:%04d  C:%c)"; break;
-		case 0b100: show = "    (%ld Byte, H:0x%02x)"; break;
-		case 0b010: show = "    (%ld Byte, D:%04d)"; break;
+		case 0b111: show = "    (%ld Byte, H:0x%016lx  D:%032ld  C:%c)"; break;
+		case 0b110: show = "    (%ld Byte, H:0x%016lx  D:%032ld)"; break;
+		case 0b101: show = "    (%ld Byte, H:0x%016lx  C:%c)"; break;
+		case 0b011: show = "    (%ld Byte, D:%032ld  C:%c)"; break;
+		case 0b100: show = "    (%ld Byte, H:0x%016lx)"; break;
+		case 0b010: show = "    (%ld Byte, D:%032ld)"; break;
 		case 0b001: show = "    (%ld Byte, C:%c)"; break;
-		default:    show = "    (H:0x%02x  D:%04d  C:%c)"; break;
+		default:    show = "    (H:0x%016lx  D:%032ld  C:%c)"; break;
 		}
 		if (result[0] == 0) {
-			// printf("    (%ld Byte, LongArray.count = %ld)\n", sizeof(long), result[0]);
-			printf("    (%ld Byte, H:0x%016lx D:%032ld LongArray.count = %ld)\n", sizeof(long), *(long *)result, *(long *)result, *(long *)result);
+			printf("    (%ld Byte, H:0x%016lx  D:%032ld  LongArray.count = %ld)\n", sizeof(long), *(long *)result, *(long *)result, *(long *)result);
 		} else {
-			// printf("    (%ld Byte, LongArray.count = %ld),\n", sizeof(long), result[0]);
-			printf("    (%ld Byte, H:0x%016lx D:%032ld LongArray.count = %ld),\n", sizeof(long), *(long *)result, *(long *)result, *(long *)result);
+			printf("    (%ld Byte, H:0x%016lx  D:%032ld  LongArray.count = %ld),\n", sizeof(long), *(long *)result, *(long *)result, *(long *)result);
 		}
 		
 		for (int i = 0; i < result[0]; i ++) {
@@ -410,19 +408,19 @@ void cchars_description(void * object, information_t info, long flag) {
 		printf("[char]: (%p)\n[\n", string);
 		char * show = NULL;
 		switch (flag) {
-		case 0b111: show = "    (%ld Byte, H:0x%02x  D:%04d  C:%c)"; break;
-		case 0b110: show = "    (%ld Byte, H:0x%02x  D:%04d)"; break;
-		case 0b101: show = "    (%ld Byte, H:0x%02x  C:%c)"; break;
-		case 0b011: show = "    (%ld Byte, D:%04d  C:%c)"; break;
-		case 0b100: show = "    (%ld Byte, H:0x%02x)"; break;
-		case 0b010: show = "    (%ld Byte, D:%04d)"; break;
+		case 0b111: show = "    (%ld Byte, H:0x%016lx  D:%032ld  C:%c)"; break;
+		case 0b110: show = "    (%ld Byte, H:0x%016lx  D:%032ld)"; break;
+		case 0b101: show = "    (%ld Byte, H:0x%016lx  C:%c)"; break;
+		case 0b011: show = "    (%ld Byte, D:%032ld  C:%c)"; break;
+		case 0b100: show = "    (%ld Byte, H:0x%016lx)"; break;
+		case 0b010: show = "    (%ld Byte, D:%032ld)"; break;
 		case 0b001: show = "    (%ld Byte, C:%c)"; break;
-		default:    show = "    (%ld Byte, H:0x%02x  D:%04d  C:%c)"; break;
+		default:    show = "    (%ld Byte, H:0x%016lx  D:%032ld  C:%c)"; break;
 		}
 		if (*(long *)string == 0) {
-			printf("    (%ld Byte, H:0x%016lx D:%032ld CharArray.count = %ld)\n", sizeof(long), *(long *)string, *(long *)string, *(long *)string);
+			printf("    (%ld Byte, H:0x%016lx  D:%032ld  CharArray.count = %ld)\n", sizeof(long), *(long *)string, *(long *)string, *(long *)string);
 		} else {
-			printf("    (%ld Byte, H:0x%016lx D:%032ld CharArray.count = %ld)\n", sizeof(long), *(long *)string, *(long *)string, *(long *)string);
+			printf("    (%ld Byte, H:0x%016lx  D:%032ld  CharArray.count = %ld)\n", sizeof(long), *(long *)string, *(long *)string, *(long *)string);
 		}
 		long size = sizeof(long);
 		char * cstring = string + size; 

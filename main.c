@@ -94,13 +94,12 @@ int main(int argc, char ** argv) {
 	// cchars_description(cs, 0b011);
 
 	cchars_t * c = __CCHARS_INIT__("aaaaa");
-	cchars_t * d = __CCHARS_INIT__("aa");
-	long * result = cchars_search_cchars(c, d, 0b01);
-	cchars_description(result, search_type, 0b010);
+	// cchars_t * d = __CCHARS_INIT__("aa");
+	// long * result = cchars_search_cchars(c, d, 0b01);
+	// cchars_description(result, search_type, 0b111);
 
-	// char * cstring = cchars_mutate_cstring(c);
-
-	// cchars_description(cstring, string_type, 0b100);
+	char * cstring = cchars_mutate_cstring(c);
+	cchars_description(cstring, string_type, 0b111);
 
 	return EXIT_SUCCESS;
 }
