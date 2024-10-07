@@ -16,15 +16,22 @@ bool cstringcheck(char * cstr) {
 	return "zzz"; "zzz" 字面量存储在静态区域里 不需要释放
 */
 char * tocstring(char * str) {
-    long volumesize = sizeof(long);
-	long lengthsize = sizeof(long);
+    long volumestep = sizeof(long);
+	long lengthstep = sizeof(long);
 
-	long charsize = str != NULL ? sizeof(char) * strlen(str) + 1 : 0;
-    char * cstr = malloc(volumesize + lengthsize + charsize);
-    char * string = cstr + volumesize + lengthsize;
+	long basesize = 32;
+	long lengthsize = str != NULL ? sizeof(char) * strlen(str) + 1 : 0;
 
-    *(long *)cstr = charsize;
-	*(long *)(cstr + volumesize) = charsize;
+    long volumesize = basesize;
+	while (volumesize <= lengthsize) {
+		volumesize *= 2;
+	}
+
+    char * cstr = malloc(volumestep + lengthstep + volumesize);
+    char * string = cstr + volumestep + lengthstep;
+
+    *(long *)cstr = volumesize;
+	*(long *)(cstr + volumestep) = lengthsize;
 
 	if (str != NULL) {
 	    for (int i = 0; i < strlen(str) + 1; i ++) {
@@ -112,33 +119,36 @@ bool cstringcompare(char * cstr, char * data) {
 	}
 }
 
-void cstringexpansise(char * cstr, long multiply) {
-	if (!cstringcheck(cstr)) { return; }
-	long length = cstringlength(cstr);
-
+void cstringtelescope(char ** pcstr, long multiply) {
+	if (!cstringcheck(*pcstr)) { return; }
+	if (multiply < 1) { return; }
+	// long length = cstringlength(* pcstr);
+	long volume = cstringvolume(* pcstr) * multiply;
+	char * space = malloc(2 * sizeof(long) + volume);
+	memcpy(space, *pcstr, 2 * sizeof(long) + volume);
+	printf("cstring: (%p) -> (%p)\n", *pcstr, space);
+	free(*pcstr - 2 * sizeof(long));
+	*pcstr = space;
+	*(long *)(*pcstr - 2 * sizeof(long)) = volume;
 }
 
 /*
 		012345
 */
 
-bool cstringinsertcharacter(char * cstr, long index, char data) {
+bool cstringinsert(char * cstr, long index, char data) {
 	if (!cstringcheck(cstr)) { return false; }
 
-	// long insert = -1;
-	// long size = cstringlength(source);
-	// if (index < 0 || index > ) {
-	// 	return false;
-	// } 
+
 
 	return true;
 }
 
-bool cstringinsert(char * source, char data) {
-	if (!cstringcheck(source)) {
-		return false;
-	}
-	return true;
-}
+// bool cstringinsert(char * source, char data) {
+// 	if (!cstringcheck(source)) {
+// 		return false;
+// 	}
+// 	return true;
+// }
 
 #endif

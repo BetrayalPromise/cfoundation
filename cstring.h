@@ -14,7 +14,7 @@ char *  tocstring(char * str);
 long    cstringlength(char * cstr);
 // 字符容量
 long    cstringvolume(char * cstr);
-void    cstringexpansise(char * cstr, long multiply);
+void    cstringtelescope(char ** pcstr, long multiply);
 void    cstringdescribe(char * cstr, long flag);
 char *  cstringcopy(char * cstr);
 void    cstringfree(char * cstr);
