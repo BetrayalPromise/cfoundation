@@ -99,15 +99,16 @@ int main(int argc, char ** argv) {
 	// char * cstring = cchars_mutate_cstring(c);
 	// cchars_description(cstring, string_type, 0b111);
 
-	char * p0 = cstring(0x00);
+	char * p0 = tocstring(0x00);
 	// p1, p2等价
-	char * p1 = cstring("");
-	char * p2 = cstring("\0000");
+	char * p1 = tocstring("");
+	char * p2 = tocstring("\0000");
 
-	cstringdescribe(p0, 0b100);
-	cstringdescribe(p1, 0b100);
-	cstringdescribe(p2, 0b100);
+	// cstringdescribe(p0, 0b100);
+	// cstringdescribe(p1, 0b100);
+	// cstringdescribe(p2, 0b100);
 
+	cstringexpansise(p0, 2);
 
 	return EXIT_SUCCESS;
 }

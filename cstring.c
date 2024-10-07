@@ -15,24 +15,22 @@ bool cstringcheck(char * cstr) {
 /*
 	return "zzz"; "zzz" 字面量存储在静态区域里 不需要释放
 */
-char * cstring(char * str) {
-	if (!cstringcheck(str)) { return NULL; }
-
+char * tocstring(char * str) {
     long volumesize = sizeof(long);
 	long lengthsize = sizeof(long);
 
-	long charsize = sizeof(char) * strlen(str) + 1;
+	long charsize = str != NULL ? sizeof(char) * strlen(str) + 1 : 0;
     char * cstr = malloc(volumesize + lengthsize + charsize);
     char * string = cstr + volumesize + lengthsize;
 
     *(long *)cstr = charsize;
 	*(long *)(cstr + volumesize) = charsize;
 
-	// printf("%ld, %ld\n", *(long *)cstr, *(long *)(cstr + volumesize));
-
-    for (int i = 0; i < strlen(str) + 1; i ++) {
-        string[i] = str[i];
-    }
+	if (str != NULL) {
+	    for (int i = 0; i < strlen(str) + 1; i ++) {
+        	string[i] = str[i];
+    	}
+	} 
     return string;
 }
 
@@ -67,8 +65,12 @@ void cstringdescribe(char * cstr, long flag) {
 
     long lengthsize = sizeof(long);
     long length = *(long *)(cstr - lengthsize);
-	printf("    (%ld Byte    H:0x%016lx  D:%032ld  Chars.length = %ld),\n", lengthsize, length, length, length);
-    
+	printf("    (%ld Byte    H:0x%016lx  D:%032ld  Chars.length = %ld)", lengthsize, length, length, length);
+	
+	if (length != 0) {
+		printf(",");
+	}
+	printf("\n");
 
 	for (int i = 0; i < length; i ++) {
 		printf(show, sizeof(char), cstr[i], cstr[i], cstr[i]);
@@ -110,16 +112,18 @@ bool cstringcompare(char * cstr, char * data) {
 	}
 }
 
-void cstringexpansise(char * source, double multiply) {
-	long size = cstringlength(source) * multiply + sizeof(long);
+void cstringexpansise(char * cstr, long multiply) {
+	if (!cstringcheck(cstr)) { return; }
+	long length = cstringlength(cstr);
 
 }
 
 /*
 		012345
 */
-bool cstringinsertcstring(char * source, long index, char data) {
-	if (!cstringcheck(source)) { return false; }
+
+bool cstringinsertcharacter(char * cstr, long index, char data) {
+	if (!cstringcheck(cstr)) { return false; }
 
 	// long insert = -1;
 	// long size = cstringlength(source);

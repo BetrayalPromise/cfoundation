@@ -9,11 +9,12 @@
      容量(0-...)  数量(0-...)  存储位置
 */
 
-char * cstring(char * str);
-
-// 长度包含0x00,即\0的存储位置也计算在内
+char *  tocstring(char * str);
+// 字符串长度包含0x00,即\0的存储位置也计算在内
 long    cstringlength(char * cstr);
+// 字符容量
 long    cstringvolume(char * cstr);
+void    cstringexpansise(char * cstr, long multiply);
 void    cstringdescribe(char * cstr, long flag);
 char *  cstringcopy(char * cstr);
 void    cstringfree(char * cstr);
