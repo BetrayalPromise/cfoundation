@@ -1,12 +1,15 @@
 #ifndef __CSTRING_C__
 #define __CSTRING_C__
 
-#include <stdbool.h>
+#include <_types/_uint64_t.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
 #include "cstring.h"
+#include <stdarg.h>
+#include <sys/_types/_va_list.h>
 
 bool cstringcheck(char * cstr) {
 	return cstr == NULL ? false : true;
@@ -51,7 +54,7 @@ long cstringvolume(char * cstr) {
     return *(long *)(cstr - 2 * sizeof(long));
 }
 
-void cstringdescribe(char * cstr, long flag) {
+void cstringdescribe(char * cstr, unsigned short flag) {
 	if (!cstringcheck(cstr)) { return; }
     printf("[long|long|char...]: (%p)\n[\n", cstr);
 	char * show = NULL;
@@ -119,36 +122,109 @@ bool cstringcompare(char * cstr, char * data) {
 	}
 }
 
-void cstringtelescope(char ** pcstr, long multiply) {
+void cstringtelescope(char ** pcstr, bool control, long multiply) {
 	if (!cstringcheck(*pcstr)) { return; }
-	if (multiply < 1) { return; }
-	// long length = cstringlength(* pcstr);
-	long volume = cstringvolume(* pcstr) * multiply;
-	char * space = malloc(2 * sizeof(long) + volume);
-	memcpy(space, *pcstr, 2 * sizeof(long) + volume);
-	printf("cstring: (%p) -> (%p)\n", *pcstr, space);
-	free(*pcstr - 2 * sizeof(long));
-	*pcstr = space;
-	*(long *)(*pcstr - 2 * sizeof(long)) = volume;
+
+	if (control) {
+		long volume = cstringvolume(* pcstr) * multiply;
+		char * space = malloc(2 * sizeof(long) + volume);
+		memcpy(space, *pcstr, 2 * sizeof(long) + volume);
+		printf("cstring: (%p) -> (%p)\n", * pcstr, space);
+		free(*pcstr - 2 * sizeof(long));
+		*pcstr = space;
+		*(long *)(*pcstr - 2 * sizeof(long)) = volume;
+	} else {
+		long volume = (long)(cstringvolume(* pcstr) / multiply);
+		long length = cstringlength(* pcstr);
+
+		long proportion = volume / length ;
+
+		if (proportion < 1) {
+		
+		} else if (proportion == 1) {
+		
+		} else if (proportion < 3) {
+		
+		} else {
+		
+		}
+	}
 }
 
 /*
 		012345
 */
 
-bool cstringinsert(char * cstr, long index, char data) {
+bool cstringinsert(char * cstr, long index, ...) {
 	if (!cstringcheck(cstr)) { return false; }
+	if (sizeof(void *) != sizeof(long)) {
+		return false;
+	}
+	va_list list;
+	va_start(list, index);
 
+	// unsigned long ebp = 0;
+	// 使用内联汇编读取EAX寄存器的值
+	// asm("movq %%ebx, %0" : "=r"(ebp));
+	// printf("EBP的值为: %lu\n", ebp);
+	
+	uint64_t rbp = 0x0;
+    __asm__ __volatile__("movq %%rbp, %0" : "=r"(rbp));
 
+	uint64_t rsp = 0x0;
+    __asm__ __volatile__("movq %%rsp, %0" : "=r"(rsp));
+
+	uint64_t result = va_arg(list, unsigned long);
+	if (0x00 <= result && result <= 0xff && rbp - rsp == 0x4) {
+		printf("%c\n", (char)result);
+	} else {
+		char * data = (void *)result;
+		printf("%p\n", data);
+		printf("%s\n", data);
+	}
+	va_end(list);
 
 	return true;
 }
 
-// bool cstringinsert(char * source, char data) {
-// 	if (!cstringcheck(source)) {
-// 		return false;
-// 	}
-// 	return true;
-// }
+void ASCII(ISO_IEC_646_t standard, unsigned short flag) {
+	int size = standard == C89 ? 128 : 256;
+	char * show = NULL;
+	switch (flag) {
+	case 0b111: show = "H:0x%02x  D:%03d  C:%c"; break;
+	case 0b110: show = "H:0x%02x  D:%03d)"; break;
+	case 0b101: show = "H:0x%02x  C:%c"; break;
+	case 0b011: show = "D:%03d  C:%c)"; break;
+	case 0b100: show = "H:0x%02x)"; break;
+	case 0b010: show = "D:%03d)"; break;
+	case 0b001: show = "C:%c)"; break;
+	default:    show = "H:0x%02x  D:%03d  C:%c)"; break;
+	}
+	printf("ASCII STANDARD: %s\n", standard == C89 ? "ISO/IEC 646:1991" : "ISO/IEC 646:1999");
+	for (int i = 0; i < size; i ++) {
+		printf(show, i, i, i);
+		printf("\n");
+	}
+}
+
+void typebytelength() {
+	printf("[void].size = %lu Bype\n", sizeof(void));
+	printf("[char].size = %lu Bype\n", sizeof(char));
+	printf("[short].size = %lu Bype\n", sizeof(short));
+	printf("[int].size = %lu Bype\n", sizeof(int));
+	printf("[long].size = %lu Bype\n", sizeof(long));
+	printf("[long long].size = %lu Bype\n", sizeof(long long));
+	printf("[float].size = %lu Bype\n", sizeof(float));
+	printf("[double].size = %lu Bype\n", sizeof(double));
+
+	printf("[void *].size = %lu Bype\n", sizeof(void *));
+	printf("[char *].size = %lu Bype\n", sizeof(char *));
+	printf("[short *].size = %lu Bype\n", sizeof(short *));
+	printf("[int *].size = %lu Bype\n", sizeof(int *));
+	printf("[long *].size = %lu Bype\n", sizeof(long *));
+	printf("[long long *].size = %lu Bype\n", sizeof(long long *));
+	printf("[float *].size = %lu Bype\n", sizeof(float *));
+	printf("[double *].size = %lu Bype\n", sizeof(double *));	
+}
 
 #endif
