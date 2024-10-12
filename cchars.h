@@ -20,7 +20,6 @@ typedef enum information {
 	string_type,
 } information_t;
 
-extern void			ASCII_form();
 extern cchars_t *	cchars_init(const char * str, long count);
 extern cchars_t *   cchars_copy(cchars_t * cs);
 extern void			cchars_free(cchars_t * cs);

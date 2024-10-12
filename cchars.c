@@ -438,13 +438,6 @@ void cchars_description(void * object, information_t info, long flag) {
 	}
 }
 
-void ASCII_form() {
-	printf("Hex    Dec   Char\n");
-	for (int i = 0; i < 128; i ++) {
-		printf("0x%02x   %03d   %c\n", i, i, i);
-	}
-}
-
 cchars_t * cchars_copy(cchars_t * cs) {
 	if (!check(cs)) { return NULL; } 
 	cchars_t * init = malloc(sizeof(cchars_t));

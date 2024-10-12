@@ -19,7 +19,7 @@ void testcstringdescribe() {
 void testcstringinsrt() {
     char * p0 = tocstring(0x00);
 	char * p = "xxx";
-	cstringinsert(p0, -1, &p);
+	cstringinsert(p0, -1, p);
     printf("%p\n", &p);
 }
 

@@ -156,26 +156,17 @@ void cstringtelescope(char ** pcstr, bool control, long multiply) {
 */
 
 bool cstringinsert(char * cstr, long index, ...) {
+	// uint64_t rbp = 0x0;
+    // __asm__ __volatile__("movq %%rbp, %0" : "=r"(rbp));
+	// uint64_t rsp = 0x0;
+    // __asm__ __volatile__("movq %%rsp, %0" : "=r"(rsp));
+
 	if (!cstringcheck(cstr)) { return false; }
-	if (sizeof(void *) != sizeof(long)) {
-		return false;
-	}
 	va_list list;
 	va_start(list, index);
 
-	// unsigned long ebp = 0;
-	// 使用内联汇编读取EAX寄存器的值
-	// asm("movq %%ebx, %0" : "=r"(ebp));
-	// printf("EBP的值为: %lu\n", ebp);
-	
-	uint64_t rbp = 0x0;
-    __asm__ __volatile__("movq %%rbp, %0" : "=r"(rbp));
-
-	uint64_t rsp = 0x0;
-    __asm__ __volatile__("movq %%rsp, %0" : "=r"(rsp));
-
-	uint64_t result = va_arg(list, unsigned long);
-	if (0x00 <= result && result <= 0xff && rbp - rsp == 0x4) {
+	uint64_t result = va_arg(list, uint64_t);
+	if (0x00 <= result && result <= 0xff) {
 		printf("%c\n", (char)result);
 	} else {
 		char * data = (void *)result;
