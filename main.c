@@ -109,6 +109,7 @@ int main(int argc, char ** argv) {
 	// cchars_description(cstring, string_type, 0b111);
 
 	testcstringinsrt();
+	// testcstringtelescope();
 
 	return EXIT_SUCCESS;
 }

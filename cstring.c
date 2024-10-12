@@ -125,28 +125,28 @@ bool cstringcompare(char * cstr, char * data) {
 void cstringtelescope(char ** pcstr, bool control, long multiply) {
 	if (!cstringcheck(*pcstr)) { return; }
 
+	long volume = cstringvolume(* pcstr);
+	long length = cstringlength(* pcstr);
 	if (control) {
-		long volume = cstringvolume(* pcstr) * multiply;
-		char * space = malloc(2 * sizeof(long) + volume);
-		memcpy(space, *pcstr, 2 * sizeof(long) + volume);
+		char * space = malloc(2 * sizeof(long) + volume * multiply);
+		memcpy(space, *pcstr, 2 * sizeof(long) + volume * multiply);
 		printf("cstring: (%p) -> (%p)\n", * pcstr, space);
 		free(*pcstr - 2 * sizeof(long));
-		*pcstr = space;
-		*(long *)(*pcstr - 2 * sizeof(long)) = volume;
+		* pcstr = space;
+		*(long *)(* pcstr - 2 * sizeof(long)) = volume * multiply;
 	} else {
-		long volume = (long)(cstringvolume(* pcstr) / multiply);
-		long length = cstringlength(* pcstr);
+		if (volume <= 1) { return; }
 
-		long proportion = volume / length ;
-
-		if (proportion < 1) {
-		
-		} else if (proportion == 1) {
-		
-		} else if (proportion < 3) {
-		
+		if (volume / multiply >= length) {
+			char * space = malloc(2 * sizeof(long) + volume / multiply);
+			memcpy(space, *pcstr, 2 * sizeof(long) + volume / multiply);
+			printf("cstring: (%p) -> (%p)\n", * pcstr, space);
+			free(*pcstr - 2 * sizeof(long));
+			* pcstr = space;
+			*(long *)(* pcstr - 2 * sizeof(long)) = volume / multiply;
 		} else {
-		
+			printf("WARNNING: cstring.length(%ld) > cstring.volume(%ld), \n", length, volume);
+			return;
 		}
 	}
 }
@@ -156,16 +156,33 @@ void cstringtelescope(char ** pcstr, bool control, long multiply) {
 */
 
 bool cstringinsert(char * cstr, long index, ...) {
+	// printf("%p\n", cstr);
 	// uint64_t rbp = 0x0;
     // __asm__ __volatile__("movq %%rbp, %0" : "=r"(rbp));
 	// uint64_t rsp = 0x0;
     // __asm__ __volatile__("movq %%rsp, %0" : "=r"(rsp));
 
 	if (!cstringcheck(cstr)) { return false; }
+
 	va_list list;
 	va_start(list, index);
 
+	// uint64_t rdi = 0x0;
+    // __asm__ __volatile__("movq %%rdi, %0" : "=r"(rdi));
+	// uint64_t rsi = 0x0;
+    // __asm__ __volatile__("movq %%rsi, %0" : "=r"(rsi));
+	// uint64_t rdx = 0x0;
+    // __asm__ __volatile__("movq %%rdx, %0" : "=r"(rdx));
+	// uint64_t rcx = 0x0;
+    // __asm__ __volatile__("movq %%rcx, %0" : "=r"(rcx));
+	// uint64_t r8 = 0x0;
+    // __asm__ __volatile__("movq %%r8, %0" : "=r"(r8));
+	// uint64_t r9 = 0x0;
+    // __asm__ __volatile__("movq %%r9, %0" : "=r"(r9));
+
 	uint64_t result = va_arg(list, uint64_t);
+	uint64_t result0 = va_arg(list, uint64_t);
+
 	if (0x00 <= result && result <= 0xff) {
 		printf("%c\n", (char)result);
 	} else {
@@ -198,7 +215,7 @@ void ASCII(ISO_IEC_646_t standard, unsigned short flag) {
 	}
 }
 
-void typebytelength() {
+void typebytelength(void) {
 	printf("[void].size = %lu Bype\n", sizeof(void));
 	printf("[char].size = %lu Bype\n", sizeof(char));
 	printf("[short].size = %lu Bype\n", sizeof(short));

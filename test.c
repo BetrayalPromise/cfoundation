@@ -3,7 +3,9 @@
 
 #include "test.h"
 #include "cstring.h"
+#include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 
 void testcstringdescribe() {
 	char * p0 = tocstring(0x00);
@@ -19,8 +21,14 @@ void testcstringdescribe() {
 void testcstringinsrt() {
     char * p0 = tocstring(0x00);
 	char * p = "xxx";
-	cstringinsert(p0, -1, p);
-    printf("%p\n", &p);
+	// cstringinsert(p0, -1, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+	cstringinsert(p0, 0, (void *)'b');
+}
+
+void testcstringtelescope() {
+    char * p = tocstring(0x00);
+	cstringtelescope(&p, true, 2);
+	cstringdescribe(p, 0b100);
 }
 
 #endif

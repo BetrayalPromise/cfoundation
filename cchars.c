@@ -22,7 +22,7 @@ static bool check(cchars_t * cs) {
 	}
 }
 
-cchars_t * cchars_init(const char * str, long count) {
+cchars_t * ccharsinit(const char * str, long count) {
 	cchars_t * cs = malloc(sizeof(cchars_t));
 	if (!check(cs)) { return NULL; }
 	if (str == NULL || strlen(str) == 0) {
@@ -47,7 +47,7 @@ cchars_t * cchars_init(const char * str, long count) {
 	}
 }
 
-void cchars_free(cchars_t * cs) {
+void ccharsfree(cchars_t * cs) {
 	if (!check(cs)) {
 		return;
 	}
@@ -65,11 +65,11 @@ void cchars_free(cchars_t * cs) {
 	cs = NULL;
 }
 
-long cchars_length(cchars_t * cs) {
+long ccharslength(cchars_t * cs) {
 	return cs->count;
 }
 
-bool cchars_insert_character(cchars_t * cs, long position, char data) {
+bool ccharsinsertcharacter(cchars_t * cs, long position, char data) {
 	if (!check(cs)) { return false; }
 	// 数组扩容
 	while (cs->count + 1 > cs->capacity) {
@@ -104,11 +104,11 @@ bool cchars_insert_character(cchars_t * cs, long position, char data) {
 	return true;
 }
 
-bool cchars_append_character(cchars_t * cs, char data) {
-	return cchars_insert_character(cs, cs->count, data);
+bool ccharsappendcharacter(cchars_t * cs, char data) {
+	return ccharsinsertcharacter(cs, cs->count, data);
 }
 
-bool cchars_insert_cchars(cchars_t * cs, long position, cchars_t * data) {
+bool ccharsinsertcchars(cchars_t * cs, long position, cchars_t * data) {
 	if (!check(cs)) { return false; }
 
 	while (cs->count + data->count > cs->capacity) {
@@ -151,7 +151,7 @@ bool cchars_insert_cchars(cchars_t * cs, long position, cchars_t * data) {
 	return true;
 }
 
-bool cchars_change_character(cchars_t * cs, long position, char data) {
+bool ccharschangecharacter(cchars_t * cs, long position, char data) {
 	if (!check(cs)) { return false; }
 	if (position < 0 || position > cs->count - 1) {
 		printf("information: position(%ld) is out of range(0-%ld), operation has no effect!\n", position, cs->count - 1);
@@ -161,7 +161,7 @@ bool cchars_change_character(cchars_t * cs, long position, char data) {
 	return true;
 }
 
-bool cchars_remove_boundary(cchars_t * cs, long position, long size) {
+bool ccharsremoveboundary(cchars_t * cs, long position, long size) {
 	if (!check(cs) && size > 0) { return false; }
 
 	/*
@@ -198,11 +198,11 @@ bool cchars_remove_boundary(cchars_t * cs, long position, long size) {
 	return true;
 }
 
-bool cchars_append_cchars(cchars_t * cs, cchars_t * data) {
-	return cchars_insert_cchars(cs, cs->count, data);
+bool ccharsappendcchars(cchars_t * cs, cchars_t * data) {
+	return ccharsinsertcchars(cs, cs->count, data);
 }
 
-bool cchars_remove_character(cchars_t * cs, char data) {
+bool ccharsremovecharacter(cchars_t * cs, char data) {
 	if (!check(cs)) { return false; }
 
 	int j = 0;
@@ -222,13 +222,13 @@ bool cchars_remove_character(cchars_t * cs, char data) {
 }
 
 // TODO:
-bool cchars_remove_cchars(cchars_t * cs, cchars_t * data) {
+bool ccharsremovecchars(cchars_t * cs, cchars_t * data) {
 	if (!check(cs) && !check(data)) { return false; }
 
 	return true;
 }
 
-long * cchars_search_character(cchars_t * cs, char data) {
+long * ccharssearchcharacter(cchars_t * cs, char data) {
 	if (!check(cs)) { return NULL; }
 	long * info = malloc(sizeof(long) * cs->count + 1);
 	info[0] = 0;
@@ -241,7 +241,7 @@ long * cchars_search_character(cchars_t * cs, char data) {
 	return info;
 }
 
-long * cchars_search_cchars(cchars_t * cs, cchars_t * data, long flag) {
+long * ccharssearchcchars(cchars_t * cs, cchars_t * data, long flag) {
 	if (!check(cs) && !check(data) || data->count > cs->count) {
 		return NULL;
 	}
@@ -287,7 +287,7 @@ long * cchars_search_cchars(cchars_t * cs, cchars_t * data, long flag) {
 	return info;
 }
 
-bool cchars_change_cchars(cchars_t * cs, long position, cchars_t * data) {
+bool ccharschangecchars(cchars_t * cs, long position, cchars_t * data) {
 	if (!check(cs) && !check(data)) { return false; }
 	if (cs->count <= 0 || data->count <= 0) { return false; }
 
@@ -351,7 +351,7 @@ char * cchars_mutate_cstring(cchars_t * cs) {
 	return c;
 }
 
-void cchars_description(void * object, information_t info, long flag) {
+void ccharsdescribe(void * object, information_t info, long flag) {
 	if (info == cchars_type) {
 		cchars_t * cs = object;
 		printf("CCHARS(%p).count = %ld\nCCHARS(%p).capacity = %ld\nsize = %lu Byte\n[\n", cs, cs->count, cs, cs->capacity, sizeof(char));

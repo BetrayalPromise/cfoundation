@@ -3,5 +3,6 @@
 
 void testcstringdescribe();
 void testcstringinsrt();
+void testcstringtelescope();
 
 #endif
