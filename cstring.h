@@ -17,7 +17,7 @@ typedef enum ISO_IEC_646 {
      容量(0-...)  数量(0-...)  存储位置
 */
 
-extern char *  tocstring(char * str);
+extern char *  cstringinit(char * str);
 // 字符串长度包含0x00,即\0的存储位置也计算在内
 extern long    cstringlength(char * cstr);
 // 字符容量

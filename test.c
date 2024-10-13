@@ -7,11 +7,11 @@
 #include <stdio.h>
 #include <string.h>
 
-void testcstringdescribe() {
-	char * p0 = tocstring(0x00);
+void testcstringinit() {
+	char * p0 = cstringinit(0x00);
 	// p1, p2等价
-	char * p1 = tocstring("");
-	char * p2 = tocstring("\0000");
+	char * p1 = cstringinit("");
+	char * p2 = cstringinit("\0000");
 
 	cstringdescribe(p0, 0b100);
 	cstringdescribe(p1, 0b100);
@@ -19,14 +19,19 @@ void testcstringdescribe() {
 }
 
 void testcstringinsrt() {
-    char * p0 = tocstring(0x00);
-	char * p = "xxx";
-	// cstringinsert(p0, -1, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
-	cstringinsert(p0, 0, (void *)'b');
+    char * p0 = cstringinit("hhh");
+	// cstringdescribe(p0, 0b101);
+	char * p1 = cstringinit("01");
+	char * p2 = cstringinit("01");
+	printf("p0 == %p\n", p0);
+	printf("p1 == %p\n", p1);
+	printf("p2 == %p\n", p2);
+	cstringinsert(p0, 6, p1, p2);
+	cstringdescribe(p0, 0b101);
 }
 
 void testcstringtelescope() {
-    char * p = tocstring(0x00);
+    char * p = cstringinit(0x00);
 	cstringtelescope(&p, true, 2);
 	cstringdescribe(p, 0b100);
 }

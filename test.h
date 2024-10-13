@@ -1,7 +1,7 @@
 #ifndef __TEST_H__
 #define __TEST_H__
 
-void testcstringdescribe();
+void testcstringinit();
 void testcstringinsrt();
 void testcstringtelescope();
 

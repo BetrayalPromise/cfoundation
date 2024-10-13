@@ -2,39 +2,62 @@
 #define __CSTRING_C__
 
 #include <_types/_uint64_t.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
+#include "cchars.h"
 #include "cstring.h"
 #include <stdarg.h>
 #include <sys/_types/_va_list.h>
 
-bool cstringcheck(char * cstr) {
+static bool cstringcheck(char * cstr) {
 	return cstr == NULL ? false : true;
+}
+
+static long baseinformationbytesize(void) {
+	return sizeof(long);
+}
+
+void setcstringvolume(char * cstr, long value) {
+	*(long *)(cstr - baseinformationbytesize()) = value;
+}
+
+long cstringvolume(char * cstr) {
+	if (!cstringcheck(cstr)) { return -1; }
+    return *(long *)(cstr - 2 * baseinformationbytesize());
+}
+
+void setcstringlength(char * cstr, long value) {
+	*(long *)(cstr - 2 * baseinformationbytesize()) = value;
+}
+
+long cstringlength(char * cstr) {
+	if (!cstringcheck(cstr)) { return -1; }
+    return *(long *)(cstr - baseinformationbytesize());
 }
 
 /*
 	return "zzz"; "zzz" 字面量存储在静态区域里 不需要释放
 */
-char * tocstring(char * str) {
-    long volumestep = sizeof(long);
-	long lengthstep = sizeof(long);
+char * cstringinit(char * str) {
+    long volumestep = baseinformationbytesize();
+	long lengthstep = baseinformationbytesize();
 
-	long basesize = 32;
+	long volumesize = 32;
 	long lengthsize = str != NULL ? sizeof(char) * strlen(str) + 1 : 0;
 
-    long volumesize = basesize;
 	while (volumesize <= lengthsize) {
 		volumesize *= 2;
 	}
 
-    char * cstr = malloc(volumestep + lengthstep + volumesize);
-    char * string = cstr + volumestep + lengthstep;
+    char * space = malloc(volumestep + lengthstep + volumesize);
+    char * string = space + volumestep + lengthstep;
 
-    *(long *)cstr = volumesize;
-	*(long *)(cstr + volumestep) = lengthsize;
+    *(long *)space = volumesize;
+	*(long *)(space + volumestep) = lengthsize;
 
 	if (str != NULL) {
 	    for (int i = 0; i < strlen(str) + 1; i ++) {
@@ -42,16 +65,6 @@ char * tocstring(char * str) {
     	}
 	} 
     return string;
-}
-
-long cstringlength(char * cstr) {
-	if (!cstringcheck(cstr)) { return -1; }
-    return *(long *)(cstr - sizeof(long));
-}
-
-long cstringvolume(char * cstr) {
-	if (!cstringcheck(cstr)) { return -1; }
-    return *(long *)(cstr - 2 * sizeof(long));
 }
 
 void cstringdescribe(char * cstr, unsigned short flag) {
@@ -69,11 +82,11 @@ void cstringdescribe(char * cstr, unsigned short flag) {
 	default:    show = "    (%ld Byte    H:0x%02x  D:%03d  C:%c)"; break;
 	}
 
-	long volumesize = 2 * sizeof(long);
+	long volumesize = 2 * baseinformationbytesize();
     long volume = *(long *)(cstr - volumesize);
 	printf("    (%ld Byte    H:0x%016lx  D:%032ld  Chars.volume = %ld),\n", volumesize / 2, volume, volume, volume);
 
-    long lengthsize = sizeof(long);
+    long lengthsize = baseinformationbytesize();
     long length = *(long *)(cstr - lengthsize);
 	printf("    (%ld Byte    H:0x%016lx  D:%032ld  Chars.length = %ld)", lengthsize, length, length, length);
 	
@@ -96,12 +109,12 @@ void cstringdescribe(char * cstr, unsigned short flag) {
 char * cstringcopy(char * cstr) {
 	if (!cstringcheck(cstr)) { return NULL; }
 	char * index = NULL;
-	memcpy(index, cstr, cstringlength(cstr) + sizeof(long));
-	return index - sizeof(long);
+	memcpy(index, cstr, cstringlength(cstr) + baseinformationbytesize());
+	return index - baseinformationbytesize();
 }
 
 void cstringfree(char * cstr) {
-	free(cstr - 2 * sizeof(long));
+	free(cstr - 2 * baseinformationbytesize());
 }
 
 bool cstringcompare(char * cstr, char * data) {
@@ -124,31 +137,23 @@ bool cstringcompare(char * cstr, char * data) {
 
 void cstringtelescope(char ** pcstr, bool control, long multiply) {
 	if (!cstringcheck(*pcstr)) { return; }
-
 	long volume = cstringvolume(* pcstr);
 	long length = cstringlength(* pcstr);
-	if (control) {
-		char * space = malloc(2 * sizeof(long) + volume * multiply);
-		memcpy(space, *pcstr, 2 * sizeof(long) + volume * multiply);
-		printf("cstring: (%p) -> (%p)\n", * pcstr, space);
-		free(*pcstr - 2 * sizeof(long));
-		* pcstr = space;
-		*(long *)(* pcstr - 2 * sizeof(long)) = volume * multiply;
-	} else {
-		if (volume <= 1) { return; }
+	
+	volume = control == true ? volume * multiply : volume / multiply;
 
-		if (volume / multiply >= length) {
-			char * space = malloc(2 * sizeof(long) + volume / multiply);
-			memcpy(space, *pcstr, 2 * sizeof(long) + volume / multiply);
-			printf("cstring: (%p) -> (%p)\n", * pcstr, space);
-			free(*pcstr - 2 * sizeof(long));
-			* pcstr = space;
-			*(long *)(* pcstr - 2 * sizeof(long)) = volume / multiply;
-		} else {
-			printf("WARNNING: cstring.length(%ld) > cstring.volume(%ld), \n", length, volume);
-			return;
-		}
+	if (volume < length) {
+		printf("WARNNING: cstring.volume(%ld) < cstring.length(%ld), operation will lose information.\n", volume, length);
 	}
+
+	if (volume <= 1) { return; }
+
+	char * space = malloc(2 * baseinformationbytesize() + volume);
+	memcpy(space, *pcstr, 2 * baseinformationbytesize() + volume);
+	printf("cstring: (%p) -> (%p)\n", * pcstr, space);
+	free(*pcstr - 2 * baseinformationbytesize());
+	* pcstr = space;
+	*(long *)(* pcstr - 2 * baseinformationbytesize()) = volume;
 }
 
 /*
@@ -168,27 +173,54 @@ bool cstringinsert(char * cstr, long index, ...) {
 	va_start(list, index);
 
 	// uint64_t rdi = 0x0;
-    // __asm__ __volatile__("movq %%rdi, %0" : "=r"(rdi));
+    // __asm__ __volatile__("movq %%rdi, %%rax;\n\t" : "=a"(rdi));
 	// uint64_t rsi = 0x0;
-    // __asm__ __volatile__("movq %%rsi, %0" : "=r"(rsi));
+    // __asm__ __volatile__("movq %%rsi, %%rax;\n\t" : "=a"(rsi));
 	// uint64_t rdx = 0x0;
-    // __asm__ __volatile__("movq %%rdx, %0" : "=r"(rdx));
+    // __asm__ __volatile__("movq %%rdx, %%rax;\n\t" : "=a"(rdx));
 	// uint64_t rcx = 0x0;
-    // __asm__ __volatile__("movq %%rcx, %0" : "=r"(rcx));
+    // __asm__ __volatile__("movq %%rcx, %%rax;\n\t" : "=a"(rcx));
 	// uint64_t r8 = 0x0;
-    // __asm__ __volatile__("movq %%r8, %0" : "=r"(r8));
+    // __asm__ __volatile__("movq %%r8, %%rax;\n\t" : "=a"(r8));
 	// uint64_t r9 = 0x0;
-    // __asm__ __volatile__("movq %%r9, %0" : "=r"(r9));
+    // __asm__ __volatile__("movq %%r9, %%rax;\n\t" : "=a"(r9));
 
 	uint64_t result = va_arg(list, uint64_t);
-	uint64_t result0 = va_arg(list, uint64_t);
 
+	long length = cstringlength(cstr);
+	long volume = cstringvolume(cstr);
+	
 	if (0x00 <= result && result <= 0xff) {
-		printf("%c\n", (char)result);
+		while (length + 1 > volume) {
+			cstringtelescope(&cstr, true, 2);
+			volume = cstringvolume(cstr);
+		}
+
+		if (length <= 0) {
+			cstr[0] = result;
+			*(long *)(cstr - baseinformationbytesize()) = length + 1;
+			return true;
+		}
+
+		/*
+		9876543210123456789
+		         
+				 a
+				 0123
+		         [0, length - 1]
+		*/
+		if (index < 0) { index = 0; }
+		else if (index < length + 1) { ;}
+		else { index = length; }
+
+		for (int i = length; i >= index; i --) {
+			cstr[i + 1] = cstr[i];
+		}
+		cstr[index] = result;
+		*(long *)(cstr - baseinformationbytesize()) = length + 1;
+		return true;
 	} else {
 		char * data = (void *)result;
-		printf("%p\n", data);
-		printf("%s\n", data);
 	}
 	va_end(list);
 
