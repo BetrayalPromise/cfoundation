@@ -46,15 +46,16 @@ long cstringlength(char * cstr) {
 /*
 	return "zzz"; "zzz" 字面量存储在静态区域里 不需要释放
 */
-char * cstringinit(char * str) {
+char * cstringinit(char * str, long volume) {
     long volumestep = baseinformationsize();
 	long lengthstep = baseinformationsize();
 
-	long volumesize = basevolumesize();
+	long volumesize = volume;
 	long lengthsize = str != NULL ? sizeof(char) * strlen(str) + 1 : 0;
 
 	while (volumesize <= lengthsize) {
 		volumesize *= 2;
+		printf("default volume is to small, change to: %ld\n", volumesize);
 	}
 
     char * space = malloc(volumestep + lengthstep + volumesize);
@@ -250,26 +251,26 @@ bool cstringappend(char * cstr, ...) {
 	}
 }
 
-bool cstringremove(char * cstr, ...) {
-	if (!cstringcheck(cstr)) { return false; }
+// bool cstringremove(char * cstr, ...) {
+// 	if (!cstringcheck(cstr)) { return false; }
 
-	va_list list;
-	va_start(list, cstr);
+// 	va_list list;
+// 	va_start(list, cstr);
 
-	long length = cstringlength(cstr);
-	long volume = cstringvolume(cstr);
-	uint64_t result = va_arg(list, uint64_t);
+// 	long length = cstringlength(cstr);
+// 	long volume = cstringvolume(cstr);
+// 	uint64_t result = va_arg(list, uint64_t);
 
-	if (0x00 <= result && result <= 0xff) {
-		char data = result;
+// 	if (0x00 <= result && result <= 0xff) {
+// 		char data = result;
 
-	} else {
-		char * data = (void *)result;
-	}
+// 	} else {
+// 		char * data = (void *)result;
+// 	}
 
-	va_end(list);
-	return true;
-}
+// 	va_end(list);
+// 	return true;
+// }
 
 long * cstringsearch(char * cstr, ...) {
 	if (!cstringcheck(cstr)) { return false; }
