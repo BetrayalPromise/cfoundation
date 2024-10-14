@@ -19,13 +19,13 @@ void testcstringinit() {
 }
 
 void testcstringinsrt() {
-	if (true) {
-		for (int i = -3; i < 4; i ++) {
-			char * p0 = cstringinit(NULL);
-			cstringinsert(p0, i, '2');
-			cstringdescribe(p0, 0b111);
-		}
-	}
+	// if (true) {
+	// 	for (int i = -3; i < 4; i ++) {
+	// 		char * p0 = cstringinit(NULL);
+	// 		cstringinsert(p0, i, '2');
+	// 		cstringdescribe(p0, 0b111);
+	// 	}
+	// }
 
 	// if (true) {
 	// 	for (int i = -3; i < 4; i ++) {
@@ -43,6 +43,51 @@ void testcstringinsrt() {
 	// 		cstringdescribe(p0, 0b111);
 	// 	}
 	// }
+
+	// if (true) {
+	// 	for (int i = -3; i < 4; i ++) {
+	// 		char * p0 = cstringinit(NULL);
+	// 		char * p1 = cstringinit(NULL);
+	// 		cstringinsert(p0, i, p1);
+	// 		cstringdescribe(p0, 0b111);
+	// 	}
+	// }
+
+	// if (true) {
+	// 	for (int i = -1; i < 2; i ++) {
+	// 		char * p0 = cstringinit(NULL);
+	// 		char * p1 = cstringinit("abc");
+	// 		cstringinsert(p0, 5, p1);
+	// 		cstringdescribe(p0, 0b111);
+	// 	}
+	// }
+
+	// if (true) {
+	// 	for (int i = -1; i < 2; i ++) {
+	// 		char * p0 = cstringinit("\0");
+	// 		char * p1 = cstringinit(NULL);
+	// 		cstringinsert(p0, i, p1);
+	// 		cstringdescribe(p0, 0b111);
+	// 	}
+	// }
+
+	// if (true) {
+	// 	for (int i = -1; i <= 0; i ++) {
+	// 		char * p0 = cstringinit("\0");
+	// 		char * p1 = cstringinit("abc");
+	// 		cstringinsert(p0, i, p1);
+	// 		cstringdescribe(p0, 0b111);
+	// 	}
+	// }
+
+	if (true) {
+		for (int i = -1; i <= 0; i ++) {
+			char * p0 = cstringinit("0");
+			char * p1 = cstringinit("abc");
+			cstringinsert(p0, 2, p1);
+			cstringdescribe(p0, 0b111);
+		}
+	}
 }
 
 void testcstringtelescope() {

@@ -207,18 +207,10 @@ bool cstringinsert(char * cstr, long index, ...) {
 			volume = cstringvolume(cstr);
 		}
 
-		if (length <= 0) {
-			for (int i = 0; i < cstringlength(data); i ++) {
-				cstr[i] = data[i];
-			}
-			setcstringlength(cstr, length + cstringlength(data));
-			va_end(list);
-			return true;
-		}
-
 		memmove(cstr + cstringlength(data) , cstr, cstringlength(cstr) - index);
 		memmove(cstr + index, data, cstringlength(data));
 		setcstringlength(cstr, length + cstringlength(data));
+		
 		va_end(list);
 		return true;
 	}
