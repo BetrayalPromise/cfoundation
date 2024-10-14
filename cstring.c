@@ -207,18 +207,94 @@ bool cstringinsert(char * cstr, long index, ...) {
 			volume = cstringvolume(cstr);
 		}
 
-		memmove(cstr + cstringlength(data) , cstr, cstringlength(cstr) - index);
+		memmove(cstr + cstringlength(data), cstr, cstringlength(cstr) - index);
 		memmove(cstr + index, data, cstringlength(data));
 		setcstringlength(cstr, length + cstringlength(data));
-		
+
 		va_end(list);
 		return true;
 	}
 }
 
-// long * cstringsearch(char * cstr, ...) {
+bool cstringappend(char * cstr, ...) {
+	if (!cstringcheck(cstr)) { return false; }
 
-// }
+	va_list list;
+	va_start(list, cstr);
+
+	long length = cstringlength(cstr);
+	long volume = cstringvolume(cstr);
+
+	uint64_t result = va_arg(list, uint64_t);
+	if (0x00 <= result && result <= 0xff) {
+		char data = result;
+		while (length + 1 > volume) {
+			cstringtelescope(&cstr, true, 2);
+			volume = cstringvolume(cstr);
+		}
+		memmove(cstr + length, &data, 1);
+		setcstringlength(cstr, length + 1);
+		
+		va_end(list);
+		return true;
+	} else {
+		char * data = (void *)result;
+		while (length + cstringlength(data) > volume) {
+			cstringtelescope(&cstr, true, 2);
+			volume = cstringvolume(cstr);
+		}
+		memmove(cstr + length, data, cstringlength(data));
+		setcstringlength(cstr, length + cstringlength(data));
+		va_end(list);
+		return true;
+	}
+}
+
+bool cstringremove(char * cstr, ...) {
+	if (!cstringcheck(cstr)) { return false; }
+
+	va_list list;
+	va_start(list, cstr);
+
+	long length = cstringlength(cstr);
+	long volume = cstringvolume(cstr);
+	uint64_t result = va_arg(list, uint64_t);
+
+	if (0x00 <= result && result <= 0xff) {
+		char data = result;
+
+	} else {
+		char * data = (void *)result;
+	}
+
+	va_end(list);
+	return true;
+}
+
+long * cstringsearch(char * cstr, ...) {
+	if (!cstringcheck(cstr)) { return false; }
+
+	va_list list;
+	va_start(list, cstr);
+
+	long length = cstringlength(cstr);
+	long volume = cstringvolume(cstr);
+
+	// long * store = malloc(sizeof(long) * (length + 1));
+	// long 
+
+	uint64_t result = va_arg(list, uint64_t);
+
+	if (0x00 <= result && result <= 0xff) {
+		char data = result;
+
+	} else {
+		char * data = (void *)result;
+	}
+
+	va_end(list);
+	return (void *)0x00;
+}
 
 void ASCII(ISO_IEC_646_t standard, unsigned short flag) {
 	int size = standard == C89 ? 128 : 256;

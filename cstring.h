@@ -28,6 +28,7 @@ extern char *  cstringcopy(char * cstr);
 extern void    cstringfree(char * cstr);
 extern bool    cstringcompare(char * cstr, char * data);
 extern bool    cstringinsert(char * cstr, long index, ...);
+extern bool    cstringappend(char * cstr, ...);
 
 extern void    typebytelength(void);
 extern void    ASCII(ISO_IEC_646_t standard, unsigned short flag);
