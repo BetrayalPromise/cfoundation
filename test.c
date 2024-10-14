@@ -20,14 +20,15 @@ void testcstringinit() {
 
 void testcstringinsrt() {
     char * p0 = cstringinit("hhh");
-	// cstringdescribe(p0, 0b101);
 	char * p1 = cstringinit("01");
-	char * p2 = cstringinit("01");
+	// char * p2 = cstringinit("01");
+	// cstringdescribe(p0, 0b101);
+
 	printf("p0 == %p\n", p0);
 	printf("p1 == %p\n", p1);
-	printf("p2 == %p\n", p2);
-	cstringinsert(p0, 6, p1, p2);
-	cstringdescribe(p0, 0b101);
+	// printf("p2 == %p\n", p2);
+	cstringinsert(p0, 5, p1);
+	cstringdescribe(p0, 0b111);
 }
 
 void testcstringtelescope() {

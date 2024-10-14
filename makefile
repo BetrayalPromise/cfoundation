@@ -9,6 +9,7 @@ build1:
 build2:
 	@clang -S main.c -o main.s
 	@clang -S cstring.c -o cstring.s
+	@clang -S test.c -o test.s
 
 clean:
 	@rm *.i a.out *.s

@@ -22,7 +22,7 @@ static long baseinformationbytesize(void) {
 }
 
 void setcstringvolume(char * cstr, long value) {
-	*(long *)(cstr - baseinformationbytesize()) = value;
+	*(long *)(cstr - 2 * baseinformationbytesize()) = value;
 }
 
 long cstringvolume(char * cstr) {
@@ -31,7 +31,7 @@ long cstringvolume(char * cstr) {
 }
 
 void setcstringlength(char * cstr, long value) {
-	*(long *)(cstr - 2 * baseinformationbytesize()) = value;
+	*(long *)(cstr - baseinformationbytesize()) = value;
 }
 
 long cstringlength(char * cstr) {
@@ -72,23 +72,23 @@ void cstringdescribe(char * cstr, unsigned short flag) {
     printf("[long|long|char...]: (%p)\n[\n", cstr);
 	char * show = NULL;
 	switch (flag) {
-	case 0b111: show = "    (%ld Byte    H:0x%02x  D:%03d  C:%c)"; break;
-	case 0b110: show = "    (%ld Byte    H:0x%02x  D:%03d)"; break;
-	case 0b101: show = "    (%ld Byte    H:0x%02x  C:%c)"; break;
-	case 0b011: show = "    (%ld Byte    D:%03d  C:%c)"; break;
-	case 0b100: show = "    (%ld Byte    H:0x%02x)"; break;
-	case 0b010: show = "    (%ld Byte    D:%03d)"; break;
-	case 0b001: show = "    (%ld Byte    C:%c)"; break;
-	default:    show = "    (%ld Byte    H:0x%02x  D:%03d  C:%c)"; break;
+	case 0b111: show = "    (%ld Byte  H:0x%02x  D:%03d  C:%c)"; break;
+	case 0b110: show = "    (%ld Byte  H:0x%02x  D:%03d)"; break;
+	case 0b101: show = "    (%ld Byte  H:0x%02x  C:%c)"; break;
+	case 0b011: show = "    (%ld Byte  D:%03d  C:%c)"; break;
+	case 0b100: show = "    (%ld Byte  H:0x%02x)"; break;
+	case 0b010: show = "    (%ld Byte  D:%03d)"; break;
+	case 0b001: show = "    (%ld Byte  C:%c)"; break;
+	default:    show = "    (%ld Byte  H:0x%02x  D:%03d  C:%c)"; break;
 	}
 
 	long volumesize = 2 * baseinformationbytesize();
     long volume = *(long *)(cstr - volumesize);
-	printf("    (%ld Byte    H:0x%016lx  D:%032ld  Chars.volume = %ld),\n", volumesize / 2, volume, volume, volume);
+	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Chars.volume = %ld),\n", volumesize / 2, volume, volume, volume);
 
     long lengthsize = baseinformationbytesize();
     long length = *(long *)(cstr - lengthsize);
-	printf("    (%ld Byte    H:0x%016lx  D:%032ld  Chars.length = %ld)", lengthsize, length, length, length);
+	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Chars.length = %ld)", lengthsize, length, length, length);
 	
 	if (length != 0) {
 		printf(",");
@@ -156,34 +156,24 @@ void cstringtelescope(char ** pcstr, bool control, long multiply) {
 	*(long *)(* pcstr - 2 * baseinformationbytesize()) = volume;
 }
 
-/*
-		012345
-*/
-
 bool cstringinsert(char * cstr, long index, ...) {
-	// printf("%p\n", cstr);
-	// uint64_t rbp = 0x0;
-    // __asm__ __volatile__("movq %%rbp, %0" : "=r"(rbp));
-	// uint64_t rsp = 0x0;
-    // __asm__ __volatile__("movq %%rsp, %0" : "=r"(rsp));
+	uint64_t rdi = 0x0;
+    __asm__ __volatile__("movq %%rdi, %%rax;\n\t" : "=a"(rdi));
+	uint64_t rsi = 0x0;
+    __asm__ __volatile__("movq %%rsi, %%rax;\n\t" : "=a"(rsi));
+	uint64_t rdx = 0x0;
+    __asm__ __volatile__("movq %%rdx, %%rax;\n\t" : "=a"(rdx));
+	uint64_t rcx = 0x0;
+    __asm__ __volatile__("movq %%rcx, %%rax;\n\t" : "=a"(rcx));
+	uint64_t r8 = 0x0;
+    __asm__ __volatile__("movq %%r8, %%rax;\n\t" : "=a"(r8));
+	uint64_t r9 = 0x0;
+    __asm__ __volatile__("movq %%r9, %%rax;\n\t" : "=a"(r9));
 
 	if (!cstringcheck(cstr)) { return false; }
 
 	va_list list;
 	va_start(list, index);
-
-	// uint64_t rdi = 0x0;
-    // __asm__ __volatile__("movq %%rdi, %%rax;\n\t" : "=a"(rdi));
-	// uint64_t rsi = 0x0;
-    // __asm__ __volatile__("movq %%rsi, %%rax;\n\t" : "=a"(rsi));
-	// uint64_t rdx = 0x0;
-    // __asm__ __volatile__("movq %%rdx, %%rax;\n\t" : "=a"(rdx));
-	// uint64_t rcx = 0x0;
-    // __asm__ __volatile__("movq %%rcx, %%rax;\n\t" : "=a"(rcx));
-	// uint64_t r8 = 0x0;
-    // __asm__ __volatile__("movq %%r8, %%rax;\n\t" : "=a"(r8));
-	// uint64_t r9 = 0x0;
-    // __asm__ __volatile__("movq %%r9, %%rax;\n\t" : "=a"(r9));
 
 	uint64_t result = va_arg(list, uint64_t);
 
@@ -198,34 +188,53 @@ bool cstringinsert(char * cstr, long index, ...) {
 
 		if (length <= 0) {
 			cstr[0] = result;
-			*(long *)(cstr - baseinformationbytesize()) = length + 1;
+			setcstringlength(cstr, length + 1);
+			va_end(list);
 			return true;
 		}
 
-		/*
-		9876543210123456789
-		         
-				 a
-				 0123
-		         [0, length - 1]
-		*/
 		if (index < 0) { index = 0; }
-		else if (index < length + 1) { ;}
+		else if (index < length + 1) { ; }
 		else { index = length; }
 
 		for (int i = length; i >= index; i --) {
 			cstr[i + 1] = cstr[i];
 		}
 		cstr[index] = result;
-		*(long *)(cstr - baseinformationbytesize()) = length + 1;
+		setcstringlength(cstr, length + 1);
+		va_end(list);
 		return true;
 	} else {
 		char * data = (void *)result;
-	}
-	va_end(list);
+		while (length + cstringlength(data) > volume) {
+			cstringtelescope(&cstr, true, 2);
+			volume = cstringvolume(cstr);
+		}
 
-	return true;
+		if (length <= 0) {
+			for (int i = 0; i < cstringlength(data); i ++) {
+				cstr[i] = data[i];
+			}
+			setcstringlength(cstr, length + + cstringlength(data));
+			va_end(list);
+			return true;
+		}
+
+		if (index < 0) { index = 0; }
+		else if (index < length + 1) { ; }
+		else { index = length; }
+
+		memmove(cstr + cstringlength(data) , cstr, cstringlength(cstr) - index);
+		memmove(cstr + index, data, cstringlength(data));
+		setcstringlength(cstr, length + cstringlength(data));
+		va_end(list);
+		return true;
+	}
 }
+
+// long * cstringsearch(char * cstr, ...) {
+
+// }
 
 void ASCII(ISO_IEC_646_t standard, unsigned short flag) {
 	int size = standard == C89 ? 128 : 256;
