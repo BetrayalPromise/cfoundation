@@ -20,11 +20,8 @@ int main(int argc, char ** argv) {
 	// testcstringinit();
 	// testcstringtelescope();
 	// testcstringinsrt();
-	char * cstr = cstringinit$("0", 100);
-	char * p = cstringinit$("0", 54);
-
-	cstringdescribe(cstr, 0b101);
-	cstringdescribe(p, 0b101);
+	
+	testcstringsearch();
 
 	return EXIT_SUCCESS;
 }

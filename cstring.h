@@ -75,20 +75,20 @@ typedef enum ISO_IEC_646 {
     @paramater str      常规的字符串.
     @paramater volume   容量大小.会根据str的长度进行内部调整大小.
 */
-extern char *  cstringinit(char * str, long volume);
+extern char *   cstringinit(char * str, long volume);
 
 /*
     @return             返回包含信息的字符串的长度.长度包含字符串末尾的0x00,即\0的存储位置也计算在内
     @paramater str      经过cstringinit处理过的包含信息的字符串.
 */
-extern long    cstringlength(char * cstr);
+extern long     cstringlength(char * cstr);
 // 字符容量
 
 /*
     @return             返回包含信息的字符串的长度的容量,与存储内容无关.
     @paramater str      经过cstringinit处理过的包含信息的字符串.
 */
-extern long    cstringvolume(char * cstr);
+extern long     cstringvolume(char * cstr);
 
 /*
     @return             无返回值.
@@ -96,61 +96,73 @@ extern long    cstringvolume(char * cstr);
     @paramater control  false:代表减少容量,true:代表增加容量.
     @paramater multiply 容量增加或者减少的倍率.
 */
-extern void    cstringtelescope(char ** pcstr, bool control, long multiply);
+extern void     cstringtelescope(char ** pcstr, bool control, long multiply);
 
 /*
     @return             无返回值.
     @paramater cstr     经过cstringinit处理过的包含信息的字符串.
     @paramater flag     显示标记(0b111, 0b110, 0b101, 0b011, 0b100, 0b010, 0b001)共计7种,三位数字代表十六进制显示,十进制显示,字符显示.
 */
-extern void    cstringdescribe(char * cstr, unsigned short flag);
+extern void     cstringdescribe(char * cstr, unsigned short flag);
 
 /*
-    @return             经过cstringinit处理过的包含信息的字符串.
+    @return             返回经过cstringinit处理过的包含信息的字符串.
     @paramater cstr     经过cstringinit处理过的包含信息的字符串.
 */
-extern char *  cstringcopy(char * cstr);
+extern char *   cstringcopy(char * cstr);
 
 /*
     @return             无返回值.
     @paramater cstr     经过cstringinit处理过的包含信息的字符串.
 */
-extern void    cstringfree(char * cstr);
+extern void     cstringfree(char * cstr);
 
 /*
-    @return             两者存在的内容是否一致.
+    @return             返回两者存在的内容是否一致.
     @paramater cstr     经过cstringinit处理过的包含信息的字符串.
     @paramater data     经过cstringinit处理过的包含信息的字符串.
 */
-extern bool    cstringcompare(char * cstr, char * data);
+extern bool     cstringcompare(char * cstr, char * data);
 
 /*
-    @return             插入操作是否成功.
+    @return             返回插入操作是否成功.
     @paramater cstr     经过cstringinit处理过的包含信息的字符串.
     @paramater index    插入位置,总是以cstr作为0为参照.
     @prarmater ...      插入内容,只处理第一个参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能能处理字符型和经过cstringinit处理过的包含信息的字符串两种.
 */
-extern bool    cstringinsert(char * cstr, long index, ...);
+extern bool     cstringinsert(char * cstr, long index, ...);
 
 /*
-    @return             插入操作是否成功.
+    @return             返回追加操作是否成功.
     @paramater cstr     经过cstringinit处理过的包含信息的字符串.
-    @paramater index    插入位置,总是以cstr作为0为参照.
-    @prarmater ...      插入内容,只处理第一个参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能能处理字符型和经过cstringinit处理过的包含信息的字符串两种.
+    @paramater index    追加位置,总是以cstr作为0为参照.
+    @prarmater ...      追加内容,只处理第一个参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能能处理字符型和经过cstringinit处理过的包含信息的字符串两种.
 */
-extern bool    cstringappend(char * cstr, ...);
+extern bool     cstringappend(char * cstr, ...);
 
+
+/*
+    @return             返回所有出现检索内容的索引值数组.
+    @prarmater ...      检索内容,只处理第一个参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能能处理字符型和经过cstringinit处理过的包含信息的字符串两种.
+*/
+extern long *   cstringindexes(char * cstr, ...);
+
+/*
+    @return             返回第一次出现检索内容的索引值.
+    @prarmater ...      检索内容,只处理第一个参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能能处理字符型和经过cstringinit处理过的包含信息的字符串两种.
+*/
+extern long     cstringindex(char * cstr, ...);
 /*
     @return             无返回值.
     @paramater cstr     显示各种C语言类型的占用字节数.
 */
-extern void    typebytelength(void);
+extern void     typebytelength(void);
 
 /*
     @return             无返回值.
     @paramater standard 有C89和C99两种,区别为C89(0-127),C99(0-255),字符集范围不同而已.
     @paramater flag     与cstringdescribe函数flag参数意义完全一致.
 */
-extern void    ASCII(ISO_IEC_646_t standard, unsigned short flag);
+extern void     ASCII(ISO_IEC_646_t standard, unsigned short flag);
 
 #endif

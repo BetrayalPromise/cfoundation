@@ -21,10 +21,6 @@ static long baseinformationsize(void) {
 	return sizeof(long);
 }
 
-static long basevolumesize(void) {
-	return 32;
-}
-
 void setcstringvolume(char * cstr, long value) {
 	*(long *)(cstr - 2 * baseinformationsize()) = value;
 }
@@ -272,7 +268,7 @@ bool cstringappend(char * cstr, ...) {
 // 	return true;
 // }
 
-long * cstringsearch(char * cstr, ...) {
+long * cstringindexes(char * cstr, ...) {
 	if (!cstringcheck(cstr)) { return false; }
 
 	va_list list;
@@ -281,20 +277,69 @@ long * cstringsearch(char * cstr, ...) {
 	long length = cstringlength(cstr);
 	long volume = cstringvolume(cstr);
 
-	// long * store = malloc(sizeof(long) * (length + 1));
-	// long 
+	uint64_t result = va_arg(list, uint64_t);
+
+	if (0x00 <= result && result <= 0xff) {
+		char data = result;
+		long count = 0;
+		for (int i = 0; i < length; i ++) {
+			if (data == cstr[i]) {
+				++ count;	
+			}
+		}
+		long * infos = malloc(sizeof(long) * (1 + count));
+		long * info = infos + 1;
+		count = 0;
+		for (int i = 0; i < length; i ++) {
+			if (data == cstr[i]) {
+				info[count] = i;
+				++ count;
+			}
+		}
+		* (long *)(info - 1) = count;
+		va_end(list);
+		return infos;
+	} else {
+		char * data = (void *)result;
+// TODO:
+		
+		va_end(list);
+		return (void *)0x00;
+	}
+
+
+}
+
+long cstringindex(char * cstr, ...) {
+	if (!cstringcheck(cstr)) { return false; }
+
+	va_list list;
+	va_start(list, cstr);
+
+	long length = cstringlength(cstr);
+	long volume = cstringvolume(cstr);
 
 	uint64_t result = va_arg(list, uint64_t);
 
 	if (0x00 <= result && result <= 0xff) {
 		char data = result;
-
+		long index = 0;
+		for (int i = 0; i < length; i ++) {
+			if (data == cstr[i]) {
+				index = i;	
+				break;
+			}
+		}
+		va_end(list);
+		return index;
 	} else {
 		char * data = (void *)result;
-	}
+		long index = 0;
+// TODO:
 
-	va_end(list);
-	return (void *)0x00;
+		va_end(list);
+		return 0x00;
+	}
 }
 
 void ASCII(ISO_IEC_646_t standard, unsigned short flag) {

@@ -5,6 +5,7 @@
 #include "cstring.h"
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 void testcstringinit$() {
@@ -91,9 +92,25 @@ void testcstringinsrt() {
 }
 
 void testcstringtelescope() {
-    // char * p = cstringinit$(0x00);
-	// cstringtelescope(&p, true, 2);
-	// cstringdescribe(p, 0b100);
+    char * p = cstringinit$(0x00);
+	cstringtelescope(&p, true, 2);
+	cstringdescribe(p, 0b100);
+}
+
+void testcstringsearch() {
+	char * p0 = cstringinit$("0980900");
+	char c 	  = '0';
+
+	long * value = cstringindexes(p0, c);
+	long result[*(long *)value];
+
+	for (int i = 0; i < *(long *)value; i ++) {
+		result[i] = value[i + 1];
+		printf("%ld\n", value[i + 1]);
+	}
+	free(value);
+	
+	
 }
 
 #endif
