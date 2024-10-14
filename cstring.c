@@ -179,23 +179,26 @@ bool cstringinsert(char * cstr, long index, ...) {
 
 	long length = cstringlength(cstr);
 	long volume = cstringvolume(cstr);
+
+	if (index < 0) { index = 0; }
+	else if (index < length + 1) { ; }
+	else { index = length; }
 	
 	if (0x00 <= result && result <= 0xff) {
+		char data = result;
 		while (length + 1 > volume) {
 			cstringtelescope(&cstr, true, 2);
 			volume = cstringvolume(cstr);
 		}
 
+		printf("length = %ld, index = %ld\n", length, index);
 		if (length <= 0) {
 			cstr[0] = result;
 			setcstringlength(cstr, length + 1);
 			va_end(list);
 			return true;
 		}
-
-		if (index < 0) { index = 0; }
-		else if (index < length + 1) { ; }
-		else { index = length; }
+		printf("length = %ld, index = %ld\n", length, index);
 
 		for (int i = length; i >= index; i --) {
 			cstr[i + 1] = cstr[i];
@@ -215,14 +218,10 @@ bool cstringinsert(char * cstr, long index, ...) {
 			for (int i = 0; i < cstringlength(data); i ++) {
 				cstr[i] = data[i];
 			}
-			setcstringlength(cstr, length + + cstringlength(data));
+			setcstringlength(cstr, length + cstringlength(data));
 			va_end(list);
 			return true;
 		}
-
-		if (index < 0) { index = 0; }
-		else if (index < length + 1) { ; }
-		else { index = length; }
 
 		memmove(cstr + cstringlength(data) , cstr, cstringlength(cstr) - index);
 		memmove(cstr + index, data, cstringlength(data));

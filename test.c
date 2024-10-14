@@ -19,16 +19,29 @@ void testcstringinit() {
 }
 
 void testcstringinsrt() {
-    char * p0 = cstringinit("hhh");
-	char * p1 = cstringinit("01");
-	// char * p2 = cstringinit("01");
-	// cstringdescribe(p0, 0b101);
+	// if (true) {
+	// 	for (int i = -3; i < 4; i ++) {
+	// 		char * p0 = cstringinit(NULL);
+	// 		cstringinsert(p0, i, '2');
+	// 		cstringdescribe(p0, 0b111);
+	// 	}
+	// }
 
-	printf("p0 == %p\n", p0);
-	printf("p1 == %p\n", p1);
-	// printf("p2 == %p\n", p2);
-	cstringinsert(p0, 5, p1);
-	cstringdescribe(p0, 0b111);
+	// if (true) {
+	// 	for (int i = -3; i < 4; i ++) {
+	// 		char * p0 = cstringinit("\0");
+	// 		cstringinsert(p0, i, '2');
+	// 		cstringdescribe(p0, 0b111);
+	// 	}
+	// }
+    
+	if (true) {
+		for (int i = 0; i < 6; i ++) {
+			char * p0 = cstringinit("1234");
+			cstringinsert(p0, i, 'A');
+			cstringdescribe(p0, 0b111);
+		}
+	}
 }
 
 void testcstringtelescope() {
