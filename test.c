@@ -19,13 +19,13 @@ void testcstringinit() {
 }
 
 void testcstringinsrt() {
-	// if (true) {
-	// 	for (int i = -3; i < 4; i ++) {
-	// 		char * p0 = cstringinit(NULL);
-	// 		cstringinsert(p0, i, '2');
-	// 		cstringdescribe(p0, 0b111);
-	// 	}
-	// }
+	if (true) {
+		for (int i = -3; i < 4; i ++) {
+			char * p0 = cstringinit(NULL);
+			cstringinsert(p0, i, '2');
+			cstringdescribe(p0, 0b111);
+		}
+	}
 
 	// if (true) {
 	// 	for (int i = -3; i < 4; i ++) {
@@ -34,14 +34,15 @@ void testcstringinsrt() {
 	// 		cstringdescribe(p0, 0b111);
 	// 	}
 	// }
+
     
-	if (true) {
-		for (int i = 0; i < 6; i ++) {
-			char * p0 = cstringinit("1234");
-			cstringinsert(p0, i, 'A');
-			cstringdescribe(p0, 0b111);
-		}
-	}
+	// if (true) {
+	// 	for (int i = 0; i < 6; i ++) {
+	// 		char * p0 = cstringinit("1234");
+	// 		cstringinsert(p0, i, 'A');
+	// 		cstringdescribe(p0, 0b111);
+	// 	}
+	// }
 }
 
 void testcstringtelescope() {

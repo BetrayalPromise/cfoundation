@@ -17,36 +17,40 @@ static bool cstringcheck(char * cstr) {
 	return cstr == NULL ? false : true;
 }
 
-static long baseinformationbytesize(void) {
+static long baseinformationsize(void) {
 	return sizeof(long);
 }
 
+static long basevolumesize(void) {
+	return 32;
+}
+
 void setcstringvolume(char * cstr, long value) {
-	*(long *)(cstr - 2 * baseinformationbytesize()) = value;
+	*(long *)(cstr - 2 * baseinformationsize()) = value;
 }
 
 long cstringvolume(char * cstr) {
 	if (!cstringcheck(cstr)) { return -1; }
-    return *(long *)(cstr - 2 * baseinformationbytesize());
+    return *(long *)(cstr - 2 * baseinformationsize());
 }
 
 void setcstringlength(char * cstr, long value) {
-	*(long *)(cstr - baseinformationbytesize()) = value;
+	*(long *)(cstr - baseinformationsize()) = value;
 }
 
 long cstringlength(char * cstr) {
 	if (!cstringcheck(cstr)) { return -1; }
-    return *(long *)(cstr - baseinformationbytesize());
+    return *(long *)(cstr - baseinformationsize());
 }
 
 /*
 	return "zzz"; "zzz" 字面量存储在静态区域里 不需要释放
 */
 char * cstringinit(char * str) {
-    long volumestep = baseinformationbytesize();
-	long lengthstep = baseinformationbytesize();
+    long volumestep = baseinformationsize();
+	long lengthstep = baseinformationsize();
 
-	long volumesize = 32;
+	long volumesize = basevolumesize();
 	long lengthsize = str != NULL ? sizeof(char) * strlen(str) + 1 : 0;
 
 	while (volumesize <= lengthsize) {
@@ -56,14 +60,13 @@ char * cstringinit(char * str) {
     char * space = malloc(volumestep + lengthstep + volumesize);
     char * string = space + volumestep + lengthstep;
 
-    *(long *)space = volumesize;
-	*(long *)(space + volumestep) = lengthsize;
-
 	if (str != NULL) {
 	    for (int i = 0; i < strlen(str) + 1; i ++) {
         	string[i] = str[i];
     	}
-	} 
+	}
+	setcstringlength(string, lengthsize);
+	setcstringvolume(string, volumesize);
     return string;
 }
 
@@ -82,20 +85,20 @@ void cstringdescribe(char * cstr, unsigned short flag) {
 	default:    show = "    (%ld Byte  H:0x%02x  D:%03d  C:%c)"; break;
 	}
 
-	long volumesize = 2 * baseinformationbytesize();
-    long volume = *(long *)(cstr - volumesize);
-	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Chars.volume = %ld),\n", volumesize / 2, volume, volume, volume);
+    long volume = cstringvolume(cstr);
+	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Chars.volume = %ld),\n", baseinformationsize(), volume, volume, volume);
 
-    long lengthsize = baseinformationbytesize();
-    long length = *(long *)(cstr - lengthsize);
-	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Chars.length = %ld)", lengthsize, length, length, length);
+    long length = cstringlength(cstr);
+	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Chars.length = %ld)", baseinformationsize(), length, length, length);
 	
 	if (length != 0) {
 		printf(",");
 	}
 	printf("\n");
 
-	for (int i = 0; i < length; i ++) {
+	long index = length <= volume ? length : volume;
+
+	for (int i = 0; i < index; i ++) {
 		printf(show, sizeof(char), cstr[i], cstr[i], cstr[i]);
 		if (i != length - 1) {
 			printf(",\n");
@@ -109,12 +112,12 @@ void cstringdescribe(char * cstr, unsigned short flag) {
 char * cstringcopy(char * cstr) {
 	if (!cstringcheck(cstr)) { return NULL; }
 	char * index = NULL;
-	memcpy(index, cstr, cstringlength(cstr) + baseinformationbytesize());
-	return index - baseinformationbytesize();
+	memcpy(index, cstr, cstringlength(cstr) + baseinformationsize());
+	return index - baseinformationsize();
 }
 
 void cstringfree(char * cstr) {
-	free(cstr - 2 * baseinformationbytesize());
+	free(cstr - 2 * baseinformationsize());
 }
 
 bool cstringcompare(char * cstr, char * data) {
@@ -148,12 +151,12 @@ void cstringtelescope(char ** pcstr, bool control, long multiply) {
 
 	if (volume <= 1) { return; }
 
-	char * space = malloc(2 * baseinformationbytesize() + volume);
-	memcpy(space, *pcstr, 2 * baseinformationbytesize() + volume);
+	char * space = malloc(2 * baseinformationsize() + volume);
+	memcpy(space, *pcstr, 2 * baseinformationsize() + volume);
 	printf("cstring: (%p) -> (%p)\n", * pcstr, space);
-	free(*pcstr - 2 * baseinformationbytesize());
+	free(*pcstr - 2 * baseinformationsize());
 	* pcstr = space;
-	*(long *)(* pcstr - 2 * baseinformationbytesize()) = volume;
+	*(long *)(* pcstr - 2 * baseinformationsize()) = volume;
 }
 
 bool cstringinsert(char * cstr, long index, ...) {
@@ -191,20 +194,10 @@ bool cstringinsert(char * cstr, long index, ...) {
 			volume = cstringvolume(cstr);
 		}
 
-		printf("length = %ld, index = %ld\n", length, index);
-		if (length <= 0) {
-			cstr[0] = result;
-			setcstringlength(cstr, length + 1);
-			va_end(list);
-			return true;
-		}
-		printf("length = %ld, index = %ld\n", length, index);
-
-		for (int i = length; i >= index; i --) {
-			cstr[i + 1] = cstr[i];
-		}
-		cstr[index] = result;
+		memmove(cstr + index, cstr, length - index);
+		memmove(cstr + index, &data, 1);
 		setcstringlength(cstr, length + 1);
+
 		va_end(list);
 		return true;
 	} else {
