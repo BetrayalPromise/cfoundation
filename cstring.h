@@ -63,6 +63,13 @@ typedef enum ISO_IEC_646 {
     #warning "information: duplicate define macro 'ASCII$'
 #endif
 
+#if !defined (cstringindex$)
+    #define cstringindex$(a, b, ...)          cstringindex(a, DEFAULTARGC(b, 1), ##__VA_ARGS__)
+#else
+    #warning "information: duplicate define macro 'cstringindex$'
+#endif
+
+
 
 /*
 ========================================================================================
@@ -136,22 +143,27 @@ extern bool     cstringinsert(char * cstr, long index, ...);
     @return             返回追加操作是否成功.
     @paramater cstr     经过cstringinit处理过的包含信息的字符串.
     @paramater index    追加位置,总是以cstr作为0为参照.
-    @prarmater ...      追加内容,只处理第一个参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能能处理字符型和经过cstringinit处理过的包含信息的字符串两种.
+    @paramater ...      追加内容,只处理第一个参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能能处理字符型和经过cstringinit处理过的包含信息的字符串两种.
 */
 extern bool     cstringappend(char * cstr, ...);
 
+extern bool     cstringremove(char * cstr, ...);
 
 /*
-    @return             返回所有出现检索内容的索引值数组.
-    @prarmater ...      检索内容,只处理第一个参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能能处理字符型和经过cstringinit处理过的包含信息的字符串两种.
+    @return             返回第times次出现检索内容的索引值,若为-1则未找到.
+    @paramater cstr     经过cstringinit处理过的包含信息的字符串.
+    @paramater times    检索内容出现次数.
+    @paramater ...      检索内容,只处理第一个参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能能处理字符型和经过cstringinit处理过的包含信息的字符串两种.
 */
-extern long *   cstringindexes(char * cstr, ...);
+extern long     cstringindex(char * cstr, long times, ...);
 
 /*
-    @return             返回第一次出现检索内容的索引值.
-    @prarmater ...      检索内容,只处理第一个参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能能处理字符型和经过cstringinit处理过的包含信息的字符串两种.
+    @return             返回共计出现检索内容的索引值,若为-1则未找到.
+    @paramater cstr     经过cstringinit处理过的包含信息的字符串.
+    @paramater ...      检索内容,只处理第一个参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能能处理字符型和经过cstringinit处理过的包含信息的字符串两种.
 */
-extern long     cstringindex(char * cstr, ...);
+extern long     cstringindexexcount(char * cstr, ...);
+
 /*
     @return             无返回值.
     @paramater cstr     显示各种C语言类型的占用字节数.

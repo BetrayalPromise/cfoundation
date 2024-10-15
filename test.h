@@ -4,6 +4,6 @@
 void testcstringinit();
 void testcstringinsrt();
 void testcstringtelescope();
-void testcstringsearch();
+void testcstringremove();
 
 #endif

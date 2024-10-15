@@ -247,28 +247,7 @@ bool cstringappend(char * cstr, ...) {
 	}
 }
 
-// bool cstringremove(char * cstr, ...) {
-// 	if (!cstringcheck(cstr)) { return false; }
-
-// 	va_list list;
-// 	va_start(list, cstr);
-
-// 	long length = cstringlength(cstr);
-// 	long volume = cstringvolume(cstr);
-// 	uint64_t result = va_arg(list, uint64_t);
-
-// 	if (0x00 <= result && result <= 0xff) {
-// 		char data = result;
-
-// 	} else {
-// 		char * data = (void *)result;
-// 	}
-
-// 	va_end(list);
-// 	return true;
-// }
-
-long * cstringindexes(char * cstr, ...) {
+bool cstringremove(char * cstr, ...) {
 	if (!cstringcheck(cstr)) { return false; }
 
 	va_list list;
@@ -276,7 +255,6 @@ long * cstringindexes(char * cstr, ...) {
 
 	long length = cstringlength(cstr);
 	long volume = cstringvolume(cstr);
-
 	uint64_t result = va_arg(list, uint64_t);
 
 	if (0x00 <= result && result <= 0xff) {
@@ -284,33 +262,114 @@ long * cstringindexes(char * cstr, ...) {
 		long count = 0;
 		for (int i = 0; i < length; i ++) {
 			if (data == cstr[i]) {
-				++ count;	
-			}
-		}
-		long * infos = malloc(sizeof(long) * (1 + count));
-		long * info = infos + 1;
-		count = 0;
-		for (int i = 0; i < length; i ++) {
-			if (data == cstr[i]) {
-				info[count] = i;
 				++ count;
 			}
 		}
-		* (long *)(info - 1) = count;
+		long indexes[count];
+		// 为了节省空间,所以采用了牺牲运行时间的方法处理
+		({
+			long index = 0;
+			for (int i = 0; i < length; i ++) {
+				if (data == cstr[i]) {
+					indexes[index] = i;
+					++index;
+				}
+			}
+		});
+
+		long index = 0;
+		for (int i = 0; i < count; i ++) {
+			memmove(cstr + indexes[i] - index, cstr + indexes[i] + 1 - index, length - indexes[i] - 1 + index);
+			memmove(cstr + length - 1, &data, 1);
+			cstringdescribe(cstr, 0b001);
+			 ++ index;
+		}
+	
+		setcstringlength(cstr, length - count);
 		va_end(list);
-		return infos;
+		return true;
 	} else {
 		char * data = (void *)result;
-// TODO:
-		
-		va_end(list);
-		return (void *)0x00;
 	}
 
-
+	va_end(list);
+	return true;
 }
 
-long cstringindex(char * cstr, ...) {
+long cstringindex(char * cstr, long times, ...) {
+	if (!cstringcheck(cstr)) { return false; }
+
+	va_list list;
+	va_start(list, times);
+
+	long length = cstringlength(cstr);
+
+	if (times > length) {
+		printf("WARNNING: search times(%ld) large than cstring.length(%ld)\n", times, length);
+		return -1;
+	}
+
+	uint64_t result = va_arg(list, uint64_t);
+	long count = 0;
+
+	if (0x00 <= result && result <= 0xff) {
+		char data = result;
+		long index = -1;
+		for (int i = 0; i < length; i ++) {
+			if (data == cstr[i]) {
+				++ count;
+				if (count == times) {
+					index = i; break;
+				} else {
+					continue;
+				}
+			}
+		}
+		va_end(list);
+		return index;
+	} else {
+		char * data = (void *)result;
+		int i = 0;
+		int j = 0;
+		long index = -1;
+		long datalength = cstringlength(data);
+		if (datalength > length) {
+			return - 1;
+		}
+
+		for (; i < length - datalength + 1;) {
+			for (; j < datalength;) {
+				if (cstr[i] != data[j]) {
+					if (index == -1) {
+						++ i;
+					} else {
+						i = index + 1;
+					}
+					index = -1;
+					j = 0;
+					break;
+				} else {
+					if (index == -1) {
+						index = i;
+					}
+					if (j + 1 == datalength) {
+						j = 0;
+						i = index + 1;
+						printf("index = %ld\n", index);
+						index = -1;
+						break;
+					}
+					++ j;
+					++ i;
+				}
+			}
+		}
+		va_end(list);
+		return index;
+	}
+}
+
+long cstringindexescount(char * cstr, ...) {
 	if (!cstringcheck(cstr)) { return false; }
 
 	va_list list;
@@ -320,18 +379,18 @@ long cstringindex(char * cstr, ...) {
 	long volume = cstringvolume(cstr);
 
 	uint64_t result = va_arg(list, uint64_t);
+	long count = 0;
 
 	if (0x00 <= result && result <= 0xff) {
 		char data = result;
-		long index = 0;
+
 		for (int i = 0; i < length; i ++) {
 			if (data == cstr[i]) {
-				index = i;	
-				break;
+				++ count;
 			}
 		}
 		va_end(list);
-		return index;
+		return count;
 	} else {
 		char * data = (void *)result;
 		long index = 0;

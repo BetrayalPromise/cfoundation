@@ -97,20 +97,13 @@ void testcstringtelescope() {
 	cstringdescribe(p, 0b100);
 }
 
-void testcstringsearch() {
-	char * p0 = cstringinit$("0980900");
-	char c 	  = '0';
-
-	long * value = cstringindexes(p0, c);
-	long result[*(long *)value];
-
-	for (int i = 0; i < *(long *)value; i ++) {
-		result[i] = value[i + 1];
-		printf("%ld\n", value[i + 1]);
+void testcstringremove() {
+	if (true) {
+		char * p0 = cstringinit$(NULL);
+		char c  = 0x00;
+		cstringremove(p0, c);
+		cstringdescribe(p0, 0b001);
 	}
-	free(value);
-	
-	
 }
 
 #endif
