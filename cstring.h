@@ -69,6 +69,11 @@ typedef enum ISO_IEC_646 {
     #warning "information: duplicate define macro 'cstringindex$'
 #endif
 
+#if !defined (cstringremove$)
+    #define cstringremove$(a, ...)          cstringremove(a, (0x00, ##__VA_ARGS__))
+#else
+    #warning "information: duplicate define macro 'cstringremove$'
+#endif
 
 
 /*
@@ -147,6 +152,11 @@ extern bool     cstringinsert(char * cstr, long index, ...);
 */
 extern bool     cstringappend(char * cstr, ...);
 
+/*
+    @return             返回删除操作是否成功.
+    @paramater cstr     经过cstringinit处理过的包含信息的字符串.
+    @paramater ...      追加内容,只处理第一个参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能能处理字符型和经过cstringinit处理过的包含信息的字符串两种.
+*/
 extern bool     cstringremove(char * cstr, ...);
 
 /*

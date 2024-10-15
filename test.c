@@ -97,11 +97,54 @@ void testcstringtelescope() {
 	cstringdescribe(p, 0b100);
 }
 
+void testcstringindex() {
+	// if (true) {
+	// 	char * p0 = cstringinit$(NULL);
+	// 	char c  = 0x00;
+	// 	cstringindex(p0, 0, c);
+	// 	cstringdescribe(p0, 0b001);
+	// }
+
+	// if (true) {
+	// 	char * p0 = cstringinit$("\0");
+	// 	char c  = 0x00;
+	// 	cstringindex(p0, 1, c);
+	// 	cstringdescribe(p0, 0b001);
+	// }
+
+	// if (true) {
+	// 	char * p0 = cstringinit$("\0");
+	// 	char * p1 = cstringinit$("\0");
+	// 	cstringindex(p0, 1, p1);
+	// 	cstringdescribe(p0, 0b001);
+	// }
+
+	if (true) {
+		char * p0 = cstringinit$("9900990099");
+		char * p1 = cstringinit$("00");
+		cstringindex(p0, 1, p1);
+		// cstringdescribe(p0, 0b001);
+	}
+}
+
 void testcstringremove() {
 	if (true) {
 		char * p0 = cstringinit$(NULL);
 		char c  = 0x00;
 		cstringremove(p0, c);
+		cstringdescribe(p0, 0b001);
+	}
+	if (true) {
+		char * p0 = cstringinit$(0x00);
+		char c  = 0x00;
+		cstringremove(p0, c);
+		cstringdescribe(p0, 0b001);
+	}
+
+	if (true) {
+		char * p0 = cstringinit$(0x00);
+		char c  = 0x00;
+		cstringremove$(p0);
 		cstringdescribe(p0, 0b001);
 	}
 }

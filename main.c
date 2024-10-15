@@ -20,8 +20,9 @@ int main(int argc, char ** argv) {
 	// testcstringinit();
 	// testcstringtelescope();
 	// testcstringinsrt();
-	
-	testcstringremove();
+	// testcstringremove();
+
+	testcstringindex();
 
 	return EXIT_SUCCESS;
 }

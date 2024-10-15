@@ -336,7 +336,6 @@ long cstringindex(char * cstr, long times, ...) {
 		if (datalength > length) {
 			return - 1;
 		}
-
 		for (; i < length - datalength + 1;) {
 			for (; j < datalength;) {
 				if (cstr[i] != data[j]) {
@@ -356,6 +355,8 @@ long cstringindex(char * cstr, long times, ...) {
 						j = 0;
 						i = index + 1;
 						printf("index = %ld\n", index);
+
+						
 						index = -1;
 						break;
 					}
