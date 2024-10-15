@@ -84,8 +84,12 @@ typedef enum ISO_IEC_646 {
 
 /*
     @return             返回一个如13行所示的包含信息的字符串,结构与其一致.
-    @paramater str      常规的字符串.
-    @paramater ctl      是否存储默认字符串结尾的0x00('\0'),true存储,false不存储.
+    @paramater str      常规字符串.
+                        str(NULL,0,0x00),ctl不生效,length始终为0,volume不存储.
+                        str(!NULL)时,按照ctl控制参数处理.
+                        str("","\0","\000..."),ctrl(true)则length为1,volume存储0.
+                        str("","\0","\000..."),ctrl(false)则length为0,volume不存储.
+    @paramater ctl      是否存储字符串默认结尾的(0x00,0,NULL,'\0','\0...'),true:存储,false:不存储.
 */
 extern char *   cstringinit(char * str, bool ctl);
 

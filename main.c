@@ -17,13 +17,11 @@
 
 
 int main(int argc, char ** argv) {
-	// testcstringinit();
+	testcstringinit();
 	// testcstringtelescope();
 	// testcstringinsrt();
 	// testcstringremove();
-
-	testcstringindex();
-
+	// testcstringindex();
 	return EXIT_SUCCESS;
 }
 

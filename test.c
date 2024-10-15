@@ -8,15 +8,32 @@
 #include <stdlib.h>
 #include <string.h>
 
-void testcstringinit$() {
-	char * p0 = cstringinit$(0x00, 64);
-	// p1, p2等价
-	char * p1 = cstringinit$("");
-	char * p2 = cstringinit$("\0000");
+void testcstringinit() {
+	// if (true) {
+	// 	char * p0 = cstringinit(0x00, true);
+	// 	char * p1 = cstringinit(0x00, false);
+	// 	char * p2 = cstringinit(0, true);
+	// 	char * p3 = cstringinit(0, false);
+	// 	char * p4 = cstringinit(NULL, true);
+	// 	char * p5 = cstringinit(NULL, false);
+	// 	cstringdescribe(p0, 0b100);
+	// 	cstringdescribe(p1, 0b100);
+	// 	cstringdescribe(p2, 0b100);
+	// 	cstringdescribe(p3, 0b100);
+	// 	cstringdescribe(p4, 0b100);
+	// 	cstringdescribe(p5, 0b100);
+	// }
 
-	cstringdescribe(p0, 0b100);
-	cstringdescribe(p1, 0b100);
-	cstringdescribe(p2, 0b100);
+	if (true) {
+		char * p0 = cstringinit("", true);
+		char * p1 = cstringinit("", false);
+		char * p2 = cstringinit("\00000", true);
+		char * p3 = cstringinit("\00000", false);
+		cstringdescribe(p0, 0b100);
+		cstringdescribe(p1, 0b100);
+		cstringdescribe(p2, 0b100);
+		cstringdescribe(p3, 0b100);
+	}
 }
 
 void testcstringinsrt() {

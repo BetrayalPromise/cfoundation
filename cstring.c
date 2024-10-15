@@ -45,40 +45,35 @@ long cstringlength(char * cstr) {
 char * cstringinit(char * str, bool ctl) {
     long vstep = baseinformationsize();
 	long lstep = baseinformationsize();
-
-
 	long volume = 32;
-	// long lengthsize = str != NULL ? sizeof(char) * strlen(str) + 1 : 0;
 	long length = 0;
-	if (ctl) {
-		length = str != NULL ? sizeof(char) * strlen(str) + 1 : 0;
+
+	if (str == NULL) {
+		length = 0;
 	} else {
-		length = str != NULL ? sizeof(char) * strlen(str) : 0;
+		length = ctl == true ? strlen(str) + 1 : strlen(str);
 	}
 
 	while (volume <= length) {
 		volume *= 2;
-		printf("default volume(32) is to small, change to: %ld\n", volume);
 	}
 
     char * space = malloc(vstep + lstep + volume);
-    char * string = space + vstep + lstep;
+    char * cstr = space + vstep + lstep;
 
-	if (str != NULL) {
-		long count = ctl == true ? strlen(str) + 1 : strlen(str);
-		for (int i = 0; i < count; i ++) {
-    		string[i] = str[i];
-		}
-	} 
+	for (int i = 0; i < length; i ++) {
+		cstr[i] = str[i];
+	}
 	
-	setcstringlength(string, length);
-	setcstringvolume(string, volume);
-    return string;
+	setcstringlength(cstr, length);
+	setcstringvolume(cstr, volume);
+
+    return cstr;
 }
 
 void cstringdescribe(char * cstr, unsigned short flag) {
 	if (!cstringcheck(cstr)) { return; }
-    printf("[long|long|char...]: (%p)\n[\n", cstr);
+    printf("\n[long|long|char...]: (%p)\n[\n", cstr);
 	char * show = NULL;
 	switch (flag) {
 	case 0b111: show = "    (%ld Byte  H:0x%02x  D:%03d  C:%c)"; break;
@@ -112,7 +107,7 @@ void cstringdescribe(char * cstr, unsigned short flag) {
 			printf("\n");
 		}
 	}
-	printf("]\n");
+	printf("]\n\n");
 }
 
 char * cstringcopy(char * cstr) {
