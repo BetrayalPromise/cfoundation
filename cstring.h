@@ -40,7 +40,7 @@ typedef enum ISO_IEC_646 {
 #endif
 
 #if !defined (cstringinit$)
-    #define cstringinit$(a, ...)            cstringinit(a, (32, ##__VA_ARGS__))
+    #define cstringinit$(a, ...)            cstringinit(a, (false, ##__VA_ARGS__))
 #else
     #warning "information: duplicate define macro 'cstringinit$'
 #endif
@@ -85,9 +85,9 @@ typedef enum ISO_IEC_646 {
 /*
     @return             返回一个如13行所示的包含信息的字符串,结构与其一致.
     @paramater str      常规的字符串.
-    @paramater volume   容量大小.会根据str的长度进行内部调整大小.
+    @paramater ctl      是否存储默认字符串结尾的0x00('\0'),true存储,false不存储.
 */
-extern char *   cstringinit(char * str, long volume);
+extern char *   cstringinit(char * str, bool ctl);
 
 /*
     @return             返回包含信息的字符串的长度.长度包含字符串末尾的0x00,即\0的存储位置也计算在内
@@ -105,10 +105,10 @@ extern long     cstringvolume(char * cstr);
 /*
     @return             无返回值.
     @paramater pstr     经过cstringinit处理过的包含信息的字符串它的二级的指针.
-    @paramater control  false:代表减少容量,true:代表增加容量.
-    @paramater multiply 容量增加或者减少的倍率.
+    @paramater ctl      false:代表减少容量,true:代表增加容量.
+    @paramater m        容量增加或者减少的倍率.
 */
-extern void     cstringtelescope(char ** pcstr, bool control, long multiply);
+extern void     cstringtelescope(char ** pcstr, bool ctl, long m);
 
 /*
     @return             无返回值.

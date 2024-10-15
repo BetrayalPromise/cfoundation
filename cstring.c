@@ -21,7 +21,7 @@ static long baseinformationsize(void) {
 	return sizeof(long);
 }
 
-void setcstringvolume(char * cstr, long value) {
+static void setcstringvolume(char * cstr, long value) {
 	*(long *)(cstr - 2 * baseinformationsize()) = value;
 }
 
@@ -30,7 +30,7 @@ long cstringvolume(char * cstr) {
     return *(long *)(cstr - 2 * baseinformationsize());
 }
 
-void setcstringlength(char * cstr, long value) {
+static void setcstringlength(char * cstr, long value) {
 	*(long *)(cstr - baseinformationsize()) = value;
 }
 
@@ -42,28 +42,37 @@ long cstringlength(char * cstr) {
 /*
 	return "zzz"; "zzz" 字面量存储在静态区域里 不需要释放
 */
-char * cstringinit(char * str, long volume) {
-    long volumestep = baseinformationsize();
-	long lengthstep = baseinformationsize();
+char * cstringinit(char * str, bool ctl) {
+    long vstep = baseinformationsize();
+	long lstep = baseinformationsize();
 
-	long volumesize = volume;
-	long lengthsize = str != NULL ? sizeof(char) * strlen(str) + 1 : 0;
 
-	while (volumesize <= lengthsize) {
-		volumesize *= 2;
-		printf("default volume is to small, change to: %ld\n", volumesize);
+	long volume = 32;
+	// long lengthsize = str != NULL ? sizeof(char) * strlen(str) + 1 : 0;
+	long length = 0;
+	if (ctl) {
+		length = str != NULL ? sizeof(char) * strlen(str) + 1 : 0;
+	} else {
+		length = str != NULL ? sizeof(char) * strlen(str) : 0;
 	}
 
-    char * space = malloc(volumestep + lengthstep + volumesize);
-    char * string = space + volumestep + lengthstep;
+	while (volume <= length) {
+		volume *= 2;
+		printf("default volume(32) is to small, change to: %ld\n", volume);
+	}
+
+    char * space = malloc(vstep + lstep + volume);
+    char * string = space + vstep + lstep;
 
 	if (str != NULL) {
-	    for (int i = 0; i < strlen(str) + 1; i ++) {
-        	string[i] = str[i];
-    	}
-	}
-	setcstringlength(string, lengthsize);
-	setcstringvolume(string, volumesize);
+		long count = ctl == true ? strlen(str) + 1 : strlen(str);
+		for (int i = 0; i < count; i ++) {
+    		string[i] = str[i];
+		}
+	} 
+	
+	setcstringlength(string, length);
+	setcstringvolume(string, volume);
     return string;
 }
 
@@ -135,12 +144,12 @@ bool cstringcompare(char * cstr, char * data) {
 	}
 }
 
-void cstringtelescope(char ** pcstr, bool control, long multiply) {
+void cstringtelescope(char ** pcstr, bool ctl, long m) {
 	if (!cstringcheck(*pcstr)) { return; }
 	long volume = cstringvolume(* pcstr);
 	long length = cstringlength(* pcstr);
 	
-	volume = control == true ? volume * multiply : volume / multiply;
+	volume = ctl == true ? volume * m : volume / m;
 
 	if (volume < length) {
 		printf("WARNNING: cstring.volume(%ld) < cstring.length(%ld), operation will lose information.\n", volume, length);
