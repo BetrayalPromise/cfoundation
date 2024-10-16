@@ -172,35 +172,43 @@ void testcstringindex() {
 	// 		printf("times = %d  index = %ld\n", i, index);
 	// 	}
 	// }
+
+}
+
+void testcstringindexes() {
+	
 }
 
 void testcstringremove() {
 	// if (true) {
-	// 	char * p0 = cstringinit$(NULL);
-	// 	char c  = 0x00;
-	// 	cstringremove(p0, c);
-	// 	cstringdescribe(p0, 0b001);
-	// }
-	// if (true) {
-	// 	char * p0 = cstringinit$(0x00);
-	// 	char c  = 0x00;
-	// 	cstringremove(p0, c);
+	// 	char * p0 = cstringinit$("12321");
+	// 	cstringremove(p0, 5);
 	// 	cstringdescribe(p0, 0b001);
 	// }
 
-	// if (true) {
-	// 	char * p0 = cstringinit$(0x00);
-	// 	char c  = 0x00;
-	// 	cstringremove$(p0);
-	// 	cstringdescribe(p0, 0b001);
-	// }
+	char * p0 = cstringinit$("900900099");
+	char * p1 = cstringinit$("00");
+	long index = cstringclean(p0, p1);
+	cstringdescribe(p0, 0b100);
+}
 
+void testcstringclean() {
 	if (true) {
-		char * p0 = cstringinit$("12321");
-		/*
-			 当索引48-57
-		*/
-		cstringremove(p0, 5);
+		char * p0 = cstringinit$(NULL);
+		char c  = 0x00;
+		cstringclean(p0, c);
+		cstringdescribe(p0, 0b001);
+	}
+	if (true) {
+		char * p0 = cstringinit$(0x00);
+		char c  = 0x00;
+		cstringclean(p0, c);
+		cstringdescribe(p0, 0b001);
+	}
+	if (true) {
+		char * p0 = cstringinit$(0x00);
+		char c  = 0x00;
+		cstringclean(p0);
 		cstringdescribe(p0, 0b001);
 	}
 }

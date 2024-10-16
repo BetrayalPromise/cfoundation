@@ -259,6 +259,9 @@ bool cstringclean(char * cstr, ...) {
 
 	long length = cstringlength(cstr);
 	long volume = cstringvolume(cstr);
+
+	if (length < 1 ) { return false; }
+
 	uint64_t result = va_arg(list, uint64_t);
 
 	if (0x00 <= result && result <= 0xff) {
@@ -294,12 +297,24 @@ bool cstringclean(char * cstr, ...) {
 		return true;
 	} else {
 		char * data = (void *)result;
-// TODO:
+		long size = cstringlength(data);
+		long temp = length;
+		long i = cstringindex(cstr, 1, data, true);
+		do {
+			memmove(cstr, cstr + size, temp - size);
+			setcstringlength(cstr, temp - size);
+			temp -= size;
+			cstringdescribe(cstr, 0b111);
+			i = cstringindex(cstr, 1, data, true);
+		} while (i != -1);
+		/*
+			0000
+			00
+		*/
 
+		va_end(list);
+		return true;
 	}
-
-	va_end(list);
-	return true;
 }
 
 bool cstringremove(char * cstr, long index) {
@@ -310,12 +325,6 @@ bool cstringremove(char * cstr, long index) {
 	if (index > length - 1 || index < 0) {
 		return false;
 	} else {
-		/*
-			0123456789
-			abccd      5
-			0          4
-			 1         3
-		*/
 		memmove(cstr + index, cstr + index + 1, length - index - 1);
 		setcstringlength(cstr, length - 1);
 		return true;
@@ -329,10 +338,7 @@ long cstringindex(char * cstr, long times, ...) {
 	long index = -1;
 	long count = 0;
 
-	if (times < 0 || times > length) {
-		// printf("WARNNING: times(%ld) is out of range(0-%ld)!\n", times, length);
-		return -1;
-	}
+	if (times < 0 || times > length) { return -1; }
 
 	va_list list;
 	va_start(list, times);
@@ -406,7 +412,7 @@ long cstringindex(char * cstr, long times, ...) {
 	}
 }
 
-long cstringindexescount(char * cstr, ...) {
+long cstringindexes(char * cstr, ...) {
 	if (!cstringcheck(cstr)) { return false; }
 
 	va_list list;
@@ -420,7 +426,6 @@ long cstringindexescount(char * cstr, ...) {
 
 	if (0x00 <= result && result <= 0xff) {
 		char data = result;
-
 		for (int i = 0; i < length; i ++) {
 			if (data == cstr[i]) {
 				++ count;
@@ -431,10 +436,48 @@ long cstringindexescount(char * cstr, ...) {
 	} else {
 		char * data = (void *)result;
 		long index = 0;
-// TODO:
-
+		long size = cstringlength(data); 
+		int64_t flag = va_arg(list, uint64_t) != 0 ? true : false;
+		bool control = false;
+		
+		if (flag) {
+			for (int i = 0; i < size - 1; i ++) {
+				if (data[i] == data[i + 1]) {
+					control = true;
+					continue;
+				} else {
+					control = false;
+					break;
+				}
+			}
+		}
+		int i = 0, j = 0;
+		for (; i < length - size + 1;) {
+			for (; j < size;) {
+				if (cstr[i] != data[j]) {
+					index == -1 ? ({ ++ i; }) : ({ i = index + 1; });
+					j = 0;
+					break;
+				} else { // 单个数据相同
+					index == -1 ? index = i : ({});
+					if (j + 1 == size) { // 子字符串遍历完成
+						j = 0;
+						if (control && flag) {
+							i = i + size - 1;
+						} else {
+							i = index + 1;
+						}
+						++ count;
+						index = -1;
+						break;
+					}
+					++ j;
+					++ i;
+				}
+			}
+		}
 		va_end(list);
-		return 0x00;
+		return count;
 	}
 }
 

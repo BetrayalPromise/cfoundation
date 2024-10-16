@@ -80,7 +80,7 @@ typedef enum ISO_IEC_646 {
 
 
 //  @return             返回一个如13行所示的包含信息的字符串,结构与其一致.
-//  @paramater str      常规字符串.str(NULL,0,0x00),ctl不生效,length始终为0,volume不存储.str(!NULL)时,按照ctl控制参数处理.str("","\0","\000..."),ctrl(true)则length为1,volume存储0.str("","\0","\000..."),ctrl(false)则length为0,volume不存储.
+//  @paramater str      常规字符串.str(NULL,0,0x00),ctl不生效,length始终为0,volume不存储.str(!NULL)时,按照ctl控制参数接受.str("","\0","\000..."),ctrl(true)则length为1,volume存储0.str("","\0","\000..."),ctrl(false)则length为0,volume不存储.
 //  @paramater ctl      是否存储字符串默认结尾的(0x00,0,NULL,'\0','\0...'),true:存储,false:不存储.
 extern char *   cstringinit(char * str, bool ctl);
 
@@ -127,20 +127,20 @@ extern bool     cstringcompare(char * cstr, char * data);
 //  @return             返回插入操作是否成功.
 //  @paramater cstr     cstring型.
 //  @paramater index    插入位置,总是以cstr作为0为参照.
-//  @prarmater ...      插入内容,只处理第一个不定参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能处理char型和cstring型两种.
+//  @prarmater ...      插入内容(char型或cstring型),接受一个不定参数.
 extern bool     cstringinsert(char * cstr, long index, ...);
 
 
 //  @return             返回追加操作是否成功.
 //  @paramater cstr     cstring型.
 //  @paramater index    追加位置,总是以cstr作为0为参照.
-//  @paramater ...      追加内容,只处理第一个不定参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能处理char型和cstring型两种.
+//  @paramater ...      追加内容(char型或cstring型),接受一个不定参数.
 extern bool     cstringappend(char * cstr, ...);
 
 
 //  @return             返回删除操作是否成功.
 //  @paramater cstr     cstring型.
-//  @paramater ...      清空内容,只处理1:(1)char型.(2)cstring型.其他忽略,采用不定参数,只为模拟函数重载方便而已,只能处理型和cstring型两种.
+//  @paramater ...      清空内容(char型或cstring型),接受一个不定参数.
 extern bool     cstringclean(char * cstr, ...);
 
 
@@ -153,14 +153,14 @@ extern bool     cstringremove(char * cstr, long index);
 //  @return             返回第times次出现检索内容的索引值,若为-1则未找到.
 //  @paramater cstr     cstring型.
 //  @paramater times    检索内容出现次数.
-//  @paramater ...      检索内容,只处理最多2个参数:(1)char型.(2)cstring型,bool(针对cstring中字符完全一样,控制索引方式).其他忽略,采用不定参数,只为模拟函数重载方便而已,只能处理型和cstring型两种.
+//  @paramater ...      检索内容(char型或cstring型),若为char型,接受一个不定参数,若为cstring型,还需传入一个bool型(针对cstring型[111],[222]...,控制索引方式),接受两个不定参数.
 extern long     cstringindex(char * cstr, long times, ...);
 
 
-//  @return             返回共计出现检索内容的索引值,若为-1则未找到.
+//  @return             返回共计出现检索内容的总数.
 //  @paramater cstr     cstring型.
-//  @paramater ...      检索内容,只处理第一个不定参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能处理char型和cstring型两种.
-extern long     cstringindexexcount(char * cstr, ...);
+//  @paramater ...      检索内容(char型或cstring型),若为char型,接受一个不定参数,若为cstring型,还需传入一个bool型(针对cstring型[111],[222]...,控制索引方式),接受两个不定参数.
+extern long     cstringindexex(char * cstr, ...);
 
 
 //  @return             无返回值.
