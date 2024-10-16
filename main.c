@@ -21,7 +21,7 @@ int main(int argc, char ** argv) {
 	// testcstringtelescope();
 	// testcstringinsrt();
 	// testcstringremove();
-	// testcstringindex();
+	testcstringindex();
 	return EXIT_SUCCESS;
 }
 

@@ -300,25 +300,26 @@ bool cstringremove(char * cstr, ...) {
 	return true;
 }
 
-long cstringindex(char * cstr, long times, ...) {
+long cstringindex(char * cstr, paramatertype_t type, long times, ...) {
 	if (!cstringcheck(cstr)) { return false; }
 
 	va_list list;
 	va_start(list, times);
 
 	long length = cstringlength(cstr);
+	long index = -1;
 
-	if (times > length) {
-		printf("WARNNING: search times(%ld) large than cstring.length(%ld)\n", times, length);
+	if (times < 0 || times > length) {
+		printf("WARNNING: times(%ld) is out of range(0-%ld)!\n", times, length);
 		return -1;
 	}
 
 	uint64_t result = va_arg(list, uint64_t);
 	long count = 0;
 
-	if (0x00 <= result && result <= 0xff) {
+	switch (type) {
+	case value: ({
 		char data = result;
-		long index = -1;
 		for (int i = 0; i < length; i ++) {
 			if (data == cstr[i]) {
 				++ count;
@@ -331,17 +332,19 @@ long cstringindex(char * cstr, long times, ...) {
 		}
 		va_end(list);
 		return index;
-	} else {
+	}); break;
+	case address: ({
 		char * data = (void *)result;
 		int i = 0;
 		int j = 0;
-		long index = -1;
-		long datalength = cstringlength(data);
-		if (datalength > length) {
-			return - 1;
-		}
-		for (; i < length - datalength + 1;) {
-			for (; j < datalength;) {
+		long size = cstringlength(data); 
+		if (size <= 0 || size > length) { return - 1; }
+
+		uint64_t flag = va_arg(list, uint64_t);
+		bool control = flag != 0 ? true : false;
+
+		for (; i < length - size + 1;) {
+			for (; j < size;) {
 				if (cstr[i] != data[j]) {
 					if (index == -1) {
 						++ i;
@@ -355,12 +358,14 @@ long cstringindex(char * cstr, long times, ...) {
 					if (index == -1) {
 						index = i;
 					}
-					if (j + 1 == datalength) {
+					if (j + 1 == size) {
 						j = 0;
 						i = index + 1;
-						printf("index = %ld\n", index);
-
-						
+						++ count;
+						if (count == times) {
+							va_end(list);
+							return index;
+						}
 						index = -1;
 						break;
 					}
@@ -371,6 +376,7 @@ long cstringindex(char * cstr, long times, ...) {
 		}
 		va_end(list);
 		return index;
+	}); break;
 	}
 }
 

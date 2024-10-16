@@ -9,6 +9,11 @@ typedef enum ISO_IEC_646 {
     C99,// ISO/IEC 646:1999
 } ISO_IEC_646_t;
 
+typedef enum paramatertype {
+    value,   // ISO/IEC 646:1991 
+    address,   // ISO/IEC 646:1999
+} paramatertype_t;
+
 /*
     数据结构
      -----------------------0++++++++++++
@@ -45,6 +50,8 @@ typedef enum ISO_IEC_646 {
     #warning "information: duplicate define macro 'cstringinit$'
 #endif
 
+// #define __CCHARS_LENGTH__(array) (sizeof(array)/sizeof(char) - 1)
+
 #if !defined (cstringdescribe$)
     #define cstringdescribe$(a, ...)        cstringdescribe(a, (0b001, ##__VA_ARGS__))
 #else
@@ -64,7 +71,7 @@ typedef enum ISO_IEC_646 {
 #endif
 
 #if !defined (cstringindex$)
-    #define cstringindex$(a, b, ...)          cstringindex(a, DEFAULTARGC(b, 1), ##__VA_ARGS__)
+    #define cstringindex$(a, b, ...)        cstringindex(a, DEFAULTARGC(b, true), DEFAULTARGC(b, 1), ##__VA_ARGS__)
 #else
     #warning "information: duplicate define macro 'cstringindex$'
 #endif
@@ -84,11 +91,7 @@ typedef enum ISO_IEC_646 {
 
 /*
     @return             返回一个如13行所示的包含信息的字符串,结构与其一致.
-    @paramater str      常规字符串.
-                        str(NULL,0,0x00),ctl不生效,length始终为0,volume不存储.
-                        str(!NULL)时,按照ctl控制参数处理.
-                        str("","\0","\000..."),ctrl(true)则length为1,volume存储0.
-                        str("","\0","\000..."),ctrl(false)则length为0,volume不存储.
+    @paramater str      常规字符串.str(NULL,0,0x00),ctl不生效,length始终为0,volume不存储.str(!NULL)时,按照ctl控制参数处理.str("","\0","\000..."),ctrl(true)则length为1,volume存储0.str("","\0","\000..."),ctrl(false)则length为0,volume不存储.
     @paramater ctl      是否存储字符串默认结尾的(0x00,0,NULL,'\0','\0...'),true:存储,false:不存储.
 */
 extern char *   cstringinit(char * str, bool ctl);
@@ -166,10 +169,11 @@ extern bool     cstringremove(char * cstr, ...);
 /*
     @return             返回第times次出现检索内容的索引值,若为-1则未找到.
     @paramater cstr     经过cstringinit处理过的包含信息的字符串.
+    @paramater type     数据类型.
     @paramater times    检索内容出现次数.
     @paramater ...      检索内容,只处理第一个参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能能处理字符型和经过cstringinit处理过的包含信息的字符串两种.
 */
-extern long     cstringindex(char * cstr, long times, ...);
+extern long     cstringindex(char * cstr, paramatertype_t type, long times, ...);
 
 /*
     @return             返回共计出现检索内容的索引值,若为-1则未找到.

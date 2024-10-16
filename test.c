@@ -136,11 +136,18 @@ void testcstringindex() {
 	// 	cstringdescribe(p0, 0b001);
 	// }
 
+	// if (true) {
+	// 	char * p0 = cstringinit$("9900990099");
+	// 	char * p1 = cstringinit$("00");
+	// 	long index = cstringindex(p0, 3, p1);
+	// 	printf("index = %ld\n", index);
+	// }
+
 	if (true) {
-		char * p0 = cstringinit$("9900990099");
+		char * p0 = cstringinit$("000");
 		char * p1 = cstringinit$("00");
-		cstringindex(p0, 1, p1);
-		// cstringdescribe(p0, 0b001);
+		long index = cstringindex(p0, address, 2, p1, 0);
+		printf("index = %ld\n", index);
 	}
 }
 
