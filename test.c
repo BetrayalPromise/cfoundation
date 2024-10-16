@@ -138,17 +138,40 @@ void testcstringindex() {
 
 	// if (true) {
 	// 	char * p0 = cstringinit$("9900990099");
-	// 	char * p1 = cstringinit$("00");
+	// 	char * p1 = cstringinit$("99");
 	// 	long index = cstringindex(p0, 3, p1);
 	// 	printf("index = %ld\n", index);
 	// }
 
 	if (true) {
-		char * p0 = cstringinit$("0000");
-		char * p1 = cstringinit$("00");
-		long index = cstringindex(p0, 2, 2, p1, true);
-		printf("index = %ld\n", index);
+		for (int i = -9; i < 8; i++) {
+			char * p0 = cstringinit$("00000000000000");
+			char * p1 = cstringinit$("00");
+			long index = cstringindex(p0, i, p1, true);
+			printf("times = %d  index = %ld\n", i, index);
+		}
 	}
+
+	/*
+			0123456789abcdef
+			0000000000000
+			00                1-0
+			  00              2-2
+			    00            3-4
+				  00          4-6
+				    00		  5-8
+					  00	  6-10
+					    00    7-
+	*/
+	
+	// if (true) {
+	// 	for (int i = -7; i < 13; i++) {
+	// 		char * p0 = cstringinit$("000000000000");
+	// 		char * p1 = cstringinit$("00");
+	// 		long index = cstringindex(p0, i, p1, false);
+	// 		printf("times = %d  index = %ld\n", i, index);
+	// 	}
+	// }
 }
 
 void testcstringremove() {

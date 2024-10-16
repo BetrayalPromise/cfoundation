@@ -10,7 +10,7 @@ typedef enum ISO_IEC_646 {
 } ISO_IEC_646_t;
 
 /*
-    数据结构
+    数据结构cstring
      -----------------------0++++++++++++
     [---long---][---long---][char.......]
      volume      length       chars
@@ -93,20 +93,20 @@ extern char *   cstringinit(char * str, bool ctl);
 
 /*
     @return             返回包含信息的字符串的长度.长度包含字符串末尾的0x00,即\0的存储位置也计算在内
-    @paramater str      经过cstringinit处理过的包含信息的字符串.
+    @paramater str      cstring型.
 */
 extern long     cstringlength(char * cstr);
 // 字符容量
 
 /*
     @return             返回包含信息的字符串的长度的容量,与存储内容无关.
-    @paramater str      经过cstringinit处理过的包含信息的字符串.
+    @paramater str      cstring型.
 */
 extern long     cstringvolume(char * cstr);
 
 /*
     @return             无返回值.
-    @paramater pstr     经过cstringinit处理过的包含信息的字符串它的二级的指针.
+    @paramater pstr     cstring型它的二级的指针.
     @paramater ctl      false:代表减少容量,true:代表增加容量.
     @paramater m        容量增加或者减少的倍率.
 */
@@ -114,66 +114,65 @@ extern void     cstringtelescope(char ** pcstr, bool ctl, long m);
 
 /*
     @return             无返回值.
-    @paramater cstr     经过cstringinit处理过的包含信息的字符串.
+    @paramater cstr     cstring型.
     @paramater flag     显示标记(0b111, 0b110, 0b101, 0b011, 0b100, 0b010, 0b001)共计7种,三位数字代表十六进制显示,十进制显示,字符显示.
 */
 extern void     cstringdescribe(char * cstr, unsigned short flag);
 
 /*
-    @return             返回经过cstringinit处理过的包含信息的字符串.
-    @paramater cstr     经过cstringinit处理过的包含信息的字符串.
+    @return             返回cstring型.
+    @paramater cstr     cstring型.
 */
 extern char *   cstringcopy(char * cstr);
 
 /*
     @return             无返回值.
-    @paramater cstr     经过cstringinit处理过的包含信息的字符串.
+    @paramater cstr     cstring型.
 */
 extern void     cstringfree(char * cstr);
 
 /*
     @return             返回两者存在的内容是否一致.
-    @paramater cstr     经过cstringinit处理过的包含信息的字符串.
-    @paramater data     经过cstringinit处理过的包含信息的字符串.
+    @paramater cstr     cstring型.
+    @paramater data     cstring型.
 */
 extern bool     cstringcompare(char * cstr, char * data);
 
 /*
     @return             返回插入操作是否成功.
-    @paramater cstr     经过cstringinit处理过的包含信息的字符串.
+    @paramater cstr     cstring型.
     @paramater index    插入位置,总是以cstr作为0为参照.
-    @prarmater ...      插入内容,只处理第一个参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能能处理字符型和经过cstringinit处理过的包含信息的字符串两种.
+    @prarmater ...      插入内容,只处理第一个不定参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能处理char型和cstring型两种.
 */
 extern bool     cstringinsert(char * cstr, long index, ...);
 
 /*
     @return             返回追加操作是否成功.
-    @paramater cstr     经过cstringinit处理过的包含信息的字符串.
+    @paramater cstr     cstring型.
     @paramater index    追加位置,总是以cstr作为0为参照.
-    @paramater ...      追加内容,只处理第一个参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能能处理字符型和经过cstringinit处理过的包含信息的字符串两种.
+    @paramater ...      追加内容,只处理第一个不定参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能处理char型和cstring型两种.
 */
 extern bool     cstringappend(char * cstr, ...);
 
 /*
     @return             返回删除操作是否成功.
-    @paramater cstr     经过cstringinit处理过的包含信息的字符串.
-    @paramater ...      追加内容,只处理第一个参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能能处理字符型和经过cstringinit处理过的包含信息的字符串两种.
+    @paramater cstr     cstring型.
+    @paramater ...      追加内容,只处理第一个不定参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能处理char型和cstring型两种.
 */
 extern bool     cstringremove(char * cstr, ...);
 
 /*
     @return             返回第times次出现检索内容的索引值,若为-1则未找到.
-    @paramater cstr     经过cstringinit处理过的包含信息的字符串.
-    @paramater num      不定参数个数.
+    @paramater cstr     cstring型.
     @paramater times    检索内容出现次数.
-    @paramater ...      检索内容,只处理第一个参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能能处理字符型和经过cstringinit处理过的包含信息的字符串两种.
+    @paramater ...      检索内容,只处理最多2个参数:(1)char型.(2)cstring型,bool(针对cstring中字符完全一样,控制索引方式).其他忽略,采用不定参数,只为模拟函数重载方便而已,只能处理型和cstring型两种.
 */
-extern long     cstringindex(char * cstr, long num, long times, ...);
+extern long     cstringindex(char * cstr, long times, ...);
 
 /*
     @return             返回共计出现检索内容的索引值,若为-1则未找到.
-    @paramater cstr     经过cstringinit处理过的包含信息的字符串.
-    @paramater ...      检索内容,只处理第一个参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能能处理字符型和经过cstringinit处理过的包含信息的字符串两种.
+    @paramater cstr     cstring型.
+    @paramater ...      检索内容,只处理第一个不定参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能处理char型和cstring型两种.
 */
 extern long     cstringindexexcount(char * cstr, ...);
 

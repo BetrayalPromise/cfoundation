@@ -17,7 +17,7 @@
 
 
 int main(int argc, char ** argv) {
-	testcstringinit();
+	// testcstringinit();
 	// testcstringtelescope();
 	// testcstringinsrt();
 	// testcstringremove();

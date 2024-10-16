@@ -300,7 +300,7 @@ bool cstringremove(char * cstr, ...) {
 	return true;
 }
 
-long cstringindex(char * cstr, long num, long times, ...) {
+long cstringindex(char * cstr, long times, ...) {
 	if (!cstringcheck(cstr)) { return false; }
 
 	long length = cstringlength(cstr);
@@ -308,7 +308,7 @@ long cstringindex(char * cstr, long num, long times, ...) {
 	long count = 0;
 
 	if (times < 0 || times > length) {
-		printf("WARNNING: times(%ld) is out of range(0-%ld)!\n", times, length);
+		// printf("WARNNING: times(%ld) is out of range(0-%ld)!\n", times, length);
 		return -1;
 	}
 
@@ -316,7 +316,7 @@ long cstringindex(char * cstr, long num, long times, ...) {
 	va_start(list, times);
 	uint64_t result = va_arg(list, uint64_t);
 	
-	if (num == 1) {
+	if (0x00 <= result && result <= 0xff) {
 		char data = result;
 		for (int i = 0; i < length; i ++) {
 			if (data == cstr[i]) {
@@ -330,7 +330,7 @@ long cstringindex(char * cstr, long num, long times, ...) {
 		}
 		va_end(list);
 		return index;
-	} else if (num == 2) {
+	} else {
 		char * data = (void *)result;
 
 		long size = cstringlength(data); 
@@ -354,25 +354,22 @@ long cstringindex(char * cstr, long num, long times, ...) {
 		for (; i < length - size + 1;) {
 			for (; j < size;) {
 				if (cstr[i] != data[j]) {
-					if (index == -1) {
-						++ i;
-					} else {
-						i = index + 1;
-					}
-					index = -1;
+					index == -1 ? ({ ++ i; }) : ({ i = index + 1; });
 					j = 0;
 					break;
-				} else {
-					if (index == -1) {
-						index = i;
-					}
-					if (j + 1 == size) {
+				} else { // 单个数据相同
+					index == -1 ? index = i : ({});
+					if (j + 1 == size) { // 子字符串遍历完成
 						j = 0;
 						i = index + 1;
 						++ count;
 						if (count == times) {
 							va_end(list);
 							return index;
+						} else {
+							if (control && flag) {
+								i = i + size - 1;
+							}
 						}
 						index = -1;
 						break;
@@ -382,9 +379,6 @@ long cstringindex(char * cstr, long num, long times, ...) {
 				}
 			}
 		}
-		va_end(list);
-		return index;
-	} else {
 		va_end(list);
 		return index;
 	}

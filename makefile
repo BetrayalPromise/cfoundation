@@ -12,4 +12,4 @@ build2:
 
 clean:
 	@rm *.i a.out *.s
-	@rm -fr a.out.dSYM
+	rm -fr a.out.dSYM
