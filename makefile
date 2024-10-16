@@ -4,6 +4,7 @@ build0:
 build1:
 	@clang -E main.c -o main.i
 	@clang -E cstring.c -o cstring.i
+	@clang -E test.c -o test.i
 
 build2:
 	@clang -S main.c -o main.s

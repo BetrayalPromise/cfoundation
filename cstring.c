@@ -251,7 +251,7 @@ bool cstringappend(char * cstr, ...) {
 	}
 }
 
-bool cstringremove(char * cstr, ...) {
+bool cstringclean(char * cstr, ...) {
 	if (!cstringcheck(cstr)) { return false; }
 
 	va_list list;
@@ -276,7 +276,7 @@ bool cstringremove(char * cstr, ...) {
 			for (int i = 0; i < length; i ++) {
 				if (data == cstr[i]) {
 					indexes[index] = i;
-					++index;
+					++ index;
 				}
 			}
 		});
@@ -294,10 +294,32 @@ bool cstringremove(char * cstr, ...) {
 		return true;
 	} else {
 		char * data = (void *)result;
+// TODO:
+
 	}
 
 	va_end(list);
 	return true;
+}
+
+bool cstringremove(char * cstr, long index) {
+	if (!cstringcheck(cstr)) { return false; }
+
+	long length = cstringlength(cstr);
+
+	if (index > length - 1 || index < 0) {
+		return false;
+	} else {
+		/*
+			0123456789
+			abccd      5
+			0          4
+			 1         3
+		*/
+		memmove(cstr + index, cstr + index + 1, length - index - 1);
+		setcstringlength(cstr, length - 1);
+		return true;
+	}
 }
 
 long cstringindex(char * cstr, long times, ...) {

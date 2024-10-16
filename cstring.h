@@ -66,15 +66,9 @@ typedef enum ISO_IEC_646 {
 #endif
 
 #if !defined (cstringindex$)
-    #define cstringindex$(a, b, ...)        cstringindex(a, DEFAULTARGC(b, true), DEFAULTARGC(b, 1), ##__VA_ARGS__)
+    #define cstringindex$(a, b, c, ...)     cstringindex(a, DEFAULTARGC(b, 1), c, ##__VA_ARGS__)
 #else
     #warning "information: duplicate define macro 'cstringindex$'
-#endif
-
-#if !defined (cstringremove$)
-    #define cstringremove$(a, ...)          cstringremove(a, (0x00, ##__VA_ARGS__))
-#else
-    #warning "information: duplicate define macro 'cstringremove$'
 #endif
 
 
@@ -84,109 +78,99 @@ typedef enum ISO_IEC_646 {
 ========================================================================================
 */
 
-/*
-    @return             返回一个如13行所示的包含信息的字符串,结构与其一致.
-    @paramater str      常规字符串.str(NULL,0,0x00),ctl不生效,length始终为0,volume不存储.str(!NULL)时,按照ctl控制参数处理.str("","\0","\000..."),ctrl(true)则length为1,volume存储0.str("","\0","\000..."),ctrl(false)则length为0,volume不存储.
-    @paramater ctl      是否存储字符串默认结尾的(0x00,0,NULL,'\0','\0...'),true:存储,false:不存储.
-*/
+
+//  @return             返回一个如13行所示的包含信息的字符串,结构与其一致.
+//  @paramater str      常规字符串.str(NULL,0,0x00),ctl不生效,length始终为0,volume不存储.str(!NULL)时,按照ctl控制参数处理.str("","\0","\000..."),ctrl(true)则length为1,volume存储0.str("","\0","\000..."),ctrl(false)则length为0,volume不存储.
+//  @paramater ctl      是否存储字符串默认结尾的(0x00,0,NULL,'\0','\0...'),true:存储,false:不存储.
 extern char *   cstringinit(char * str, bool ctl);
 
-/*
-    @return             返回包含信息的字符串的长度.长度包含字符串末尾的0x00,即\0的存储位置也计算在内
-    @paramater str      cstring型.
-*/
-extern long     cstringlength(char * cstr);
-// 字符容量
 
-/*
-    @return             返回包含信息的字符串的长度的容量,与存储内容无关.
-    @paramater str      cstring型.
-*/
+//  @return             返回包含信息的字符串的长度.长度包含字符串末尾的0x00,即\0的存储位置也计算在内
+//  @paramater str      cstring型.
+extern long     cstringlength(char * cstr);
+
+
+//  @return             返回包含信息的字符串的长度的容量,与存储内容无关.
+//  @paramater str      cstring型.
 extern long     cstringvolume(char * cstr);
 
-/*
-    @return             无返回值.
-    @paramater pstr     cstring型它的二级的指针.
-    @paramater ctl      false:代表减少容量,true:代表增加容量.
-    @paramater m        容量增加或者减少的倍率.
-*/
+
+//  @return             无返回值.
+//  @paramater pstr     cstring型它的二级的指针.
+//  @paramater ctl      false:代表减少容量,true:代表增加容量.
+//  @paramater m        容量增加或者减少的倍率.
 extern void     cstringtelescope(char ** pcstr, bool ctl, long m);
 
-/*
-    @return             无返回值.
-    @paramater cstr     cstring型.
-    @paramater flag     显示标记(0b111, 0b110, 0b101, 0b011, 0b100, 0b010, 0b001)共计7种,三位数字代表十六进制显示,十进制显示,字符显示.
-*/
+
+//  @return             无返回值.
+//  @paramater cstr     cstring型.
+//  @paramater flag     显示标记(0b111, 0b110, 0b101, 0b011, 0b100, 0b010, 0b001)共计7种,三位数字代表十六进制显示,十进制显示,字符显示.
 extern void     cstringdescribe(char * cstr, unsigned short flag);
 
-/*
-    @return             返回cstring型.
-    @paramater cstr     cstring型.
-*/
+
+//  @return             返回cstring型.
+//  @paramater cstr     cstring型.
 extern char *   cstringcopy(char * cstr);
 
-/*
-    @return             无返回值.
-    @paramater cstr     cstring型.
-*/
+
+//  @return             无返回值.
+//  @paramater cstr     cstring型.
 extern void     cstringfree(char * cstr);
 
-/*
-    @return             返回两者存在的内容是否一致.
-    @paramater cstr     cstring型.
-    @paramater data     cstring型.
-*/
+
+//  @return             返回两者存在的内容是否一致.
+//  @paramater cstr     cstring型.
+//  @paramater data     cstring型.
 extern bool     cstringcompare(char * cstr, char * data);
 
-/*
-    @return             返回插入操作是否成功.
-    @paramater cstr     cstring型.
-    @paramater index    插入位置,总是以cstr作为0为参照.
-    @prarmater ...      插入内容,只处理第一个不定参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能处理char型和cstring型两种.
-*/
+
+//  @return             返回插入操作是否成功.
+//  @paramater cstr     cstring型.
+//  @paramater index    插入位置,总是以cstr作为0为参照.
+//  @prarmater ...      插入内容,只处理第一个不定参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能处理char型和cstring型两种.
 extern bool     cstringinsert(char * cstr, long index, ...);
 
-/*
-    @return             返回追加操作是否成功.
-    @paramater cstr     cstring型.
-    @paramater index    追加位置,总是以cstr作为0为参照.
-    @paramater ...      追加内容,只处理第一个不定参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能处理char型和cstring型两种.
-*/
+
+//  @return             返回追加操作是否成功.
+//  @paramater cstr     cstring型.
+//  @paramater index    追加位置,总是以cstr作为0为参照.
+//  @paramater ...      追加内容,只处理第一个不定参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能处理char型和cstring型两种.
 extern bool     cstringappend(char * cstr, ...);
 
-/*
-    @return             返回删除操作是否成功.
-    @paramater cstr     cstring型.
-    @paramater ...      追加内容,只处理第一个不定参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能处理char型和cstring型两种.
-*/
-extern bool     cstringremove(char * cstr, ...);
 
-/*
-    @return             返回第times次出现检索内容的索引值,若为-1则未找到.
-    @paramater cstr     cstring型.
-    @paramater times    检索内容出现次数.
-    @paramater ...      检索内容,只处理最多2个参数:(1)char型.(2)cstring型,bool(针对cstring中字符完全一样,控制索引方式).其他忽略,采用不定参数,只为模拟函数重载方便而已,只能处理型和cstring型两种.
-*/
+//  @return             返回删除操作是否成功.
+//  @paramater cstr     cstring型.
+//  @paramater ...      清空内容,只处理1:(1)char型.(2)cstring型.其他忽略,采用不定参数,只为模拟函数重载方便而已,只能处理型和cstring型两种.
+extern bool     cstringclean(char * cstr, ...);
+
+
+//  @return             返回删除操作是否成功.
+//  @paramater cstr     cstring型.
+//  @paramater index    删除索引
+extern bool     cstringremove(char * cstr, long index);
+
+
+//  @return             返回第times次出现检索内容的索引值,若为-1则未找到.
+//  @paramater cstr     cstring型.
+//  @paramater times    检索内容出现次数.
+//  @paramater ...      检索内容,只处理最多2个参数:(1)char型.(2)cstring型,bool(针对cstring中字符完全一样,控制索引方式).其他忽略,采用不定参数,只为模拟函数重载方便而已,只能处理型和cstring型两种.
 extern long     cstringindex(char * cstr, long times, ...);
 
-/*
-    @return             返回共计出现检索内容的索引值,若为-1则未找到.
-    @paramater cstr     cstring型.
-    @paramater ...      检索内容,只处理第一个不定参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能处理char型和cstring型两种.
-*/
+
+//  @return             返回共计出现检索内容的索引值,若为-1则未找到.
+//  @paramater cstr     cstring型.
+//  @paramater ...      检索内容,只处理第一个不定参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能处理char型和cstring型两种.
 extern long     cstringindexexcount(char * cstr, ...);
 
-/*
-    @return             无返回值.
-    @paramater cstr     显示各种C语言类型的占用字节数.
-*/
+
+//  @return             无返回值.
+//  @paramater cstr     显示各种C语言类型的占用字节数.
 extern void     typebytelength(void);
 
-/*
-    @return             无返回值.
-    @paramater standard 有C89和C99两种,区别为C89(0-127),C99(0-255),字符集范围不同而已.
-    @paramater flag     与cstringdescribe函数flag参数意义完全一致.
-*/
+
+//  @return             无返回值.
+//  @paramater standard 有C89和C99两种,区别为C89(0-127),C99(0-255),字符集范围不同而已.
+//  @paramater flag     与cstringdescribe函数flag参数意义完全一致.
 extern void     ASCII(ISO_IEC_646_t standard, unsigned short flag);
 
 #endif
