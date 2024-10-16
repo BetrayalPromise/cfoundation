@@ -300,25 +300,23 @@ bool cstringremove(char * cstr, ...) {
 	return true;
 }
 
-long cstringindex(char * cstr, paramatertype_t type, long times, ...) {
+long cstringindex(char * cstr, long num, long times, ...) {
 	if (!cstringcheck(cstr)) { return false; }
-
-	va_list list;
-	va_start(list, times);
 
 	long length = cstringlength(cstr);
 	long index = -1;
+	long count = 0;
 
 	if (times < 0 || times > length) {
 		printf("WARNNING: times(%ld) is out of range(0-%ld)!\n", times, length);
 		return -1;
 	}
 
+	va_list list;
+	va_start(list, times);
 	uint64_t result = va_arg(list, uint64_t);
-	long count = 0;
-
-	switch (type) {
-	case value: ({
+	
+	if (num == 1) {
 		char data = result;
 		for (int i = 0; i < length; i ++) {
 			if (data == cstr[i]) {
@@ -332,17 +330,27 @@ long cstringindex(char * cstr, paramatertype_t type, long times, ...) {
 		}
 		va_end(list);
 		return index;
-	}); break;
-	case address: ({
+	} else if (num == 2) {
 		char * data = (void *)result;
-		int i = 0;
-		int j = 0;
+
 		long size = cstringlength(data); 
 		if (size <= 0 || size > length) { return - 1; }
 
-		uint64_t flag = va_arg(list, uint64_t);
-		bool control = flag != 0 ? true : false;
-
+		uint64_t flag = va_arg(list, uint64_t) != 0 ? true : false;
+		bool control = false;
+		
+		if (flag) {
+			for (int i = 0; i < size - 1; i ++) {
+				if (data[i] == data[i + 1]) {
+					control = true;
+					continue;
+				} else {
+					control = false;
+					break;
+				}
+			}
+		}
+		int i = 0, j = 0;
 		for (; i < length - size + 1;) {
 			for (; j < size;) {
 				if (cstr[i] != data[j]) {
@@ -376,7 +384,9 @@ long cstringindex(char * cstr, paramatertype_t type, long times, ...) {
 		}
 		va_end(list);
 		return index;
-	}); break;
+	} else {
+		va_end(list);
+		return index;
 	}
 }
 

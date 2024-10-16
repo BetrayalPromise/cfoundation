@@ -9,11 +9,6 @@ typedef enum ISO_IEC_646 {
     C99,// ISO/IEC 646:1999
 } ISO_IEC_646_t;
 
-typedef enum paramatertype {
-    value,   // ISO/IEC 646:1991 
-    address,   // ISO/IEC 646:1999
-} paramatertype_t;
-
 /*
     数据结构
      -----------------------0++++++++++++
@@ -169,11 +164,11 @@ extern bool     cstringremove(char * cstr, ...);
 /*
     @return             返回第times次出现检索内容的索引值,若为-1则未找到.
     @paramater cstr     经过cstringinit处理过的包含信息的字符串.
-    @paramater type     数据类型.
+    @paramater num      不定参数个数.
     @paramater times    检索内容出现次数.
     @paramater ...      检索内容,只处理第一个参数,其他忽略,采用不定参数,只为模拟函数重载方便而已,只能能处理字符型和经过cstringinit处理过的包含信息的字符串两种.
 */
-extern long     cstringindex(char * cstr, paramatertype_t type, long times, ...);
+extern long     cstringindex(char * cstr, long num, long times, ...);
 
 /*
     @return             返回共计出现检索内容的索引值,若为-1则未找到.

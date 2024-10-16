@@ -144,9 +144,9 @@ void testcstringindex() {
 	// }
 
 	if (true) {
-		char * p0 = cstringinit$("000");
+		char * p0 = cstringinit$("0000");
 		char * p1 = cstringinit$("00");
-		long index = cstringindex(p0, address, 2, p1, 0);
+		long index = cstringindex(p0, 2, 2, p1, true);
 		printf("index = %ld\n", index);
 	}
 }
