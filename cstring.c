@@ -360,53 +360,32 @@ long cstringindex(char * cstr, long times, ...) {
 		return index;
 	} else {
 		char * data = (void *)result;
-
 		long size = cstringlength(data); 
-		if (size <= 0 || size > length) { return - 1; }
+		if (length <=0 || size <= 0 || size > length) { return - 1; }
 
 		uint64_t flag = va_arg(list, uint64_t) != 0 ? true : false;
-		bool control = false;
+		bool ctl = false;
 		
 		if (flag) {
 			for (int i = 0; i < size - 1; i ++) {
-				if (data[i] == data[i + 1]) {
-					control = true;
-					continue;
-				} else {
-					control = false;
-					break;
-				}
-			}
+				data[0] == data[i] ? ({ ctl = true; continue; }) : ({ ctl = false; break; });
+			}	
 		}
+
 		int i = 0, j = 0;
-		for (; i < length - size + 1;) {
-			for (; j < size;) {
-				if (cstr[i] != data[j]) {
-					index == -1 ? ({ ++ i; }) : ({ i = index + 1; });
-					j = 0;
-					break;
-				} else { // 单个数据相同
-					index == -1 ? index = i : ({});
-					if (j + 1 == size) { // 子字符串遍历完成
-						j = 0;
-						i = index + 1;
-						++ count;
-						if (count == times) {
-							va_end(list);
-							return index;
-						} else {
-							if (control && flag) {
-								i = i + size - 1;
-							}
-						}
-						index = -1;
-						break;
-					}
-					++ j;
-					++ i;
+		while (i < length && j < size) {
+			if (cstr[i] == data[j]) {
+				if (j == size - 1) {
+					++ count == times ? index = i : ({});
+					ctl && flag == true ? ({ ++ i; j = 0; }) : ({ i -= (j - 1); j = 0; });
+				} else {
+					++ i; ++ j;
 				}
+			} else {
+				i -= (j - 1); j = 0;
 			}
 		}
+
 		va_end(list);
 		return index;
 	}
