@@ -1,5 +1,5 @@
 build0:
-	@clang -g main.c array.c cchars.c cstring.c testcstring.c -o /Users/user0/Desktop/Projects/C/8/a.out
+	@clang -g main.c array.c cstring.c testcstring.c -o /Users/user0/Desktop/Projects/C/8/a.out
 
 build1:
 	@clang -E main.c -o main.i

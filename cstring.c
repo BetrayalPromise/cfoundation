@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
-#include "cchars.h"
 #include "cstring.h"
 #include <stdarg.h>
 #include <sys/_types/_va_list.h>

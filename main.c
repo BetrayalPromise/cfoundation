@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/_types/_size_t.h>
-#include "cchars.h"
 #include "array.h"
 #include "cstring.h"
 #include "testcstring.h"

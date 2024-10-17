@@ -72,6 +72,12 @@ typedef enum ISO_IEC_646 {
     #warning "information: duplicate define macro 'cstringindex$'
 #endif
 
+#define CONNECT(a,b) a##b
+// 只适用于字面量
+#define STRING(a) #a
+
+// 只适用于字面量,唯一的办法是用char[]接收字符串,不要使用char *接收,否则无法获取有'\0'的字符串准确长度,sizeof(char[])得到字符串长度
+#define STRING_LENGTH(array) (sizeof(array)/sizeof(char) - 1)
 
 /*
 ========================================================================================
