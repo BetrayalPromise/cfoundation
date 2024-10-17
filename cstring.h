@@ -9,6 +9,7 @@ typedef enum ISO_IEC_646 {
     C99,// ISO/IEC 646:1999
 } ISO_IEC_646_t;
 
+// return "zzz"; "zzz" 字面量存储在静态区域里 不需要释放
 /*
     数据结构cstring
      -----------------------0++++++++++++
@@ -84,7 +85,7 @@ typedef enum ISO_IEC_646 {
 //  @paramater ctl      是否存储字符串默认结尾的(0x00,0,NULL,'\0','\0...'),true:存储,false:不存储.
 extern char *   cstringinit(char * str, bool ctl);
 
-
+//  功能类似于size_t strlen(const char *s);
 //  @return             返回包含信息的字符串的长度.长度包含字符串末尾的0x00,即\0的存储位置也计算在内
 //  @paramater str      cstring型.
 extern long     cstringlength(char * cstr);
@@ -108,6 +109,7 @@ extern void     cstringtelescope(char ** pcstr, bool ctl, long m);
 extern void     cstringdescribe(char * cstr, unsigned short flag);
 
 
+//  功能类似于char *strcpy(char *dest, const char *src);
 //  @return             返回cstring型.
 //  @paramater cstr     cstring型.
 extern char *   cstringcopy(char * cstr);
@@ -130,12 +132,12 @@ extern bool     cstringcompare(char * cstr, char * data);
 //  @prarmater ...      插入内容(char型或cstring型),接受一个不定参数.
 extern bool     cstringinsert(char * cstr, long index, ...);
 
-
+//  功能类似char *strcat(char *dest, const char *src);
 //  @return             返回追加操作是否成功.
 //  @paramater cstr     cstring型.
 //  @paramater index    追加位置,总是以cstr作为0为参照.
 //  @paramater ...      追加内容(char型或cstring型),接受一个不定参数.
-extern bool     cstringappend(char * cstr, ...);
+extern bool     cstringcatenate(char * cstr, ...);
 
 
 //  @return             返回删除操作是否成功.
@@ -150,6 +152,7 @@ extern bool     cstringclean(char * cstr, ...);
 extern bool     cstringremove(char * cstr, long index);
 
 
+//  功能类似char *strchr(const char *s, int c); char *strstr(const char *s1, const char *s2);
 //  @return             返回第times次出现检索内容的索引值,若为-1则未找到.
 //  @paramater cstr     cstring型.
 //  @paramater times    检索内容出现次数.
@@ -160,8 +163,13 @@ extern long     cstringindex(char * cstr, long times, ...);
 //  @return             返回共计出现检索内容的总数.
 //  @paramater cstr     cstring型.
 //  @paramater ...      检索内容(char型或cstring型),若为char型,接受一个不定参数,若为cstring型,还需传入一个bool型(针对cstring型[111],[222]...,控制索引方式),接受两个不定参数.
-extern long     cstringindexex(char * cstr, ...);
+extern long     cstringindexcount(char * cstr, ...);
 
+
+//  数组每个元素只保留一个
+//  @return             无返回值.
+//  @paramater cstr     cstring型.
+extern void     cstringunique(char * cstr);
 
 //  @return             无返回值.
 //  @paramater cstr     显示各种C语言类型的占用字节数.

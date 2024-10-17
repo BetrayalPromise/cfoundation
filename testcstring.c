@@ -1,7 +1,7 @@
-#ifndef __TEST_C__
-#define __TEST_C__
+#ifndef __TESTCSTRING_C__
+#define __TESTCSTRING_C__
 
-#include "test.h"
+#include "testcstring.h"
 #include "cstring.h"
 #include <stdbool.h>
 #include <stdio.h>
@@ -204,6 +204,12 @@ void testcstringclean() {
 		cstringclean(p0);
 		cstringdescribe(p0, 0b001);
 	}
+}
+
+void testcstringunique() {
+	char * p0 = cstringinit$("0000000");
+	cstringunique(p0);
+	cstringdescribe(p0, 0b100);
 }
 
 #endif

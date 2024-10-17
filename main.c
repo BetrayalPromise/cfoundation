@@ -8,7 +8,7 @@
 #include "cchars.h"
 #include "array.h"
 #include "cstring.h"
-#include "test.h"
+#include "testcstring.h"
 
 	// 0x0;
     // __asm__ __volatile__("movq %%## #r, %0" : "=r"(value))
@@ -21,7 +21,8 @@ int main(int argc, char ** argv) {
 	// testcstringtelescope();
 	// testcstringinsrt();
 	// testcstringremove();
-	testcstringindex();
+	// testcstringindex();
+	testcstringunique();
 
 	return EXIT_SUCCESS;
 }

@@ -1,5 +1,5 @@
-#ifndef __TEST_H__
-#define __TEST_H__
+#ifndef __TESTCSTRING_H__
+#define __TESTCSTRING_H__
 
 void testcstringinit();
 void testcstringinsrt();
@@ -8,5 +8,6 @@ void testcstringclean();
 void testcstringremove();
 void testcstringindex();
 void testcstringindexes();
+void testcstringunique();
 
 #endif

@@ -40,7 +40,7 @@ long cstringlength(char * cstr) {
 }
 
 /*
-	return "zzz"; "zzz" 字面量存储在静态区域里 不需要释放
+	
 */
 char * cstringinit(char * str, bool ctl) {
     long vstep = baseinformationsize();
@@ -217,7 +217,7 @@ bool cstringinsert(char * cstr, long index, ...) {
 	}
 }
 
-bool cstringappend(char * cstr, ...) {
+bool cstringcatenate(char * cstr, ...) {
 	if (!cstringcheck(cstr)) { return false; }
 
 	va_list list;
@@ -304,7 +304,6 @@ bool cstringclean(char * cstr, ...) {
 			memmove(cstr, cstr + size, temp - size);
 			setcstringlength(cstr, temp - size);
 			temp -= size;
-			cstringdescribe(cstr, 0b111);
 			i = cstringindex(cstr, 1, data, true);
 		} while (i != -1);
 		/*
@@ -391,7 +390,7 @@ long cstringindex(char * cstr, long times, ...) {
 	}
 }
 
-long cstringindexes(char * cstr, ...) {
+long cstringindexcount(char * cstr, ...) {
 	if (!cstringcheck(cstr)) { return false; }
 
 	va_list list;
@@ -417,47 +416,60 @@ long cstringindexes(char * cstr, ...) {
 		long index = 0;
 		long size = cstringlength(data); 
 		int64_t flag = va_arg(list, uint64_t) != 0 ? true : false;
-		bool control = false;
+		bool ctl = false;
 		
 		if (flag) {
 			for (int i = 0; i < size - 1; i ++) {
-				if (data[i] == data[i + 1]) {
-					control = true;
-					continue;
-				} else {
-					control = false;
-					break;
-				}
+				data[0] == data[i] ? ({ ctl = true; continue; }) : ({ ctl = false; break; });
 			}
 		}
+
 		int i = 0, j = 0;
-		for (; i < length - size + 1;) {
-			for (; j < size;) {
-				if (cstr[i] != data[j]) {
-					index == -1 ? ({ ++ i; }) : ({ i = index + 1; });
-					j = 0;
-					break;
-				} else { // 单个数据相同
-					index == -1 ? index = i : ({});
-					if (j + 1 == size) { // 子字符串遍历完成
-						j = 0;
-						if (control && flag) {
-							i = i + size - 1;
-						} else {
-							i = index + 1;
-						}
-						++ count;
-						index = -1;
-						break;
-					}
-					++ j;
-					++ i;
+		while (i < length && j < size) {
+			if (cstr[i] == data[j]) {
+				if (j == size - 1) {
+					++ count;
+					ctl && flag == true ? ({ ++ i; j = 0; }) : ({ i -= (j - 1); j = 0; });
+				} else {
+					++ i; ++ j;
 				}
+			} else {
+				i -= (j - 1); j = 0;
 			}
 		}
+
 		va_end(list);
 		return count;
 	}
+}
+
+void cstringunique(char * cstr) {
+	if (!cstringcheck(cstr)) { return; }
+	long length = cstringlength(cstr);
+	if (length <= 1) { return; }
+
+	long i, j, k;
+ 	for(i = 0; i < length; i ++) {
+        for(j = i + 1; j < length; j ++) {
+            if(cstr[i] == cstr[j]) {
+                for(k = j; k < length - 1; k ++) { 
+                	cstr[k] = cstr[k + 1];
+                }
+            	length--;
+            	j--;
+            }
+        }
+    }
+	setcstringlength(cstr, length);
+}
+ 
+
+long cstringprefix() {
+	return -1;
+}
+
+long cstringpresuffix() {
+	return -1;
 }
 
 void ASCII(ISO_IEC_646_t standard, unsigned short flag) {
