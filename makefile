@@ -4,12 +4,12 @@ build0:
 build1:
 	@clang -E main.c -o main.i
 	@clang -E cstring.c -o cstring.i
-	@clang -E test.c -o test.i
+	@clang -E testcstring.c -o test.i
 
 build2:
 	@clang -S main.c -o main.s
 	@clang -S cstring.c -o cstring.s
-	@clang -S test.c -o test.s
+	@clang -S testcstring.c -o testcstring.s
 
 clean:
 	@rm *.i a.out *.s

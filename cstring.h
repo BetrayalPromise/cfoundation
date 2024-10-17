@@ -82,7 +82,6 @@ typedef enum ISO_IEC_646 {
     #warning "information: duplicate define macro 'STRING'
 #endif
 
-
 #if !defined (STRING_LENGTH)
     // 只适用于字面量,唯一的办法是用char[]接收字符串,不要使用char *接收,否则无法获取有'\0'的字符串准确长度,sizeof(char[])得到字符串长度
     #define STRING_LENGTH(array) (sizeof(array)/sizeof(char) - 1)
@@ -97,6 +96,7 @@ typedef enum ISO_IEC_646 {
 ========================================================================================
 */
 
+extern long baseinformationsize(void);
 
 //  @return             返回一个如13行所示的包含信息的字符串,结构与其一致.
 //  @paramater str      常规字符串.str(NULL,0,0x00),ctl不生效,length始终为0,volume不存储.str(!NULL)时,按照ctl控制参数接受.str("","\0","\000..."),ctrl(true)则length为1,volume存储0.str("","\0","\000..."),ctrl(false)则length为0,volume不存储.
