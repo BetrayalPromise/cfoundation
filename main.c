@@ -9,8 +9,8 @@
 #include "cstring.h"
 #include "testcstring.h"
 
-	// 0x0;
-    // __asm__ __volatile__("movq %%## #r, %0" : "=r"(value))
+// 0x0;
+// __asm__ __volatile__("movq %%## #r, %0" : "=r"(value))
 //#define readdata(r)
 //	printf("%%%s", #r);
 

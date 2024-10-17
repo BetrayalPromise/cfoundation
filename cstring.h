@@ -26,7 +26,6 @@ typedef enum ISO_IEC_646 {
 // #define cstringinit$(a, ...)            cstringinit(a, (32, ##__VA_ARGS__))
 // #define cstringdescribe$(a, ...)        cstringdescribe(a, (0b001, ##__VA_ARGS__))
 // #define cstringtelescope$(a, b, c)      cstringtelescope(a, DEFAULTARGC(b, true), DEFAULTARGC(c, 2))
-// #define ASCII$(a, b)                    ASCII(DEFAULTARGC(a, C89), DEFAULTARGC(b, 0b001))
 
 /*
 ========================================================================================
@@ -45,8 +44,6 @@ typedef enum ISO_IEC_646 {
 #else
     #warning "information: duplicate define macro 'cstringinit$'
 #endif
-
-// #define __CCHARS_LENGTH__(array) (sizeof(array)/sizeof(char) - 1)
 
 #if !defined (cstringdescribe$)
     #define cstringdescribe$(a, ...)        cstringdescribe(a, (0b001, ##__VA_ARGS__))
@@ -72,12 +69,27 @@ typedef enum ISO_IEC_646 {
     #warning "information: duplicate define macro 'cstringindex$'
 #endif
 
-#define CONNECT(a,b) a##b
-// 只适用于字面量
-#define STRING(a) #a
+#if !defined (CONNECT)
+    #define CONNECT(a,b) a##b
+#else
+    #warning "information: duplicate define macro 'CONNECT'
+#endif
 
-// 只适用于字面量,唯一的办法是用char[]接收字符串,不要使用char *接收,否则无法获取有'\0'的字符串准确长度,sizeof(char[])得到字符串长度
-#define STRING_LENGTH(array) (sizeof(array)/sizeof(char) - 1)
+#if !defined (STRING)
+    // 只适用于字面量
+    #define STRING(a) #a
+#else
+    #warning "information: duplicate define macro 'STRING'
+#endif
+
+
+#if !defined (STRING_LENGTH)
+    // 只适用于字面量,唯一的办法是用char[]接收字符串,不要使用char *接收,否则无法获取有'\0'的字符串准确长度,sizeof(char[])得到字符串长度
+    #define STRING_LENGTH(array) (sizeof(array)/sizeof(char) - 1)
+#else
+    #warning "information: duplicate define macro 'STRING_LENGTH'
+#endif
+
 
 /*
 ========================================================================================
