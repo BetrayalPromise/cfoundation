@@ -53,21 +53,16 @@ char * cstringinit(char * str, bool ctl) {
 	} else {
 		length = ctl == true ? strlen(str) + 1 : strlen(str);
 	}
-
 	while (volume <= length) {
 		volume *= 2;
 	}
-
     char * space = malloc(vstep + lstep + volume);
     char * cstr = space + vstep + lstep;
-
 	for (int i = 0; i < length; i ++) {
 		cstr[i] = str[i];
 	}
-	
 	setcstringlength(cstr, length);
 	setcstringvolume(cstr, volume);
-
     return cstr;
 }
 
@@ -462,7 +457,57 @@ void cstringunique(char * cstr) {
     }
 	setcstringlength(cstr, length);
 }
- 
+
+void cstringchange(char * cstr, long pos, ...) {
+	if (!cstringcheck(cstr)) { return; }
+
+	va_list list;
+	va_start(list, pos);
+	uint64_t result = va_arg(list, uint64_t);
+	long length = cstringlength(cstr);
+	char * data = NULL;
+	if (0x00 <= result && result <= 0xff) {
+		char str[1 + baseinformationsize() * 2];
+		data = str + baseinformationsize() * 2;
+		str[0] = result;
+		setcstringlength(data, 1);
+		setcstringvolume(data, 1);
+	} else {
+		data = (void *)result;
+	}
+
+	long loc = 0;
+	long index = 0;
+	long size = 0;
+	if (pos < 0) {
+		if (pos + cstringlength(data) <= 0) {
+			return;
+		} else {
+			index = labs(pos);
+			size = pos + cstringlength(data) < cstringlength(cstr) ? pos + cstringlength(data) : cstringlength(cstr);
+			loc = 0;
+		}
+	} else if (pos == 0) {
+		index = 0;
+		size = cstringlength(cstr) > cstringlength(data) ? cstringlength(data) : cstringlength(cstr);
+		loc = 0;
+	} else {
+		if (pos >= cstringlength(cstr)) {
+			return;
+		} else {
+			index = 0;
+			size = pos + cstringlength(data) < cstringlength(cstr) ? cstringlength(data) : cstringlength(cstr) - pos;
+			loc = pos;
+		}
+	}
+	long i = loc;
+	long j = index;
+	for (; i < size + loc; i ++) {
+		cstr[i] = data[j];
+		j ++;
+	}
+	va_end(list);
+}
 
 long cstringprefix() {
 	return -1;

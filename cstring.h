@@ -171,6 +171,14 @@ extern long     cstringindexcount(char * cstr, ...);
 //  @paramater cstr     cstring型.
 extern void     cstringunique(char * cstr);
 
+
+//  @return             无返回值.
+//  @paramater cstr     cstring型.
+//  @paramater pos      操作起始索引.
+//  @paramater ...      改变内容(char型或cstring型),接受一个不定参数.
+extern void cstringchange(char * cstr, long pos, ...);
+
+
 //  @return             无返回值.
 //  @paramater cstr     显示各种C语言类型的占用字节数.
 extern void     typebytelength(void);
