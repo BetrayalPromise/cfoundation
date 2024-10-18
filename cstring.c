@@ -437,24 +437,42 @@ long cstringindexcount(char * cstr, ...) {
 	}
 }
 
-void cstringunique(char * cstr) {
+void cstringunique(char * cstr, bool flag) {
 	if (!cstringcheck(cstr)) { return; }
 	long length = cstringlength(cstr);
 	if (length <= 1) { return; }
 
-	long i, j, k;
- 	for(i = 0; i < length; i ++) {
-        for(j = i + 1; j < length; j ++) {
-            if(cstr[i] == cstr[j]) {
-                for(k = j; k < length - 1; k ++) { 
-                	cstr[k] = cstr[k + 1];
-                }
-            	length--;
-            	j--;
-            }
-        }
+	// 为什么是256：因为只要是字符串，ASCII值都在0~255之间,标准C,暂不支持多语言字符集
+    char buffer[256];
+	char delete[256];
+
+	memset(buffer, false, sizeof(buffer));
+	memset(delete, false, sizeof(buffer));
+
+    int i = 0, j = 0;
+    while(i < length) {
+        if(buffer[cstr[i]] == 0) {
+			cstr[j] = cstr[i];
+            buffer[cstr[i]] = 1;
+            ++ j;
+        } else {
+			flag == true ? ({}) : ({
+				if(delete[cstr[i]] == 0) {
+					delete[cstr[i]] = 1;
+					for (int k = 0; k < j; k ++) {
+						if (cstr[k] == cstr[i]) {
+							char c = cstr[i];
+							memmove(cstr + k, cstr + k + 1, j - k - 1);
+							cstr[i - 1] = c;
+							--j; break;
+						}
+					}
+				}
+			});
+		}
+        ++ i;
     }
-	setcstringlength(cstr, length);
+	setcstringlength(cstr, j);
 }
 
 void cstringchange(char * cstr, long pos, ...) {

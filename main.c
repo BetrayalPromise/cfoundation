@@ -21,7 +21,7 @@ int main(int argc, char ** argv) {
 	// testcstringinsrt();
 	// testcstringremove();
 	// testcstringindex();
-	// testcstringunique();
+	testcstringunique();
 
 	// int x;
 	// char x0, x1;
@@ -48,10 +48,10 @@ int main(int argc, char ** argv) {
 	// float2binary(3.14, original);
 	// double2binary(3.14, original);
 
-	char * p = STRING2CSTRING(p, "ABC");
-	long length = cstringlength(p);
-	long volume = cstringvolume(p);
-	cstringdescribe(p, 0b001);
+	// char * p = STRING2CSTRING(p, "ABC");
+	// long length = cstringlength(p);
+	// long volume = cstringvolume(p);
+	// cstringdescribe(p, 0b001);
 
 	return EXIT_SUCCESS;
 }

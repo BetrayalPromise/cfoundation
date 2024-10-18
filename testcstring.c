@@ -214,9 +214,9 @@ void testcstringclean() {
 }
 
 void testcstringunique() {
-	char * p0 = cstringinit$("0000000");
-	cstringunique(p0);
-	cstringdescribe(p0, 0b100);
+	char * p0 = cstringinit$("0523541007840000");
+	cstringunique(p0, false);
+	cstringdescribe(p0, 0b001);
 }
 
 #endif

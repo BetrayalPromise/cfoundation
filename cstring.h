@@ -131,8 +131,6 @@
 ========================================================================================
 */
 
-extern long     baseinformationsize(void);
-
 //  @return             返回一个如13行所示的包含信息的字符串,结构与其一致.
 //  @paramater str      常规字符串.str(NULL,0,0x00),ctl不生效,length始终为0,volume不存储.str(!NULL)时,按照ctl控制参数接受.str("","\0","\000..."),ctrl(true)则length为1,volume存储0.str("","\0","\000..."),ctrl(false)则length为0,volume不存储.
 //  @paramater ctl      是否存储字符串默认结尾的(0x00,0,NULL,'\0','\0...'),true:存储,false:不存储.
@@ -219,10 +217,11 @@ extern long     cstringindex(char * cstr, long times, ...);
 extern long     cstringindexcount(char * cstr, ...);
 
 
-//  数组每个元素只保留一个
+//  数组去重复元素
 //  @return             无返回值.
 //  @paramater cstr     cstring型.
-extern void     cstringunique(char * cstr);
+//  @paramater flag     为true,重复元素保留一个;为false重复元素一个不保留.
+extern void     cstringunique(char * cstr, bool flag);
 
 
 //  @return             无返回值.
