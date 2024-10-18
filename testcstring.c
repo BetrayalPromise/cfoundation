@@ -36,7 +36,7 @@ void testcstringinit() {
 	}
 
 	if (true) {
-		char * p = C2CSTRING(p, 'y');
+		char * p = CHAR2CSTRING(p, 'y');
 		long length = cstringlength(p);
 		long volume = cstringvolume(p);
 		cstringdescribe(p, 0b100);

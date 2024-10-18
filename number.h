@@ -7,6 +7,11 @@ typedef enum format {
     complement, // 补码
 } format_t;
 
+typedef enum ISO_IEC_646 {
+    C89,// ISO/IEC 646:1991 
+    C99,// ISO/IEC 646:1999
+} ISO_IEC_646_t;
+
 #define BitGet(n, p)  ((n) >> (p)&1)        // 得到某数的某位
 #define BitNOT(n, p)  ((n) ^= 1<<(p))       // 把n的p位取反
 #define BitSET1(n, p) ((n)|= 1<<(p))        // 把某位置1

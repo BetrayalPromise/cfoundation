@@ -12,11 +12,6 @@
 // } cstring_one_t;
 // #pragma pack()
 
-typedef enum ISO_IEC_646 {
-    C89,// ISO/IEC 646:1991 
-    C99,// ISO/IEC 646:1999
-} ISO_IEC_646_t;
-
 // return "zzz"; "zzz" 字面量存储在静态区域里 不需要释放
 /*
     数据结构cstring
@@ -79,14 +74,15 @@ typedef enum ISO_IEC_646 {
 
 
 // 小端存储能使用,栈数据,不能扩容
+// char[]
 // 能处理字面量字符串中包含'\0'的
-#if !defined (S2CSTRING)
-    #define S2CSTRING(name, string)\
+#if !defined (STRING2CSTRING)
+    #define STRING2CSTRING(name, s)\
         NULL;\
 	    do {\
-		    char temp[2 * sizeof(long) + sizeof(string)/sizeof(char) - 1] = {};\
-		    *(long *)(temp) = sizeof(string)/sizeof(char) - 1; *(long *)(temp + sizeof(long)) = sizeof(string)/sizeof(char) - 1;\
-		    for(int i = 0; i < sizeof(string)/sizeof(char) - 1; i ++) { temp[2 * sizeof(long) + i] = string[i]; }\
+		    char temp[2 * sizeof(long) + sizeof(s)/sizeof(char) - 1];\
+		    *(long *)(temp) = sizeof(s)/sizeof(char) - 1; *(long *)(temp + sizeof(long)) = sizeof(s)/sizeof(char) - 1;\
+		    for(int i = 0; i < sizeof(s)/sizeof(char) - 1; i ++) { temp[2 * sizeof(long) + i] = s[i]; }\
 		    name = temp + 2 * sizeof(long);\
 	    } while(0);
 #else
@@ -94,13 +90,32 @@ typedef enum ISO_IEC_646 {
 #endif
 
 
+
 // 小端存储能使用,栈数据,不能扩容
+// char *
 // 能处理字面量字符串中包含'\0'的
-#if !defined (C2CSTRING)
-    #define C2CSTRING(name, c)\
+#if !defined (POINTER2CSTRING)
+    #define POINTER2CSTRING(name, p)\
         NULL;\
 	    do {\
-		    char temp[2 * sizeof(long) + 1] = { c };\
+            long length = cstringlength(p);\
+		    char temp[2 * sizeof(long) + length];\
+            for(int i = 0; i < length; i ++) { temp[2 * sizeof(long) + i] = ((char *)p)[i]; }\
+		    name = temp + 2 * sizeof(long);\
+	    } while(0);
+#else
+    #warning "information: duplicate define macro 'POINTER2CSTRING'
+#endif
+
+
+// 小端存储能使用,栈数据,不能扩容
+// char
+// 能处理字面量字符
+#if !defined (CHAR2CSTRING)
+    #define CHAR2CSTRING(name, c)\
+        NULL;\
+	    do {\
+		    char temp[2 * sizeof(long) + 1];\
 		    *(long *)(temp) = 1; *(long *)(temp + sizeof(long)) = 1;\
             temp[2 * sizeof(long)] = c;\
 		    name = temp + 2 * sizeof(long);\
@@ -116,7 +131,7 @@ typedef enum ISO_IEC_646 {
 ========================================================================================
 */
 
-extern long baseinformationsize(void);
+extern long     baseinformationsize(void);
 
 //  @return             返回一个如13行所示的包含信息的字符串,结构与其一致.
 //  @paramater str      常规字符串.str(NULL,0,0x00),ctl不生效,length始终为0,volume不存储.str(!NULL)时,按照ctl控制参数接受.str("","\0","\000..."),ctrl(true)则length为1,volume存储0.str("","\0","\000..."),ctrl(false)则length为0,volume不存储.
@@ -215,16 +230,5 @@ extern void     cstringunique(char * cstr);
 //  @paramater pos      操作起始索引.
 //  @paramater ...      改变内容(char型或cstring型),接受一个不定参数.
 extern void     cstringchange(char * cstr, long pos, ...);
-
-
-//  @return             无返回值.
-//  @paramater cstr     显示各种C语言类型的占用字节数.
-extern void     typebytelength(void);
-
-
-//  @return             无返回值.
-//  @paramater standard 有C89和C99两种,区别为C89(0-127),C99(0-255),字符集范围不同而已.
-//  @paramater flag     与cstringdescribe函数flag参数意义完全一致.
-extern void     ASCII(ISO_IEC_646_t standard, unsigned short flag);
 
 #endif

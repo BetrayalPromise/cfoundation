@@ -164,6 +164,44 @@ void endian() {
     */
 } 
  
+void ASCII(ISO_IEC_646_t standard, unsigned short flag) {
+	int size = standard == C89 ? 128 : 256;
+	char * show = NULL;
+	switch (flag) {
+	case 0b111: show = "H:0x%02x  D:%03d  C:%c"; break;
+	case 0b110: show = "H:0x%02x  D:%03d)"; break;
+	case 0b101: show = "H:0x%02x  C:%c"; break;
+	case 0b011: show = "D:%03d  C:%c)"; break;
+	case 0b100: show = "H:0x%02x)"; break;
+	case 0b010: show = "D:%03d)"; break;
+	case 0b001: show = "C:%c)"; break;
+	default:    show = "H:0x%02x  D:%03d  C:%c)"; break;
+	}
+	printf("ASCII STANDARD: %s\n", standard == C89 ? "ISO/IEC 646:1991" : "ISO/IEC 646:1999");
+	for (int i = 0; i < size; i ++) {
+		printf(show, i, i, i);
+		printf("\n");
+	}
+}
 
+void typebytelength(void) {
+	printf("[void].size = %lu Bype\n", sizeof(void));
+	printf("[char].size = %lu Bype\n", sizeof(char));
+	printf("[short].size = %lu Bype\n", sizeof(short));
+	printf("[int].size = %lu Bype\n", sizeof(int));
+	printf("[long].size = %lu Bype\n", sizeof(long));
+	printf("[long long].size = %lu Bype\n", sizeof(long long));
+	printf("[float].size = %lu Bype\n", sizeof(float));
+	printf("[double].size = %lu Bype\n", sizeof(double));
+
+	printf("[void *].size = %lu Bype\n", sizeof(void *));
+	printf("[char *].size = %lu Bype\n", sizeof(char *));
+	printf("[short *].size = %lu Bype\n", sizeof(short *));
+	printf("[int *].size = %lu Bype\n", sizeof(int *));
+	printf("[long *].size = %lu Bype\n", sizeof(long *));
+	printf("[long long *].size = %lu Bype\n", sizeof(long long *));
+	printf("[float *].size = %lu Bype\n", sizeof(float *));
+	printf("[double *].size = %lu Bype\n", sizeof(double *));	
+}
 
 #endif

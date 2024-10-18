@@ -48,7 +48,7 @@ int main(int argc, char ** argv) {
 	// float2binary(3.14, original);
 	// double2binary(3.14, original);
 
-	char * p = S2CSTRING(p, "ABC");
+	char * p = STRING2CSTRING(p, "ABC");
 	long length = cstringlength(p);
 	long volume = cstringvolume(p);
 	cstringdescribe(p, 0b001);
