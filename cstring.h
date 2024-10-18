@@ -4,6 +4,14 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+// #pragma pack(1)
+// typedef struct cstring_one {
+//     char c;
+// 	long l;
+// 	long v;
+// } cstring_one_t;
+// #pragma pack()
+
 typedef enum ISO_IEC_646 {
     C89,// ISO/IEC 646:1991 
     C99,// ISO/IEC 646:1999
@@ -69,28 +77,40 @@ typedef enum ISO_IEC_646 {
     #warning "information: duplicate define macro 'cstringindex$'
 #endif
 
-#if !defined (CONNECT)
-    #define CONNECT(a,b) a##b
-#else
-    #warning "information: duplicate define macro 'CONNECT'
-#endif
 
-#if !defined (STRING)
-    // 只适用于字面量
-    #define STRING(a) #a
+// 小端存储能使用,栈数据,不能扩容
+// 能处理字面量字符串中包含'\0'的
+#if !defined (S2CSTRING)
+    #define S2CSTRING(name, string)\
+        NULL;\
+	    do {\
+		    char temp[2 * sizeof(long) + sizeof(string)/sizeof(char) - 1] = {};\
+		    *(long *)(temp) = sizeof(string)/sizeof(char) - 1; *(long *)(temp + sizeof(long)) = sizeof(string)/sizeof(char) - 1;\
+		    for(int i = 0; i < sizeof(string)/sizeof(char) - 1; i ++) { temp[2 * sizeof(long) + i] = string[i]; }\
+		    name = temp + 2 * sizeof(long);\
+	    } while(0);
 #else
-    #warning "information: duplicate define macro 'STRING'
-#endif
-
-#if !defined (STRING_LENGTH)
-    // 只适用于字面量,唯一的办法是用char[]接收字符串,不要使用char *接收,否则无法获取有'\0'的字符串准确长度,sizeof(char[])得到字符串长度
-    #define STRING_LENGTH(array) (sizeof(array)/sizeof(char) - 1)
-#else
-    #warning "information: duplicate define macro 'STRING_LENGTH'
+    #warning "information: duplicate define macro 'S2CSTRING'
 #endif
 
 
-/*
+// 小端存储能使用,栈数据,不能扩容
+// 能处理字面量字符串中包含'\0'的
+#if !defined (C2CSTRING)
+    #define C2CSTRING(name, c)\
+        NULL;\
+	    do {\
+		    char temp[2 * sizeof(long) + 1] = { c };\
+		    *(long *)(temp) = 1; *(long *)(temp + sizeof(long)) = 1;\
+            temp[2 * sizeof(long)] = c;\
+		    name = temp + 2 * sizeof(long);\
+	    } while(0);
+#else
+    #warning "information: duplicate define macro 'C2CSTRING'
+#endif
+
+
+/* 
 ========================================================================================
                                         函数区域
 ========================================================================================
@@ -194,7 +214,7 @@ extern void     cstringunique(char * cstr);
 //  @paramater cstr     cstring型.
 //  @paramater pos      操作起始索引.
 //  @paramater ...      改变内容(char型或cstring型),接受一个不定参数.
-extern void cstringchange(char * cstr, long pos, ...);
+extern void     cstringchange(char * cstr, long pos, ...);
 
 
 //  @return             无返回值.

@@ -34,6 +34,13 @@ void testcstringinit() {
 		cstringdescribe(p2, 0b100);
 		cstringdescribe(p3, 0b100);
 	}
+
+	if (true) {
+		char * p = C2CSTRING(p, 'y');
+		long length = cstringlength(p);
+		long volume = cstringvolume(p);
+		cstringdescribe(p, 0b100);
+	}
 }
 
 void testcstringinsrt() {

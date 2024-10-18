@@ -37,17 +37,21 @@ int main(int argc, char ** argv) {
 		低
 	*/
 
-	char2binary('c', original);
-	short2binary(3, original);
-	int2binary(3, original);
-	long2binary(8, original);
-	uchar2binary('c', original);
-	ushort2binary(3, original);
-	uint2binary(3, original);
-	ulong2binary(8, original);
-	float2binary(3.14, original);
-	double2binary(3.14, original);
+	// char2binary('c', original);
+	// short2binary(3, original);
+	// int2binary(3, original);
+	// long2binary(8, original);
+	// uchar2binary('c', original);
+	// ushort2binary(3, original);
+	// uint2binary(3, original);
+	// ulong2binary(8, original);
+	// float2binary(3.14, original);
+	// double2binary(3.14, original);
 
+	char * p = S2CSTRING(p, "ABC");
+	long length = cstringlength(p);
+	long volume = cstringvolume(p);
+	cstringdescribe(p, 0b001);
 
 	return EXIT_SUCCESS;
 }
