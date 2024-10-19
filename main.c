@@ -21,7 +21,7 @@ int main(int argc, char ** argv) {
 	// testcstringinsrt();
 	// testcstringremove();
 	// testcstringindex();
-	testcstringunique();
+	// testcstringunique();
 
 	// int x;
 	// char x0, x1;
@@ -52,6 +52,8 @@ int main(int argc, char ** argv) {
 	// long length = cstringlength(p);
 	// long volume = cstringvolume(p);
 	// cstringdescribe(p, 0b001);
+
+	printf("%d\n", ARGC(1, 2, 3, 4, 5, 6, 7, 8, 9, 0));
 
 	return EXIT_SUCCESS;
 }

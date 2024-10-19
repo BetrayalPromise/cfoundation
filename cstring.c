@@ -20,22 +20,22 @@ long baseinformationsize(void) {
 	return sizeof(long);
 }
 
-static void setcstringvolume(char * cstr, long value) {
-	*(long *)(cstr - 2 * baseinformationsize()) = value;
+static void setcstringvolume(char * cstr, size_t value) {
+	*(size_t *)(cstr - 2 * baseinformationsize()) = value;
 }
 
-long cstringvolume(char * cstr) {
+size_t cstringvolume(char * cstr) {
 	if (!cstringcheck(cstr)) { return -1; }
-    return *(long *)(cstr - 2 * baseinformationsize());
+    return *(size_t *)(cstr - 2 * baseinformationsize());
 }
 
-static void setcstringlength(char * cstr, long value) {
+static void setcstringlength(char * cstr, size_t value) {
 	*(long *)(cstr - baseinformationsize()) = value;
 }
 
-long cstringlength(char * cstr) {
+size_t cstringlength(char * cstr) {
 	if (!cstringcheck(cstr)) { return -1; }
-    return *(long *)(cstr - baseinformationsize());
+    return *(size_t *)(cstr - baseinformationsize());
 }
 
 /*
@@ -133,7 +133,7 @@ bool cstringcompare(char * cstr, char * data) {
 	}
 }
 
-void cstringtelescope(char ** pcstr, bool ctl, long m) {
+void cstringtelescope(char ** pcstr, bool ctl, size_t m) {
 	if (!cstringcheck(*pcstr)) { return; }
 	long volume = cstringvolume(* pcstr);
 	long length = cstringlength(* pcstr);
@@ -283,7 +283,7 @@ bool cstringclean(char * cstr, ...) {
 			memmove(cstr + indexes[i] - index, cstr + indexes[i] + 1 - index, length - indexes[i] - 1 + index);
 			memmove(cstr + length - 1, &data, 1);
 			cstringdescribe(cstr, 0b001);
-			 ++ index;
+			++ index;
 		}
 	
 		setcstringlength(cstr, length - count);
@@ -437,10 +437,10 @@ long cstringindexcount(char * cstr, ...) {
 	}
 }
 
-void cstringunique(char * cstr, bool flag) {
-	if (!cstringcheck(cstr)) { return; }
+bool cstringunique(char * cstr, bool flag) {
+	if (!cstringcheck(cstr)) { return false; }
 	long length = cstringlength(cstr);
-	if (length <= 1) { return; }
+	if (length <= 1) { return false; }
 
 	// 为什么是256：因为只要是字符串，ASCII值都在0~255之间,标准C,暂不支持多语言字符集
     char buffer[256];
@@ -473,10 +473,11 @@ void cstringunique(char * cstr, bool flag) {
         ++ i;
     }
 	setcstringlength(cstr, j);
+	return true;
 }
 
-void cstringchange(char * cstr, long pos, ...) {
-	if (!cstringcheck(cstr)) { return; }
+bool cstringchange(char * cstr, long pos, ...) {
+	if (!cstringcheck(cstr)) { return false; }
 
 	va_list list;
 	va_start(list, pos);
@@ -494,7 +495,7 @@ void cstringchange(char * cstr, long pos, ...) {
 	long size = 0;
 	if (pos < 0) {
 		if (pos + cstringlength(data) <= 0) {
-			return;
+			return false;
 		} else {
 			index = labs(pos);
 			size = pos + cstringlength(data) < cstringlength(cstr) ? pos + cstringlength(data) : cstringlength(cstr);
@@ -506,7 +507,7 @@ void cstringchange(char * cstr, long pos, ...) {
 		loc = 0;
 	} else {
 		if (pos >= cstringlength(cstr)) {
-			return;
+			return false;
 		} else {
 			index = 0;
 			size = pos + cstringlength(data) < cstringlength(cstr) ? cstringlength(data) : cstringlength(cstr) - pos;
@@ -520,6 +521,26 @@ void cstringchange(char * cstr, long pos, ...) {
 		j ++;
 	}
 	va_end(list);
+	return true;
+}
+
+char * cstringtoken(char * cstr, size_t times, ...) {
+	va_list list;
+	va_start(list, times);
+	uint64_t result = va_arg(list, uint64_t);
+	long index = cstringindex(cstr, times, result);
+	if (index < 0) {
+		va_end(list);
+		return NULL;
+	} else {
+		char * p = cstringinit(NULL, false);
+		size_t volume = cstringvolume(p);
+
+		for (int i = 0; i < index; i ++) {
+			p[i] = cstr[i];
+		}
+		return p;
+	}
 }
 
 long cstringprefix() {

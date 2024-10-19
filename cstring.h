@@ -2,6 +2,7 @@
 #define __CSTRING_H__
 
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 // #pragma pack(1)
@@ -21,10 +22,10 @@
      容量(0-...)  数量(0-...)  存储位置
 */
 
-// #define __ARGS(X)                   (X)
-// #define __ARGC_N(_0, _1, N, ...)    N == 1 ? (#_0)[0] != 0 : N
-// #define __ARGC(...)                 __ARGS(__ARGC_N(__VA_ARGS__,2,1))
-// #define ARGC(...)                   __ARGC(__VA_ARGS__)
+#define __ARGS(X)                   (X)
+#define __ARGC_N(_0, _1, _2, _3, _4, _5, _6, _7, _8, N, ...)    N == 1 ? (#_0)[0] != 0 : N
+#define __ARGC(...)                 __ARGS(__ARGC_N(__VA_ARGS__, 9, 8, 7, 6, 5, 4, 3, 2, 1))
+#define ARGC(...)                   __ARGC(__VA_ARGS__)
 
 // #define cstringinit$(a, ...)            cstringinit(a, (32, ##__VA_ARGS__))
 // #define cstringdescribe$(a, ...)        cstringdescribe(a, (0b001, ##__VA_ARGS__))
@@ -98,8 +99,7 @@
     #define POINTER2CSTRING(name, p)\
         NULL;\
 	    do {\
-            long length = cstringlength(p);\
-		    char temp[2 * sizeof(long) + length];\
+		    char temp[2 * sizeof(long) + cstringlength(p)];\
             for(int i = 0; i < length; i ++) { temp[2 * sizeof(long) + i] = ((char *)p)[i]; }\
 		    name = temp + 2 * sizeof(long);\
 	    } while(0);
@@ -139,19 +139,20 @@ extern char *   cstringinit(char * str, bool ctl);
 //  功能类似于size_t strlen(const char *s);
 //  @return             返回包含信息的字符串的长度.长度包含字符串末尾的0x00,即\0的存储位置也计算在内
 //  @paramater str      cstring型.
-extern long     cstringlength(char * cstr);
+extern size_t   cstringlength(char * cstr);
 
 
 //  @return             返回包含信息的字符串的长度的容量,与存储内容无关.
 //  @paramater str      cstring型.
-extern long     cstringvolume(char * cstr);
+extern size_t   cstringvolume(char * cstr);
 
 
+//  只针对使用cstringinit函数处理过的字符串,即为堆字符串;使用POINTER2CSTRING,STRING2CSTRING,CHAR2CSTRING宏构建的为栈字符串,无法改变容量
 //  @return             无返回值.
 //  @paramater pstr     cstring型它的二级的指针.
 //  @paramater ctl      false:代表减少容量,true:代表增加容量.
 //  @paramater m        容量增加或者减少的倍率.
-extern void     cstringtelescope(char ** pcstr, bool ctl, long m);
+extern void     cstringtelescope(char ** pcstr, bool ctl, size_t m);
 
 
 //  @return             无返回值.
@@ -220,14 +221,14 @@ extern long     cstringindexcount(char * cstr, ...);
 //  数组去重复元素
 //  @return             无返回值.
 //  @paramater cstr     cstring型.
-//  @paramater flag     为true,重复元素保留一个;为false重复元素一个不保留.
-extern void     cstringunique(char * cstr, bool flag);
+//  @paramater flag     为true:重复元素保留一个;为false:重复元素一个不保留.
+extern bool     cstringunique(char * cstr, bool flag);
 
 
 //  @return             无返回值.
 //  @paramater cstr     cstring型.
 //  @paramater pos      操作起始索引.
 //  @paramater ...      改变内容(char型或cstring型),接受一个不定参数.
-extern void     cstringchange(char * cstr, long pos, ...);
+extern bool     cstringchange(char * cstr, long pos, ...);
 
 #endif
