@@ -330,27 +330,29 @@ bool cstringremove2(char * cstr, size_t ps, ...) {
 	long length = cstringlength(cstr);
 	va_list list;
 	va_start(list, ps);
-	int psarray[ps];
-	memset(psarray, 0, sizeof(int) * 8);
+	size_t psarray[ps];
+	memset(psarray, 0, sizeof(int64_t) * 8);
 	for (int i = 0; i < ps; i ++) {
-		long result = va_arg(list, int);
+		long result = va_arg(list, int64_t);
 		if (result > length - 1 || result < 0) {
 			psarray[i] = -1;
 		} else {
 			psarray[i] = result;
 		}
 	}
-	int count = 0;
-	for (int i = 0; i < ps; i ++) {
-		long index = psarray[i];
-		if (index == -1) {
-			continue;
-		} else {
-			memmove(cstr + index, cstr + index + 1, length - index - 1);
-			++ count;
-		}
-	}
-	setcstringlength(cstr, length - count);
+
+
+	// int count = 0;
+	// for (int i = 0; i < ps; i ++) {
+	// 	long index = psarray[i];
+	// 	if (index == -1) {
+	// 		continue;
+	// 	} else {
+	// 		memmove(cstr + index, cstr + index + 1, length - index - 1);
+	// 		++ count;
+	// 	}
+	// }
+	// setcstringlength(cstr, length - count);
 	va_end(list);
 	return true;
 }

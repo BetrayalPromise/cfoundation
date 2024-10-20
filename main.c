@@ -58,10 +58,9 @@ int main(int argc, char ** argv) {
 	// char * p = STRING2CSTRING(p, "ABC");
 	// cstringparamater$(p, 1, 2, 3);
 
-	number_t n = {};
-	n.l = 0x11223344556677;
-
-	printf("%d %d %d %f %ld %f\n", n.c, n.s, n.i, n.f, n.l, n.d);
+	// number_t n = {};
+	// n.l = 0x11223344556677;
+	// printf("%d %d %d %f %ld %f\n", n.c, n.s, n.i, n.f, n.l, n.d);
 
 	return EXIT_SUCCESS;
 }

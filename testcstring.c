@@ -190,7 +190,7 @@ void testcstringremove() {
 	char * p1 = cstringinit$("00");
 	// long index = cstringclean(p0, p1);
 
-	cstringremove2$(p0, -1, 3, 4);
+	// cstringremove2$(p0, -1, 3, 4);
 	cstringdescribe(p0, 0b001);
 }
 

@@ -22,11 +22,14 @@
      容量(0-...)  数量(0-...)  存储位置
 */
 
-
-#define __ARGS(X)                                               (X)
-#define __ARGC_N(_0, _1, _2, _3, _4, _5, _6, _7, _8, N, ...)    N == 1 ? (#_0)[0] != 0 : N
-#define __ARGC(...)                                             __ARGS(__ARGC_N(__VA_ARGS__, 9, 8, 7, 6, 5, 4, 3, 2, 1))
-#define ARGC(...)                                               __ARGC(__VA_ARGS__)
+#if !defined (__ARGS) && !defined (__ARGC_N) && !defined (__ARGC) && !defined (ARGC) 
+    #define __ARGS(X) (X)
+    #define __ARGC_N(_0, _1, _2, _3, _4, _5, _6, _7, _8, N, ...)    N == 1 ? (#_0)[0] != 0 : N
+    #define __ARGC(...) __ARGS(__ARGC_N(__VA_ARGS__, 9, 8, 7, 6, 5, 4, 3, 2, 1))
+    #define ARGC(...) __ARGC(__VA_ARGS__)
+#else
+    #warning "information: duplicate define macro '__ARGS or __ARGC_N or __ARGC or ARGC'
+#endif
 
 // #define cstringinit$(a, ...)            cstringinit(a, (32, ##__VA_ARGS__))
 // #define cstringdescribe$(a, ...)        cstringdescribe(a, (0b001, ##__VA_ARGS__))
@@ -202,8 +205,17 @@ extern bool     cstringclean(char * cstr, ...);
 //  @paramater index    删除索引
 extern bool     cstringremove(char * cstr, long index);
 
-#define cstringremove2$(a, ...) cstringremove2(a, ARGC(__VA_ARGS__), ##__VA_ARGS__)
-extern bool     cstringremove2(char * cstr, size_t ps, ...);
+
+//  @return             返回删除操作是否成功.
+//  @paramater cstr     cstring型.
+//  @paramater ps       删除索引的总数
+//  @paramater ...      删除索引的值
+// extern bool     cstringremove2(char * cstr, size_t ps, ...);
+// #if !defined (cstringremove2$)
+//     #define cstringremove2$(a, ...) cstringremove2(a, ARGC(__VA_ARGS__), ##__VA_ARGS__)
+// #else
+//     #warning "information: duplicate define macro 'cstringremove2$'
+// #endif
 
 
 //  功能类似char *strchr(const char *s, int c); char *strstr(const char *s1, const char *s2);
