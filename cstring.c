@@ -4,6 +4,7 @@
 #include <_types/_uint64_t.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -324,6 +325,36 @@ bool cstringremove(char * cstr, long index) {
 	}
 }
 
+bool cstringremove2(char * cstr, size_t ps, ...) {
+	if (!cstringcheck(cstr)) { return false; }
+	long length = cstringlength(cstr);
+	va_list list;
+	va_start(list, ps);
+	int psarray[ps];
+	memset(psarray, 0, sizeof(int) * 8);
+	for (int i = 0; i < ps; i ++) {
+		long result = va_arg(list, int);
+		if (result > length - 1 || result < 0) {
+			psarray[i] = -1;
+		} else {
+			psarray[i] = result;
+		}
+	}
+	int count = 0;
+	for (int i = 0; i < ps; i ++) {
+		long index = psarray[i];
+		if (index == -1) {
+			continue;
+		} else {
+			memmove(cstr + index, cstr + index + 1, length - index - 1);
+			++ count;
+		}
+	}
+	setcstringlength(cstr, length - count);
+	va_end(list);
+	return true;
+}
+
 long cstringindex(char * cstr, long times, ...) {
 	if (!cstringcheck(cstr)) { return false; }
 
@@ -541,6 +572,10 @@ char * cstringtoken(char * cstr, size_t times, ...) {
 		}
 		return p;
 	}
+}
+
+void cstringparamater(char * cstr, size_t ps, ...) {
+
 }
 
 long cstringprefix() {

@@ -22,10 +22,11 @@
      容量(0-...)  数量(0-...)  存储位置
 */
 
-#define __ARGS(X)                   (X)
+
+#define __ARGS(X)                                               (X)
 #define __ARGC_N(_0, _1, _2, _3, _4, _5, _6, _7, _8, N, ...)    N == 1 ? (#_0)[0] != 0 : N
-#define __ARGC(...)                 __ARGS(__ARGC_N(__VA_ARGS__, 9, 8, 7, 6, 5, 4, 3, 2, 1))
-#define ARGC(...)                   __ARGC(__VA_ARGS__)
+#define __ARGC(...)                                             __ARGS(__ARGC_N(__VA_ARGS__, 9, 8, 7, 6, 5, 4, 3, 2, 1))
+#define ARGC(...)                                               __ARGC(__VA_ARGS__)
 
 // #define cstringinit$(a, ...)            cstringinit(a, (32, ##__VA_ARGS__))
 // #define cstringdescribe$(a, ...)        cstringdescribe(a, (0b001, ##__VA_ARGS__))
@@ -61,11 +62,6 @@
     #warning "information: duplicate define macro 'cstringtelescope$'
 #endif
 
-#if !defined (ASCII$)
-    #define ASCII$(a, b)                    ASCII(DEFAULTARGC(a, C89), DEFAULTARGC(b, 0b001))
-#else
-    #warning "information: duplicate define macro 'ASCII$'
-#endif
 
 #if !defined (cstringindex$)
     #define cstringindex$(a, b, c, ...)     cstringindex(a, DEFAULTARGC(b, 1), c, ##__VA_ARGS__)
@@ -100,7 +96,7 @@
         NULL;\
 	    do {\
 		    char temp[2 * sizeof(long) + cstringlength(p)];\
-            for(int i = 0; i < length; i ++) { temp[2 * sizeof(long) + i] = ((char *)p)[i]; }\
+            for(int i = 0; i < cstringlength(p); i ++) { temp[2 * sizeof(long) + i] = ((char *)p)[i]; }\
 		    name = temp + 2 * sizeof(long);\
 	    } while(0);
 #else
@@ -131,10 +127,12 @@
 ========================================================================================
 */
 
+
 //  @return             返回一个如13行所示的包含信息的字符串,结构与其一致.
 //  @paramater str      常规字符串.str(NULL,0,0x00),ctl不生效,length始终为0,volume不存储.str(!NULL)时,按照ctl控制参数接受.str("","\0","\000..."),ctrl(true)则length为1,volume存储0.str("","\0","\000..."),ctrl(false)则length为0,volume不存储.
 //  @paramater ctl      是否存储字符串默认结尾的(0x00,0,NULL,'\0','\0...'),true:存储,false:不存储.
 extern char *   cstringinit(char * str, bool ctl);
+
 
 //  功能类似于size_t strlen(const char *s);
 //  @return             返回包含信息的字符串的长度.长度包含字符串末尾的0x00,即\0的存储位置也计算在内
@@ -184,6 +182,7 @@ extern bool     cstringcompare(char * cstr, char * data);
 //  @prarmater ...      插入内容(char型或cstring型),接受一个不定参数.
 extern bool     cstringinsert(char * cstr, long index, ...);
 
+
 //  功能类似char *strcat(char *dest, const char *src);
 //  @return             返回追加操作是否成功.
 //  @paramater cstr     cstring型.
@@ -202,6 +201,9 @@ extern bool     cstringclean(char * cstr, ...);
 //  @paramater cstr     cstring型.
 //  @paramater index    删除索引
 extern bool     cstringremove(char * cstr, long index);
+
+#define cstringremove2$(a, ...) cstringremove2(a, ARGC(__VA_ARGS__), ##__VA_ARGS__)
+extern bool     cstringremove2(char * cstr, size_t ps, ...);
 
 
 //  功能类似char *strchr(const char *s, int c); char *strstr(const char *s1, const char *s2);
