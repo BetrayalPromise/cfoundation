@@ -19,7 +19,7 @@ int main(int argc, char ** argv) {
 	// testcstringinit();
 	// testcstringtelescope();
 	// testcstringinsrt();
-	testcstringremove();
+	// testcstringremove();
 	// testcstringindex();
 	// testcstringunique();
 
@@ -55,12 +55,21 @@ int main(int argc, char ** argv) {
 
 	// printf("%d\n", ARGC(1, 2, 3, 4, 5, 6, 7, 8, 9, 0));
 
-	// char * p = STRING2CSTRING(p, "ABC");
-	// cstringparamater$(p, 1, 2, 3);
+	char * p = cstringinit$("abcdefgh");
+	/*
+	abcdefgh
+	 bc e gh
+	*/
+	cstringremoves$(p, -1, -1, 5, 5, 3, 3, 0, 0);
 
-	// number_t n = {};
-	// n.l = 0x11223344556677;
-	// printf("%d %d %d %f %ld %f\n", n.c, n.s, n.i, n.f, n.l, n.d);
+	cstringdescribe$(p);
+
+	/*
+		高位放在高地址,类似大端存储
+	*/
+
+	// long a = 0x77665544332211;
+	// printf("%d\n", (char)a);
 
 	return EXIT_SUCCESS;
 }

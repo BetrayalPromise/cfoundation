@@ -4,6 +4,42 @@
 #include <stdio.h>
 #include "number.h"
 #include <math.h>
+#include <stdlib.h>
+
+
+static void setnumbersvolume(long * ns, size_t value) {
+	*(size_t *)(ns - 2) = value;
+}
+
+size_t numbersvolume(long * ns) {
+	if (ns == NULL) { return -1; }
+    return *(size_t *)(ns - 2);
+}
+
+static void setnumberslength(long * ns, size_t value) {
+	*(long *)(ns - 1) = value;
+}
+
+size_t numberslength(long * ns) {
+	if (ns == NULL) { return -1; }
+    return *(size_t *)(ns - 1);
+}
+
+long * numbersinit(long * n, long size) {
+    long vstep = 1;
+	long lstep = 1;
+	long volume = 32;
+	long length = 0;
+    long * space = malloc(vstep + lstep + volume);
+    long * ns = space + vstep + lstep;
+	setnumberslength(ns, 0);
+	setnumbersvolume(ns, volume);
+    return ns;
+}
+
+void numbersfree(long * ns) {
+    free(ns + 2);
+}
 
 void char2binary(char value, format_t fmt) {
     switch (fmt) {

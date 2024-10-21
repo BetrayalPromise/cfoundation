@@ -209,13 +209,13 @@ extern bool     cstringremove(char * cstr, long index);
 //  @return             返回删除操作是否成功.
 //  @paramater cstr     cstring型.
 //  @paramater ps       删除索引的总数
-//  @paramater ...      删除索引的值
-// extern bool     cstringremove2(char * cstr, size_t ps, ...);
-// #if !defined (cstringremove2$)
-//     #define cstringremove2$(a, ...) cstringremove2(a, ARGC(__VA_ARGS__), ##__VA_ARGS__)
-// #else
-//     #warning "information: duplicate define macro 'cstringremove2$'
-// #endif
+//  @paramater ...      删除索引的值,最多9个不定参数,所有的索引值均为int型范围内的数值,容纳不了取uint,否则会出现数据截断导致数据异常.
+extern bool     cstringremoves(char * cstr, size_t ps, ...);
+#if !defined (cstringremoves$)
+    #define cstringremoves$(a, ...) cstringremoves(a, ARGC(__VA_ARGS__), ##__VA_ARGS__)
+#else
+    #warning "information: duplicate define macro 'cstringremove2$'
+#endif
 
 
 //  功能类似char *strchr(const char *s, int c); char *strstr(const char *s1, const char *s2);

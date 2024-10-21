@@ -39,9 +39,6 @@ size_t cstringlength(char * cstr) {
     return *(size_t *)(cstr - baseinformationsize());
 }
 
-/*
-	
-*/
 char * cstringinit(char * str, bool ctl) {
     long vstep = baseinformationsize();
 	long lstep = baseinformationsize();
@@ -325,34 +322,50 @@ bool cstringremove(char * cstr, long index) {
 	}
 }
 
-bool cstringremove2(char * cstr, size_t ps, ...) {
+bool cstringremoves(char * cstr, size_t ps, ...) {
 	if (!cstringcheck(cstr)) { return false; }
 	long length = cstringlength(cstr);
 	va_list list;
 	va_start(list, ps);
-	size_t psarray[ps];
-	memset(psarray, 0, sizeof(int64_t) * 8);
+	int source[ps];
+	memset(source, -1, sizeof(int) * ps);
+	long scount = 0;
+
+		// 添加索引
 	for (int i = 0; i < ps; i ++) {
-		long result = va_arg(list, int64_t);
-		if (result > length - 1 || result < 0) {
-			psarray[i] = -1;
-		} else {
-			psarray[i] = result;
+		long result = va_arg(list, int);
+		if (result < length - 1 && result >= 0) {
+			bool flag = false;
+			for (int j = 0; j < i; j ++) {
+				if (source[j] != result) { continue;}
+				else {flag = !flag; break; }
+			}
+			if (!flag) { source[scount ++] = result; }
 		}
 	}
+	int i, j;
+	for(i = 1;i < scount; i++) {
+		int key = source[i];
+		int left = 0;
+		int right = i -	1;
+		while (left <= right) {
+			int mid = (left + right) / 2;
+			if(key < source[mid]) {
+				right = mid - 1;	
+			} else {
+				left = mid + 1;	
+			}
+		}
+		for(j = i - 1; j >= left; j --) {
+			source[j + 1] = source[j];	
+		}
+		source[j + 1] = key;
+	}
 
-
-	// int count = 0;
-	// for (int i = 0; i < ps; i ++) {
-	// 	long index = psarray[i];
-	// 	if (index == -1) {
-	// 		continue;
-	// 	} else {
-	// 		memmove(cstr + index, cstr + index + 1, length - index - 1);
-	// 		++ count;
-	// 	}
-	// }
-	// setcstringlength(cstr, length - count);
+	for (int i = 0; i < scount; i ++) {
+		memmove(cstr + source[i] - i, cstr + source[i] - i + 1, length - source[i] - i - 1);
+	}
+	setcstringlength(cstr, length - scount);
 	va_end(list);
 	return true;
 }
@@ -576,16 +589,16 @@ char * cstringtoken(char * cstr, size_t times, ...) {
 	}
 }
 
-void cstringparamater(char * cstr, size_t ps, ...) {
-
-}
-
 long cstringprefix() {
 	return -1;
 }
 
 long cstringpresuffix() {
 	return -1;
+}
+
+void cstringsort(char * cstr, int (* sort)(char c0, char c1)) {
+
 }
 
 #endif

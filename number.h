@@ -17,15 +17,7 @@ typedef enum ISO_IEC_646 {
 #define BitSET1(n, p) ((n)|= 1<<(p))        // 把某位置1
 #define BitSET0(n, p) ((n) &= ~(1<<(p)))    // 把某位置0
 
-typedef union number {
-    char    c;
-    short   s;
-    int     i;
-    float   f;
-    long    l;
-    double  d;
-} number_t;
-
+extern long * numbersinit(long * n, long size);
 
 void endian();
 
