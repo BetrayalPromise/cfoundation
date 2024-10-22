@@ -308,6 +308,42 @@ bool cstringclean(char * cstr, ...) {
 	}
 }
 
+bool cstringexcise(char * cstr, char * data) {
+	if (!cstringcheck(cstr)) { return false; }
+	long length = cstringlength(cstr);
+	long size = cstringlength(data); 
+	if (length <= 0 || size <= 0 || size > length) { return - 1; }
+	int indexes[length / size];
+	memset(indexes, -1, length / size * sizeof(int));
+	int index = 0, count = 0;
+	int i = 0, j = 0;
+	while (i < length && j < size) {
+		if (cstr[i] == data[j]) {
+			if (j == size - 1) {
+				indexes[index] = i; ++ index; ++ count;
+				i -= (j - 1); j = 0;
+			} else {
+				++ i; ++ j;
+			}
+		} else {
+			i -= (j - 1); j = 0;
+		}
+	}
+	/*
+		123211212
+		12   1212
+		  321
+		123
+		   211212
+	*/
+	for (int i = count - 1; i >= 0; i --) {
+		printf("%ld--%d--%ld\n", indexes[i] - size + 1, indexes[i] + 1, length - indexes[i]);
+		memmove(cstr + indexes[i] - size + 1, cstr + indexes[i] + 1, length - indexes[i]);
+	}
+	setcstringlength(cstr, length - count * size);
+	return true;
+}
+
 bool cstringdelete(char * cstr, char c) {
 	if (!cstringcheck(cstr)) { return false; }
 
@@ -335,6 +371,34 @@ bool cstringdelete(char * cstr, char c) {
 		memmove(cstr + length - 1, &c, 1);
 	}
 	setcstringlength(cstr, length - count);
+	return true;
+}
+
+bool cstringdeletes(char * cstr, size_t ps, int c, ...) {
+	if (!cstringcheck(cstr)) { return false; }
+	long length = cstringlength(cstr);
+	va_list list;
+
+	va_start(list, ((int)c));
+	int source[ps]; 
+	memset(source, -1, sizeof(int) * ps);
+	source[0] = c;
+	long scount = 1;
+	for (int i = 1; i < ps; i ++) {
+		long result = va_arg(list, int);
+		if (result < length - 1 && result >= 0) {
+			bool flag = false;
+			for (int j = 0; j < i; j ++) {
+				if (source[j] != result) { continue;}
+				else {flag = !flag; break; }
+			}
+			if (!flag) { source[scount ++] = result; }
+		}
+	}
+	for (int i = 0; i < scount; i ++) {
+		cstringdelete(cstr, source[i]);
+	}
+	va_end(list);
 	return true;
 }
 
@@ -409,7 +473,7 @@ long cstringindex(char * cstr, long times, ...) {
 	} else {
 		char * data = (void *)result;
 		long size = cstringlength(data); 
-		if (length <=0 || size <= 0 || size > length) { return - 1; }
+		if (length <= 0 || size <= 0 || size > length) { return - 1; }
 
 		uint64_t flag = va_arg(list, uint64_t) != 0 ? true : false;
 		bool ctl = false;

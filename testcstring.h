@@ -11,5 +11,6 @@ void testcstringindex();
 void testcstringindexes();
 void testcstringunique();
 void testcstringdelete();
+void testcstringexcise();
 
 #endif

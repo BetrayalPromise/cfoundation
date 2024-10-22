@@ -201,6 +201,18 @@ void testcstringdelete() {
 	cstringdescribe(p0, 0b001);
 }
 
+void testcstringexcise() {
+	char * p0 = cstringinit$("123211212");
+	char * p1 = cstringinit$("1"); 
+	cstringexcise(p0, p1);
+	cstringdescribe(p0, 0b001);
+	/*
+		123211212
+		12   1212
+		  321
+	*/
+}
+
 void testcstringclean() {
 	if (true) {
 		char * p0 = cstringinit$(NULL);

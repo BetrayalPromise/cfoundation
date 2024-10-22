@@ -47,31 +47,6 @@
     #warning "information: duplicate define macro 'DEFAULTARGC'
 #endif
 
-#if !defined (cstringinit$)
-    #define cstringinit$(a, ...)            cstringinit(a, (false, ##__VA_ARGS__))
-#else
-    #warning "information: duplicate define macro 'cstringinit$'
-#endif
-
-#if !defined (cstringdescribe$)
-    #define cstringdescribe$(a, ...)        cstringdescribe(a, (0b001, ##__VA_ARGS__))
-#else
-    #warning "information: duplicate define macro 'cstringdescribe$'
-#endif
-
-#if !defined (cstringtelescope$)
-    #define cstringtelescope$(a, b, c)      cstringtelescope(a, DEFAULTARGC(b, true), DEFAULTARGC(c, 2))
-#else
-    #warning "information: duplicate define macro 'cstringtelescope$'
-#endif
-
-
-#if !defined (cstringindex$)
-    #define cstringindex$(a, b, c, ...)     cstringindex(a, DEFAULTARGC(b, 1), c, ##__VA_ARGS__)
-#else
-    #warning "information: duplicate define macro 'cstringindex$'
-#endif
-
 
 // 小端存储能使用,栈数据,不能扩容
 // char[]
@@ -135,6 +110,11 @@
 //  @paramater str      常规字符串.str(NULL,0,0x00),ctl不生效,length始终为0,volume不存储.str(!NULL)时,按照ctl控制参数接受.str("","\0","\000..."),ctrl(true)则length为1,volume存储0.str("","\0","\000..."),ctrl(false)则length为0,volume不存储.
 //  @paramater ctl      是否存储字符串默认结尾的(0x00,0,NULL,'\0','\0...'),true:存储,false:不存储.
 extern char *   cstringinit(char * str, bool ctl);
+#if !defined (cstringinit$)
+    #define cstringinit$(a, ...) cstringinit(a, (false, ##__VA_ARGS__))
+#else
+    #warning "information: duplicate define macro 'cstringinit$'
+#endif
 
 
 //  功能类似于size_t strlen(const char *s);
@@ -154,12 +134,22 @@ extern size_t   cstringvolume(char * cstr);
 //  @paramater ctl      false:代表减少容量,true:代表增加容量.
 //  @paramater m        容量增加或者减少的倍率.
 extern void     cstringtelescope(char ** pcstr, bool ctl, size_t m);
+#if !defined (cstringtelescope$)
+    #define cstringtelescope$(a, b, c) cstringtelescope(a, DEFAULTARGC(b, true), DEFAULTARGC(c, 2))
+#else
+    #warning "information: duplicate define macro 'cstringtelescope$'
+#endif
 
 
 //  @return             无返回值.
 //  @paramater cstr     cstring型.
 //  @paramater flag     显示标记(0b111, 0b110, 0b101, 0b011, 0b100, 0b010, 0b001)共计7种,三位数字代表十六进制显示,十进制显示,字符显示.
 extern void     cstringdescribe(char * cstr, unsigned short flag);
+#if !defined (cstringdescribe$)
+    #define cstringdescribe$(a, ...) cstringdescribe(a, (0b001, ##__VA_ARGS__))
+#else
+    #warning "information: duplicate define macro 'cstringdescribe$'
+#endif
 
 
 //  功能类似于char *strcpy(char *dest, const char *src);
@@ -202,19 +192,31 @@ extern bool     cstringclean(char * cstr, ...);
 
 //  @return             返回删除操作是否成功.
 //  @paramater cstr     cstring型.
-//  @paramater c        删除的字符
-extern bool     cstringdelete(char * cstr, char c);
+//  @paramater data     cstring型.删除的字符串.
+extern bool     cstringexcise(char * cstr, char * data);
 
 
 //  @return             返回删除操作是否成功.
 //  @paramater cstr     cstring型.
-//  @paramater index    删除的索引
+//  @paramater c        char型.删除的字符.
+extern bool     cstringdelete(char * cstr, char c);
+
+//  @return             返回删除操作是否成功.
+//  @paramater cstr     cstring型.
+//  @paramater ps       删除索引的总数.
+//  @paramater c...     int型.本应为char型,但因不定参数默认提升,不得不如此处理.删除索引的值,最多9个不定参数,所有的索引值均为int型范围内的数值,容纳不了取uint,否则会出现数据截断导致数据异常.
+extern bool     cstringdeletes(char * cstr, size_t ps, int c, ...);
+
+
+//  @return             返回删除操作是否成功.
+//  @paramater cstr     cstring型.
+//  @paramater index    long型.删除的索引.
 extern bool     cstringremove(char * cstr, long index);
 
 
 //  @return             返回删除操作是否成功.
 //  @paramater cstr     cstring型.
-//  @paramater ps       删除索引的总数
+//  @paramater ps       删除索引的总数.
 //  @paramater index... 删除索引的值,最多9个不定参数,所有的索引值均为int型范围内的数值,容纳不了取uint,否则会出现数据截断导致数据异常.
 extern bool     cstringremoves(char * cstr, size_t ps, int index, ...);
 #if !defined (cstringremoves$)
@@ -230,6 +232,11 @@ extern bool     cstringremoves(char * cstr, size_t ps, int index, ...);
 //  @paramater times    检索内容出现次数.
 //  @paramater ...      检索内容(char型或cstring型),若为char型,接受一个不定参数,若为cstring型,还需传入一个bool型(针对cstring型[111],[222]...,控制索引方式),接受两个不定参数.
 extern long     cstringindex(char * cstr, long times, ...);
+#if !defined (cstringindex$)
+    #define cstringindex$(a, b, c, ...) cstringindex(a, DEFAULTARGC(b, 1), c, ##__VA_ARGS__)
+#else
+    #warning "information: duplicate define macro 'cstringindex$'
+#endif
 
 
 //  @return             返回共计出现检索内容的总数.
