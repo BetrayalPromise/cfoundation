@@ -215,8 +215,8 @@ extern bool     cstringremove(char * cstr, long index);
 //  @return             返回删除操作是否成功.
 //  @paramater cstr     cstring型.
 //  @paramater ps       删除索引的总数
-//  @paramater ...      删除索引的值,最多9个不定参数,所有的索引值均为int型范围内的数值,容纳不了取uint,否则会出现数据截断导致数据异常.
-extern bool     cstringremoves(char * cstr, size_t ps, ...);
+//  @paramater index... 删除索引的值,最多9个不定参数,所有的索引值均为int型范围内的数值,容纳不了取uint,否则会出现数据截断导致数据异常.
+extern bool     cstringremoves(char * cstr, size_t ps, int index, ...);
 #if !defined (cstringremoves$)
     #define cstringremoves$(a, ...) cstringremoves(a, ARGC(__VA_ARGS__), ##__VA_ARGS__)
 #else

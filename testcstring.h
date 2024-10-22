@@ -6,6 +6,7 @@ void testcstringinsrt();
 void testcstringtelescope();
 void testcstringclean();
 void testcstringremove();
+void testcstringremoves();
 void testcstringindex();
 void testcstringindexes();
 void testcstringunique();

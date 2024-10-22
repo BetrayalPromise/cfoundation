@@ -352,17 +352,16 @@ bool cstringremove(char * cstr, long index) {
 	}
 }
 
-bool cstringremoves(char * cstr, size_t ps, ...) {
+bool cstringremoves(char * cstr, size_t ps, int index, ...) {
 	if (!cstringcheck(cstr)) { return false; }
 	long length = cstringlength(cstr);
 	va_list list;
-	va_start(list, ps);
-	int source[ps];
+	va_start(list, index);
+	int source[ps]; 
 	memset(source, -1, sizeof(int) * ps);
-	long scount = 0;
-
-		// 添加索引
-	for (int i = 0; i < ps; i ++) {
+	source[0] = index;
+	long scount = 1;
+	for (int i = 1; i < ps; i ++) {
 		long result = va_arg(list, int);
 		if (result < length - 1 && result >= 0) {
 			bool flag = false;
@@ -373,29 +372,9 @@ bool cstringremoves(char * cstr, size_t ps, ...) {
 			if (!flag) { source[scount ++] = result; }
 		}
 	}
-	int i, j;
-	for(i = 1; i < scount; i++) {
-		int key = source[i];
-		int left = 0;
-		int right = i -	1;
-		while (left <= right) {
-			int mid = (left + right) / 2;
-			if(key < source[mid]) {
-				right = mid - 1;	
-			} else {
-				left = mid + 1;	
-			}
-		}
-		for(j = i - 1; j >= left; j --) {
-			source[j + 1] = source[j];	
-		}
-		source[j + 1] = key;
-	}
-
 	for (int i = 0; i < scount; i ++) {
-		memmove(cstr + source[i] - i, cstr + source[i] - i + 1, length - source[i] - i - 1);
+		cstringremove(cstr, source[i]);
 	}
-	setcstringlength(cstr, length - scount);
 	va_end(list);
 	return true;
 }
