@@ -22,6 +22,7 @@ int main(int argc, char ** argv) {
 	// testcstringremove();
 	// testcstringindex();
 	// testcstringunique();
+	testcstringdelete();
 
 	// int x;
 	// char x0, x1;
@@ -55,14 +56,7 @@ int main(int argc, char ** argv) {
 
 	// printf("%d\n", ARGC(1, 2, 3, 4, 5, 6, 7, 8, 9, 0));
 
-	char * p = cstringinit$("abcdefgh");
-	/*
-	abcdefgh
-	 bc e gh
-	*/
-	cstringremoves$(p, -1, -1, 5, 5, 3, 3, 0, 0);
 
-	cstringdescribe$(p);
 
 	/*
 		高位放在高地址,类似大端存储

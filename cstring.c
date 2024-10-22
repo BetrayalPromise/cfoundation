@@ -308,6 +308,36 @@ bool cstringclean(char * cstr, ...) {
 	}
 }
 
+bool cstringdelete(char * cstr, char c) {
+	if (!cstringcheck(cstr)) { return false; }
+
+	long length = cstringlength(cstr);
+	long count = 0;
+	for (int i = 0; i < length; i ++) {
+		if (c == cstr[i]) {
+			++ count;
+		}
+	}
+	long indexes[count];
+		// 为了节省空间,所以采用了牺牲运行时间的方法处理
+	({
+		long index = 0;
+		for (int i = 0; i < length; i ++) {
+			if (c == cstr[i]) {
+				indexes[index] = i;
+				++ index;
+			}
+		}
+	});
+
+	for (int i = 0; i < count; i ++) {
+		memmove(cstr + indexes[i] - i, cstr + indexes[i] + 1 - i, length - indexes[i] - 1 + i);
+		memmove(cstr + length - 1, &c, 1);
+	}
+	setcstringlength(cstr, length - count);
+	return true;
+}
+
 bool cstringremove(char * cstr, long index) {
 	if (!cstringcheck(cstr)) { return false; }
 
@@ -344,7 +374,7 @@ bool cstringremoves(char * cstr, size_t ps, ...) {
 		}
 	}
 	int i, j;
-	for(i = 1;i < scount; i++) {
+	for(i = 1; i < scount; i++) {
 		int key = source[i];
 		int left = 0;
 		int right = i -	1;

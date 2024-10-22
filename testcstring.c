@@ -179,18 +179,25 @@ void testcstringindexes() {
 	
 }
 
+void testcstringremoves() {
+	char * p = cstringinit$("abcdefgh");
+	cstringremoves$(p, -1, -1, 5, 5, 3, 3, 0, 0);
+	cstringdescribe$(p);
+}
+
 void testcstringremove() {
-	// if (true) {
-	// 	char * p0 = cstringinit$("12321");
-	// 	cstringremove(p0, 5);
-	// 	cstringdescribe(p0, 0b001);
-	// }
+	if (true) {
+		for (int i = -1; i < 6; i ++) {
+			char * p0 = cstringinit$("12321");
+			cstringremove(p0, i);
+			cstringdescribe(p0, 0b001);
+		}
+	}
+}
 
-	char * p0 = cstringinit$("0123456789");
-	char * p1 = cstringinit$("00");
-	// long index = cstringclean(p0, p1);
-
-	// cstringremove2$(p0, -1, 3, 4);
+void testcstringdelete() {
+	char * p0 = cstringinit$("12321");
+	cstringdelete(p0, '4');
 	cstringdescribe(p0, 0b001);
 }
 

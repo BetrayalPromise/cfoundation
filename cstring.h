@@ -202,7 +202,13 @@ extern bool     cstringclean(char * cstr, ...);
 
 //  @return             返回删除操作是否成功.
 //  @paramater cstr     cstring型.
-//  @paramater index    删除索引
+//  @paramater c        删除的字符
+extern bool     cstringdelete(char * cstr, char c);
+
+
+//  @return             返回删除操作是否成功.
+//  @paramater cstr     cstring型.
+//  @paramater index    删除的索引
 extern bool     cstringremove(char * cstr, long index);
 
 
@@ -214,7 +220,7 @@ extern bool     cstringremoves(char * cstr, size_t ps, ...);
 #if !defined (cstringremoves$)
     #define cstringremoves$(a, ...) cstringremoves(a, ARGC(__VA_ARGS__), ##__VA_ARGS__)
 #else
-    #warning "information: duplicate define macro 'cstringremove2$'
+    #warning "information: duplicate define macro 'cstringremoves$'
 #endif
 
 
@@ -244,5 +250,7 @@ extern bool     cstringunique(char * cstr, bool flag);
 //  @paramater pos      操作起始索引.
 //  @paramater ...      改变内容(char型或cstring型),接受一个不定参数.
 extern bool     cstringchange(char * cstr, long pos, ...);
+
+extern void     cstringsort(char * cstr, int (* sort)(char c0, char c1));
 
 #endif

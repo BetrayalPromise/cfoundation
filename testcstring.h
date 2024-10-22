@@ -9,5 +9,6 @@ void testcstringremove();
 void testcstringindex();
 void testcstringindexes();
 void testcstringunique();
+void testcstringdelete();
 
 #endif
