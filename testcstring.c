@@ -165,13 +165,9 @@ void testcstringindex() {
 		char * p0 = cstringinit$("0000000");
 		char * p1 = cstringinit$("00");
 		for (int i = -1; i < 10; i ++) {
-			long index = cstringindex(p0, i, p1, true);
-			printf("i = %d, index = %ld\n", i, index);
-		}
-		
-		for (int i = -1; i < 10; i ++) {
-			long index = cstringindex(p0, i, p1, false);
-			printf("i = %d, index = %ld\n", i, index);
+			long count;
+			long index = cstringsearch(p0, cstring, &count, i, p1, true);
+			printf("count = %ld i = %d, index = %ld\n", count, i, index);
 		}
 	}
 
@@ -231,11 +227,19 @@ int hander(long index) {
 	return 4;
 }
 
+void testcstringsort() {
+	char * p0 = cstringinit$("0523541007840000");
+	cstringsort(p0, true);
+	cstringdescribe(p0, 0b001);
+}
+
 void testcstringunique() {
 	char * p0 = cstringinit$("0523541007840000");
 	cstringunique(p0, false);
 	cstringdescribe(p0, 0b001);
 }
+
+
 
 #endif
 

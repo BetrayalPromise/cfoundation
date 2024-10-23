@@ -572,8 +572,37 @@ long cstringpresuffix() {
 	return -1;
 }
 
-void cstringsort(char * cstr, int (* sort)(char c0, char c1)) {
-
+void cstringsort(char * cstr, bool ctl) {
+	long count = cstringlength(cstr);
+	long gap = count;
+	if (gap < 2) { return; }
+	while(gap > 1) {
+		gap = gap / 2;
+		long j;
+		for(j = 0; j < count - gap; j ++) {
+			long end = j;
+			long temp = cstr[end + gap];
+			while(end >= 0) {
+				if (ctl) {
+					if(cstr[end] < temp) {
+						cstr[gap + end] = cstr[end];
+						end -= gap;
+					} else {
+						break;
+					}
+				} else { // 从小往大排列
+					if(cstr[end] > temp) {
+						cstr[gap + end] = cstr[end];
+						end -= gap;
+					} else {
+						break;
+					}
+				}
+			}
+			cstr[end + gap] = temp;
+		}
+	}
 }
+
 
 #endif

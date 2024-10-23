@@ -114,7 +114,7 @@ extern size_t   cstringvolume(char * cstr);
 
 //  只针对使用cstringinit函数处理过的字符串,即为堆字符串;使用POINTER2CSTRING,STRING2CSTRING,CHAR2CSTRING宏构建的为栈字符串,无法改变容量
 //  @return             无返回值.
-//  @paramater pstr     cstring型它的二级的指针.
+//  @paramater pstr     cstring*型.cstring的二级的指针.
 //  @paramater ctl      false:代表减少容量,true:代表增加容量.
 //  @paramater m        容量增加或者减少的倍率.
 extern void     cstringtelescope(char ** pcstr, bool ctl, size_t m);
@@ -149,7 +149,7 @@ extern void     cstringfree(char * cstr);
 
 //  @return             返回两者存在的内容是否一致.
 //  @paramater cstr     cstring型.
-//  @paramater data     cstring型.
+//  @paramater data     cstring型.比较的数据
 extern bool     cstringcompare(char * cstr, char * data);
 
 
@@ -186,7 +186,7 @@ extern bool     cstringremove(char * cstr, search_t t, int (* cfg)(long idx), si
 //  @return             返回第times次出现检索内容的索引值,若为-1则未找到.
 //  @paramater cstr     cstring型.
 //  @paramater t        search_t型.
-//  @paramater count    检索内容共计出现次数.t若为position则,该项无效.
+//  @paramater count    long *型.检索内容共计出现次数.t若为position则,该项无效.
 //  @paramater times    检索内容第times次出现次数.
 //  @paramater ...      检索内容(int型或char型或cstring型),若为int型,接受一个不定参数,若为char型,接受一个不定参数,若为cstring型,还需传入一个bool型(针对cstring型[111],[222]...,控制索引方式),接受两个不定参数.
 extern long     cstringsearch(char * cstr, search_t t, long * count, long times, ...);
@@ -195,7 +195,7 @@ extern long     cstringsearch(char * cstr, search_t t, long * count, long times,
 //  数组去重复元素
 //  @return             无返回值.
 //  @paramater cstr     cstring型.
-//  @paramater flag     为true:重复元素保留一个;为false:重复元素一个不保留.
+//  @paramater flag     bool型.为true:重复元素保留一个;为false:重复元素一个不保留.
 extern bool     cstringunique(char * cstr, bool flag);
 
 
@@ -206,7 +206,11 @@ extern bool     cstringunique(char * cstr, bool flag);
 extern bool     cstringchange(char * cstr, long pos, ...);
 
 
-// TODO:
-extern void     cstringsort(char * cstr, int (* sort)(char c0, char c1));
+#define EXCHANGE(num1, num2) do { num1 = num1 ^ num2; num2 = num1 ^ num2; num1 = num1 ^ num2; } while(0)
+
+//  @return             无返回值.
+//  @paramater cstr     cstring型.
+//  @paramater ctl       bool型.为true:按照ASCII码从大到小排序;为false:按照ASCII码从小到大排序.
+extern void     cstringsort(char * cstr, bool ctl);
 
 #endif

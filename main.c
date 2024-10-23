@@ -21,8 +21,8 @@ int main(int argc, char ** argv) {
 	// testcstringinsrt();
 	// testcstringindex();
 	// testcstringunique();
-	// testcstringremoves();
-	testcstringremove();
+	// testcstringremove();
+	testcstringsort();
 
 	// int x;
 	// char x0, x1;
