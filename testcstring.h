@@ -4,7 +4,7 @@
 void testcstringinit();
 void testcstringinsrt();
 void testcstringtelescope();
-void testcstringclean();
+void testcstringremove();
 void testcstringindex();
 void testcstringindexes();
 void testcstringunique();

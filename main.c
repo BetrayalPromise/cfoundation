@@ -22,7 +22,7 @@ int main(int argc, char ** argv) {
 	// testcstringindex();
 	// testcstringunique();
 	// testcstringremoves();
-	testcstringclean();
+	testcstringremove();
 
 	// int x;
 	// char x0, x1;

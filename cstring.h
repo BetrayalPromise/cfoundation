@@ -23,8 +23,8 @@ typedef enum search {
 
 #if !defined (__ARGS) && !defined (__ARGC_N) && !defined (__ARGC) && !defined (ARGC) 
     #define __ARGS(X) (X)
-    #define __ARGC_N(_0, _1, _2, _3, _4, _5, _6, _7, _8, N, ...)    N == 1 ? (#_0)[0] != 0 : N
-    #define __ARGC(...) __ARGS(__ARGC_N(__VA_ARGS__, 9, 8, 7, 6, 5, 4, 3, 2, 1))
+    #define __ARGC_N(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, _22, _23, _24, _25, _26, _27, _28, _29, _30, _31, N, ...)    N == 1 ? (#_0)[0] != 0 : N
+    #define __ARGC(...) __ARGS(__ARGC_N(__VA_ARGS__, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1))
     #define ARGC(...) __ARGC(__VA_ARGS__)
 #else
     #warning "information: duplicate define macro '__ARGS or __ARGC_N or __ARGC or ARGC'
@@ -171,13 +171,14 @@ extern bool     cstringcatenate(char * cstr, ...);
 //  @return             返回删除操作是否成功.
 //  @paramater cstr     cstring型.
 //  @paramater t        search_t型.
-//  @paramater cfg      int(*)(long idx)型.用以配置
-//  @paramater ...      清空内容(int, char型或cstring型),接受一个不定参数.
-extern bool     cstringcleans(char * cstr, search_t t, int (* cfg)(long idx), size_t ps, ...);
-#if !defined (cstringcleans$)
-    #define cstringcleans$(a, b, ...) cstringcleans(a, b, NULL, ARGC(__VA_ARGS__), ##__VA_ARGS__)
+//  @paramater cfg      int(*)(long)型.用以配置不定参数所占字长
+//  @paramater ...      清空内容(int, char型或cstring型),接受最多32个不定参数.
+extern bool     cstringremove(char * cstr, search_t t, int (* cfg)(long idx), size_t ps, ...);
+#if !defined (cstringremove0$) && !defined (cstringremove1$)
+    #define cstringremove0$(a, b, ...) cstringremove(a, b, NULL, ARGC(__VA_ARGS__), ##__VA_ARGS__)
+    #define cstringremove1$(a, b, c, ...) cstringremove(a, b, c, ARGC(__VA_ARGS__), ##__VA_ARGS__)
 #else
-    #warning "information: duplicate define macro 'cstringcleans$'
+    #warning "information: duplicate define macro 'cstringremove0$ or cstringremove1$'
 #endif
 
 
@@ -192,12 +193,6 @@ extern long     cstringindex(char * cstr, long times, ...);
 #else
     #warning "information: duplicate define macro 'cstringindex$'
 #endif
-
-
-//  @return             返回共计出现检索内容的总数.
-//  @paramater cstr     cstring型.
-//  @paramater ...      检索内容(char型或cstring型),若为char型,接受一个不定参数,若为cstring型,还需传入一个bool型(针对cstring型[111],[222]...,控制索引方式),接受两个不定参数.
-extern long     cstringindexcount(char * cstr, ...);
 
 
 //  数组去重复元素

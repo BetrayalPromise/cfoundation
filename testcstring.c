@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+int hander(long index);
+
 void testcstringinit() {
 	// if (true) {
 	// 	char * p0 = cstringinit(0x00, true);
@@ -176,49 +178,57 @@ void testcstringindex() {
 }
 
 
-void testcstringclean() {
+void testcstringremove() {
 	// if (true) {
 	// 	char * p0 = cstringinit$(NULL);
 	// 	char c  = 0x00;
-	// 	cstringcleans(p0, character, NULL, c);
+	// 	cstringremove(p0, character, NULL, c);
 	// 	cstringdescribe(p0, 0b001);
 	// }
 	// if (true) {
 	// 	char * p0 = cstringinit$(0x00);
 	// 	char c  = 0x00;
-	// 	cstringcleans(p0, character, NULL, c);
+	// 	cstringremove(p0, character, NULL, c);
 	// 	cstringdescribe(p0, 0b001);
 	// }
 	// if (true) {
 	// 	char * p0 = cstringinit$(0x00);
 	// 	char c  = 0x00;
-	// 	cstringcleans(p0, character, NULL, c);
+	// 	cstringremove(p0, character, NULL, c);
 	// 	cstringdescribe(p0, 0b001);
 	// }
 	// if (true) {
 	// 	for (int i = -1; i < 6; i ++) {
 	// 		char * p0 = cstringinit$("12321");
-	// 		cstringcleans$(p0, position, i);
+	// 		cstringremove0$(p0, position, i);
 	// 		cstringdescribe(p0, 0b001);
 	// 	}
 	// }
-	if (true) {
-		char * p = cstringinit$("abcdefgh");
-		cstringcleans$(p, position , -1, -1, 5, 5, 3, 3, 0, 0);
-
-		cstringdescribe$(p);
-	}
+	// if (true) {
+	// 	char * p = cstringinit$("abcdefgh");
+	// 	cstringremove0$(p, position , -1, -1, 5, 5, 0, 0, 3, 3, 0, 0);
+	// 	cstringdescribe$(p);
+	// }
 	// if (true) {
 	// 	char * p0 = cstringinit$("123211212");
 	// 	char * p1 = cstringinit$("1"); 
-	// 	cstringcleans$(p0, cstring, p1);
+	// 	cstringremove0$(p0, cstring, p1);
 	// 	cstringdescribe(p0, 0b001);
 	// }
 	// if (true) {
 	// 	char * p0 = cstringinit$("12321");
-	// 	cstringcleans$(p0, character,'4');
+	// 	cstringremove0$(p0, character,'4');
 	// 	cstringdescribe(p0, 0b001);
 	// }
+	if (true) {
+		char * p0 = cstringinit$("12321");
+		cstringremove1$(p0, position, hander, 3);
+		cstringdescribe(p0, 0b001);
+	}
+}
+
+int hander(long index) {
+	return 4;
 }
 
 void testcstringunique() {

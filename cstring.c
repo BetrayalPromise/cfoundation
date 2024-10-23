@@ -13,9 +13,9 @@
 #include <stdarg.h>
 #include <sys/_types/_va_list.h>
 
-static bool cstringexcise(char * cstr, char * data);
-static bool cstringdelete(char * cstr, char c);
-static bool cstringremove(char * cstr, long index);
+static bool cstringremove0(char * cstr, char * data);
+static bool cstringremove1(char * cstr, char c);
+static bool cstringremove2(char * cstr, long index);
 
 static bool cstringcheck(char * cstr) {
 	return cstr == NULL ? false : true;
@@ -247,7 +247,7 @@ bool cstringcatenate(char * cstr, ...) {
 	}
 }
 
-bool cstringcleans(char * cstr, search_t t, int (* cfg)(long idx), size_t ps, ...) {
+bool cstringremove(char * cstr, search_t t, int (* cfg)(long idx), size_t ps, ...) {
 	if (!cstringcheck(cstr)) { return false; }
 	va_list list;
 	va_start(list, ps);
@@ -257,7 +257,7 @@ bool cstringcleans(char * cstr, search_t t, int (* cfg)(long idx), size_t ps, ..
 	case character: {
 		for (long i = 0; i < ps; i ++) {
 			int value = va_arg(list, int);
-			cstringdelete(cstr, value);
+			cstringremove1(cstr, value);
 		}
 	} break;
 	case position: {
@@ -276,14 +276,33 @@ bool cstringcleans(char * cstr, search_t t, int (* cfg)(long idx), size_t ps, ..
 				if (!flag) { source[count ++] = result; }
 			}
 		}
+		long gap = count;    //定义增量
+		while(gap > 1) {
+			gap = gap / 2;    //将增量减小
+			long j;
+			for(j = 0; j < count - gap; j ++) {
+				long end = j;
+				long temp = source[end + gap];
+				while(end >= 0) {
+					// 从大往小排列
+					if(source[end] < temp) {
+						source[gap + end] = source[end];
+						end -= gap;
+					} else {
+						break;
+					}
+				}
+				source[end + gap] = temp;
+			}
+		}
 		for (int i = 0; i < count; i ++) {
-			cstringremove(cstr, source[i]);
+			cstringremove2(cstr, source[i]);
 		}
 	} break;
 	case cstring: {
 		for (long i = 0; i < ps; i ++) {
 			long value = va_arg(list, long);
-			cstringexcise(cstr, (char *)value);
+			cstringremove0(cstr, (char *)value);
 		}
 	} break;
 	}
@@ -291,7 +310,7 @@ bool cstringcleans(char * cstr, search_t t, int (* cfg)(long idx), size_t ps, ..
 	return true;
 }
 
-static bool cstringexcise(char * cstr, char * data) {
+static bool cstringremove0(char * cstr, char * data) {
 	if (!cstringcheck(cstr)) { return false; }
 	long length = cstringlength(cstr);
 	long size = cstringlength(data); 
@@ -327,34 +346,7 @@ static bool cstringexcise(char * cstr, char * data) {
 	return true;
 }
 
-bool cstringexcises(char * cstr, long ps, char * data, ...) {
-	if (!cstringcheck(cstr)) { return false; }
-	long length = cstringlength(cstr);
-	va_list list;
-	va_start(list, data);
-	long source[ps]; 
-	memset(source, -1, sizeof(char *) * ps);
-	source[0] = (long)data;
-	long scount = 1;
-	for (int i = 1; i < ps; i ++) {
-		long result = va_arg(list, long);
-		if (result < length - 1 && result >= 0) {
-			bool flag = false;
-			for (int j = 0; j < i; j ++) {
-				if (source[j] != result) { continue;}
-				else {flag = !flag; break; }
-			}
-			if (!flag) { source[scount ++] = result; }
-		}
-	}
-	for (int i = 0; i < scount; i ++) {
-		cstringexcise(cstr, (char *)source[i]);
-	}
-	va_end(list);
-	return true;
-}
-
-static bool cstringdelete(char * cstr, char c) {
+static bool cstringremove1(char * cstr, char c) {
 	if (!cstringcheck(cstr)) { return false; }
 
 	long length = cstringlength(cstr);
@@ -384,34 +376,7 @@ static bool cstringdelete(char * cstr, char c) {
 	return true;
 }
 
-bool cstringdeletes(char * cstr, size_t ps, int c, ...) {
-	if (!cstringcheck(cstr)) { return false; }
-	long length = cstringlength(cstr);
-	va_list list;
-	va_start(list, c);
-	int source[ps]; 
-	memset(source, -1, sizeof(int) * ps);
-	source[0] = c;
-	long scount = 1;
-	for (int i = 1; i < ps; i ++) {
-		long result = va_arg(list, int);
-		if (result < length - 1 && result >= 0) {
-			bool flag = false;
-			for (int j = 0; j < i; j ++) {
-				if (source[j] != result) { continue;}
-				else {flag = !flag; break; }
-			}
-			if (!flag) { source[scount ++] = result; }
-		}
-	}
-	for (int i = 0; i < scount; i ++) {
-		cstringdelete(cstr, source[i]);
-	}
-	va_end(list);
-	return true;
-}
-
-static bool cstringremove(char * cstr, long index) {
+static bool cstringremove2(char * cstr, long index) {
 	if (!cstringcheck(cstr)) { return false; }
 
 	long length = cstringlength(cstr);
@@ -423,33 +388,6 @@ static bool cstringremove(char * cstr, long index) {
 		setcstringlength(cstr, length - 1);
 		return true;
 	}
-}
-
-bool cstringremoves(char * cstr, size_t ps, int index, ...) {
-	if (!cstringcheck(cstr)) { return false; }
-	long length = cstringlength(cstr);
-	va_list list;
-	va_start(list, index);
-	int source[ps]; 
-	memset(source, -1, sizeof(int) * ps);
-	source[0] = index;
-	long count = 1;
-	for (int i = 1; i < ps; i ++) {
-		long result = va_arg(list, int);
-		if (result < length - 1 && result >= 0) {
-			bool flag = false;
-			for (int j = 0; j < i; j ++) {
-				if (source[j] != result) { continue;}
-				else {flag = !flag; break; }
-			}
-			if (!flag) { source[count ++] = result; }
-		}
-	}
-	for (int i = 0; i < count; i ++) {
-		cstringremove(cstr, source[i]);
-	}
-	va_end(list);
-	return true;
 }
 
 long cstringindex(char * cstr, long times, ...) {
@@ -509,59 +447,6 @@ long cstringindex(char * cstr, long times, ...) {
 
 		va_end(list);
 		return index;
-	}
-}
-
-long cstringindexcount(char * cstr, ...) {
-	if (!cstringcheck(cstr)) { return false; }
-
-	va_list list;
-	va_start(list, cstr);
-
-	long length = cstringlength(cstr);
-	long volume = cstringvolume(cstr);
-
-	uint64_t result = va_arg(list, uint64_t);
-	long count = 0;
-
-	if (0x00 <= result && result <= 0xff) {
-		char data = result;
-		for (int i = 0; i < length; i ++) {
-			if (data == cstr[i]) {
-				++ count;
-			}
-		}
-		va_end(list);
-		return count;
-	} else {
-		char * data = (void *)result;
-		long index = 0;
-		long size = cstringlength(data); 
-		int64_t flag = va_arg(list, uint64_t) != 0 ? true : false;
-		bool ctl = false;
-		
-		if (flag) {
-			for (int i = 0; i < size - 1; i ++) {
-				data[0] == data[i] ? ({ ctl = true; continue; }) : ({ ctl = false; break; });
-			}
-		}
-
-		int i = 0, j = 0;
-		while (i < length && j < size) {
-			if (cstr[i] == data[j]) {
-				if (j == size - 1) {
-					++ count;
-					ctl && flag == true ? ({ ++ i; j = 0; }) : ({ i -= (j - 1); j = 0; });
-				} else {
-					++ i; ++ j;
-				}
-			} else {
-				i -= (j - 1); j = 0;
-			}
-		}
-
-		va_end(list);
-		return count;
 	}
 }
 
