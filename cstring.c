@@ -390,39 +390,44 @@ static bool cstringremove2(char * cstr, long index) {
 	}
 }
 
-long cstringindex(char * cstr, long times, ...) {
+long cstringsearch(char * cstr, search_t t, long * count, long times, ...) {
 	if (!cstringcheck(cstr)) { return false; }
 
 	long length = cstringlength(cstr);
 	long index = -1;
-	long count = 0;
-
+	long total = 0;
 	if (times < 0 || times > length) { return -1; }
 
 	va_list list;
 	va_start(list, times);
-	uint64_t result = va_arg(list, uint64_t);
-	
-	if (0x00 <= result && result <= 0xff) {
-		char data = result;
+
+	switch (t) {
+	case character: {
+		char data = va_arg(list, int);
 		for (int i = 0; i < length; i ++) {
 			if (data == cstr[i]) {
-				++ count;
-				if (count == times) {
+				++ total;
+				if (total == times) {
 					index = i; break;
 				} else {
 					continue;
 				}
 			}
 		}
+		* count = total;
 		va_end(list);
 		return index;
-	} else {
-		char * data = (void *)result;
+	} break;
+	case position: {
+		int data = va_arg(list, int);
+		return data;
+	} break;
+	case cstring: {
+		char * data = (void *)va_arg(list, uint64_t);
 		long size = cstringlength(data); 
 		if (length <= 0 || size <= 0 || size > length) { return - 1; }
 
-		uint64_t flag = va_arg(list, uint64_t) != 0 ? true : false;
+		uint64_t flag = va_arg(list, int) != 0 ? true : false;
 		bool ctl = false;
 		
 		if (flag) {
@@ -435,7 +440,7 @@ long cstringindex(char * cstr, long times, ...) {
 		while (i < length && j < size) {
 			if (cstr[i] == data[j]) {
 				if (j == size - 1) {
-					++ count == times ? index = i : ({});
+					++ total == times ? index = i : ({});
 					ctl && flag == true ? ({ ++ i; j = 0; }) : ({ i -= (j - 1); j = 0; });
 				} else {
 					++ i; ++ j;
@@ -444,9 +449,10 @@ long cstringindex(char * cstr, long times, ...) {
 				i -= (j - 1); j = 0;
 			}
 		}
-
+		* count = total;
 		va_end(list);
 		return index;
+	} break;
 	}
 }
 
@@ -541,7 +547,8 @@ char * cstringtoken(char * cstr, size_t times, ...) {
 	va_list list;
 	va_start(list, times);
 	uint64_t result = va_arg(list, uint64_t);
-	long index = cstringindex(cstr, times, result);
+	long count = 0;
+	long index = cstringsearch(cstr, character, &count, times, result);
 	if (index < 0) {
 		va_end(list);
 		return NULL;
@@ -552,6 +559,7 @@ char * cstringtoken(char * cstr, size_t times, ...) {
 		for (int i = 0; i < index; i ++) {
 			p[i] = cstr[i];
 		}
+		va_end(list);
 		return p;
 	}
 }
