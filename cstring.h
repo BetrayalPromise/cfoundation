@@ -5,20 +5,19 @@
 #include <stddef.h>
 #include <stdint.h>
 
-// #pragma pack(1)
-// typedef struct cstring_one {
-//     char c;
-// 	long l;
-// 	long v;
-// } cstring_one_t;
-// #pragma pack()
+typedef enum search {
+    character,  // 单个字符
+    position,   // 索引
+    cstring,    // 字符串
+} search_t;
+
 
 // return "zzz"; "zzz" 字面量存储在静态区域里 不需要释放
 /*
     数据结构cstring
-     -----------------------0++++++++++++
+    ------------------0++++++++++++++++++
     [---long---][---long---][char.......]
-     volume      length       chars
+     volume      length      chars
      容量(0-...)  数量(0-...)  存储位置
 */
 
@@ -30,16 +29,6 @@
 #else
     #warning "information: duplicate define macro '__ARGS or __ARGC_N or __ARGC or ARGC'
 #endif
-
-// #define cstringinit$(a, ...)            cstringinit(a, (32, ##__VA_ARGS__))
-// #define cstringdescribe$(a, ...)        cstringdescribe(a, (0b001, ##__VA_ARGS__))
-// #define cstringtelescope$(a, b, c)      cstringtelescope(a, DEFAULTARGC(b, true), DEFAULTARGC(c, 2))
-
-/*
-========================================================================================
-                                        宏定义区域
-========================================================================================
-*/
 
 #if !defined (DEFAULTARGC)
     #define DEFAULTARGC(a, value)           ((#a[0]) ? (a + 0) : value)
@@ -99,11 +88,6 @@
 #endif
 
 
-/* 
-========================================================================================
-                                        函数区域
-========================================================================================
-*/
 
 
 //  @return             返回一个如13行所示的包含信息的字符串,结构与其一致.
@@ -186,43 +170,14 @@ extern bool     cstringcatenate(char * cstr, ...);
 
 //  @return             返回删除操作是否成功.
 //  @paramater cstr     cstring型.
-//  @paramater ...      清空内容(char型或cstring型),接受一个不定参数.
-extern bool     cstringclean(char * cstr, ...);
-
-
-//  @return             返回删除操作是否成功.
-//  @paramater cstr     cstring型.
-//  @paramater data     cstring型.删除的字符串.
-extern bool     cstringexcise(char * cstr, char * data);
-
-
-//  @return             返回删除操作是否成功.
-//  @paramater cstr     cstring型.
-//  @paramater c        char型.删除的字符.
-extern bool     cstringdelete(char * cstr, char c);
-
-//  @return             返回删除操作是否成功.
-//  @paramater cstr     cstring型.
-//  @paramater ps       删除索引的总数.
-//  @paramater c...     int型.本应为char型,但因不定参数默认提升,不得不如此处理.删除索引的值,最多9个不定参数,所有的索引值均为int型范围内的数值,容纳不了取uint,否则会出现数据截断导致数据异常.
-extern bool     cstringdeletes(char * cstr, size_t ps, int c, ...);
-
-
-//  @return             返回删除操作是否成功.
-//  @paramater cstr     cstring型.
-//  @paramater index    long型.删除的索引.
-extern bool     cstringremove(char * cstr, long index);
-
-
-//  @return             返回删除操作是否成功.
-//  @paramater cstr     cstring型.
-//  @paramater ps       删除索引的总数.
-//  @paramater index... 删除索引的值,最多9个不定参数,所有的索引值均为int型范围内的数值,容纳不了取uint,否则会出现数据截断导致数据异常.
-extern bool     cstringremoves(char * cstr, size_t ps, int index, ...);
-#if !defined (cstringremoves$)
-    #define cstringremoves$(a, ...) cstringremoves(a, ARGC(__VA_ARGS__), ##__VA_ARGS__)
+//  @paramater t        search_t型.
+//  @paramater cfg      int(*)(long idx)型.用以配置
+//  @paramater ...      清空内容(int, char型或cstring型),接受一个不定参数.
+extern bool     cstringcleans(char * cstr, search_t t, int (* cfg)(long idx), size_t ps, ...);
+#if !defined (cstringcleans$)
+    #define cstringcleans$(a, b, ...) cstringcleans(a, b, NULL, ARGC(__VA_ARGS__), ##__VA_ARGS__)
 #else
-    #warning "information: duplicate define macro 'cstringremoves$'
+    #warning "information: duplicate define macro 'cstringcleans$'
 #endif
 
 
@@ -258,6 +213,8 @@ extern bool     cstringunique(char * cstr, bool flag);
 //  @paramater ...      改变内容(char型或cstring型),接受一个不定参数.
 extern bool     cstringchange(char * cstr, long pos, ...);
 
+
+// TODO:
 extern void     cstringsort(char * cstr, int (* sort)(char c0, char c1));
 
 #endif

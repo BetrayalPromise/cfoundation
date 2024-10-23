@@ -175,63 +175,50 @@ void testcstringindex() {
 
 }
 
-void testcstringindexes() {
-	
-}
-
-void testcstringremoves() {
-	char * p = cstringinit$("abcdefgh");
-	cstringremoves$(p, -1, -1, 5, 5, 3, 3, 0, 0);
-	cstringdescribe$(p);
-}
-
-void testcstringremove() {
-	if (true) {
-		for (int i = -1; i < 6; i ++) {
-			char * p0 = cstringinit$("12321");
-			cstringremove(p0, i);
-			cstringdescribe(p0, 0b001);
-		}
-	}
-}
-
-void testcstringdelete() {
-	char * p0 = cstringinit$("12321");
-	cstringdelete(p0, '4');
-	cstringdescribe(p0, 0b001);
-}
-
-void testcstringexcise() {
-	char * p0 = cstringinit$("123211212");
-	char * p1 = cstringinit$("1"); 
-	cstringexcise(p0, p1);
-	cstringdescribe(p0, 0b001);
-	/*
-		123211212
-		12   1212
-		  321
-	*/
-}
 
 void testcstringclean() {
+	// if (true) {
+	// 	char * p0 = cstringinit$(NULL);
+	// 	char c  = 0x00;
+	// 	cstringcleans(p0, character, NULL, c);
+	// 	cstringdescribe(p0, 0b001);
+	// }
+	// if (true) {
+	// 	char * p0 = cstringinit$(0x00);
+	// 	char c  = 0x00;
+	// 	cstringcleans(p0, character, NULL, c);
+	// 	cstringdescribe(p0, 0b001);
+	// }
+	// if (true) {
+	// 	char * p0 = cstringinit$(0x00);
+	// 	char c  = 0x00;
+	// 	cstringcleans(p0, character, NULL, c);
+	// 	cstringdescribe(p0, 0b001);
+	// }
+	// if (true) {
+	// 	for (int i = -1; i < 6; i ++) {
+	// 		char * p0 = cstringinit$("12321");
+	// 		cstringcleans$(p0, position, i);
+	// 		cstringdescribe(p0, 0b001);
+	// 	}
+	// }
 	if (true) {
-		char * p0 = cstringinit$(NULL);
-		char c  = 0x00;
-		cstringclean(p0, c);
-		cstringdescribe(p0, 0b001);
+		char * p = cstringinit$("abcdefgh");
+		cstringcleans$(p, position , -1, -1, 5, 5, 3, 3, 0, 0);
+
+		cstringdescribe$(p);
 	}
-	if (true) {
-		char * p0 = cstringinit$(0x00);
-		char c  = 0x00;
-		cstringclean(p0, c);
-		cstringdescribe(p0, 0b001);
-	}
-	if (true) {
-		char * p0 = cstringinit$(0x00);
-		char c  = 0x00;
-		cstringclean(p0);
-		cstringdescribe(p0, 0b001);
-	}
+	// if (true) {
+	// 	char * p0 = cstringinit$("123211212");
+	// 	char * p1 = cstringinit$("1"); 
+	// 	cstringcleans$(p0, cstring, p1);
+	// 	cstringdescribe(p0, 0b001);
+	// }
+	// if (true) {
+	// 	char * p0 = cstringinit$("12321");
+	// 	cstringcleans$(p0, character,'4');
+	// 	cstringdescribe(p0, 0b001);
+	// }
 }
 
 void testcstringunique() {

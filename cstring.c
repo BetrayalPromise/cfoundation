@@ -13,35 +13,39 @@
 #include <stdarg.h>
 #include <sys/_types/_va_list.h>
 
+static bool cstringexcise(char * cstr, char * data);
+static bool cstringdelete(char * cstr, char c);
+static bool cstringremove(char * cstr, long index);
+
 static bool cstringcheck(char * cstr) {
 	return cstr == NULL ? false : true;
 }
 
-long baseinformationsize(void) {
+long basesize(void) {
 	return sizeof(long);
 }
 
 static void setcstringvolume(char * cstr, size_t value) {
-	*(size_t *)(cstr - 2 * baseinformationsize()) = value;
+	*(size_t *)(cstr - 2 * basesize()) = value;
 }
 
 size_t cstringvolume(char * cstr) {
 	if (!cstringcheck(cstr)) { return -1; }
-    return *(size_t *)(cstr - 2 * baseinformationsize());
+    return *(size_t *)(cstr - 2 * basesize());
 }
 
 static void setcstringlength(char * cstr, size_t value) {
-	*(long *)(cstr - baseinformationsize()) = value;
+	*(long *)(cstr - basesize()) = value;
 }
 
 size_t cstringlength(char * cstr) {
 	if (!cstringcheck(cstr)) { return -1; }
-    return *(size_t *)(cstr - baseinformationsize());
+    return *(size_t *)(cstr - basesize());
 }
 
 char * cstringinit(char * str, bool ctl) {
-    long vstep = baseinformationsize();
-	long lstep = baseinformationsize();
+    long vstep = basesize();
+	long lstep = basesize();
 	long volume = 32;
 	long length = 0;
 
@@ -79,10 +83,10 @@ void cstringdescribe(char * cstr, unsigned short flag) {
 	}
 
     long volume = cstringvolume(cstr);
-	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Chars.volume = %ld),\n", baseinformationsize(), volume, volume, volume);
+	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Chars.volume = %ld),\n", basesize(), volume, volume, volume);
 
     long length = cstringlength(cstr);
-	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Chars.length = %ld)", baseinformationsize(), length, length, length);
+	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Chars.length = %ld)", basesize(), length, length, length);
 	
 	if (length != 0) {
 		printf(",");
@@ -105,12 +109,12 @@ void cstringdescribe(char * cstr, unsigned short flag) {
 char * cstringcopy(char * cstr) {
 	if (!cstringcheck(cstr)) { return NULL; }
 	char * index = NULL;
-	memcpy(index, cstr, cstringlength(cstr) + baseinformationsize());
-	return index - baseinformationsize();
+	memcpy(index, cstr, cstringlength(cstr) + basesize());
+	return index - basesize();
 }
 
 void cstringfree(char * cstr) {
-	free(cstr - 2 * baseinformationsize());
+	free(cstr - 2 * basesize());
 }
 
 bool cstringcompare(char * cstr, char * data) {
@@ -144,12 +148,12 @@ void cstringtelescope(char ** pcstr, bool ctl, size_t m) {
 
 	if (volume <= 1) { return; }
 
-	char * space = malloc(2 * baseinformationsize() + volume);
-	memcpy(space, *pcstr, 2 * baseinformationsize() + volume);
+	char * space = malloc(2 * basesize() + volume);
+	memcpy(space, *pcstr, 2 * basesize() + volume);
 	printf("cstring: (%p) -> (%p)\n", * pcstr, space);
-	free(*pcstr - 2 * baseinformationsize());
+	free(*pcstr - 2 * basesize());
 	* pcstr = space;
-	*(long *)(* pcstr - 2 * baseinformationsize()) = volume;
+	*(long *)(* pcstr - 2 * basesize()) = volume;
 }
 
 bool cstringinsert(char * cstr, long index, ...) {
@@ -243,72 +247,51 @@ bool cstringcatenate(char * cstr, ...) {
 	}
 }
 
-bool cstringclean(char * cstr, ...) {
+bool cstringcleans(char * cstr, search_t t, int (* cfg)(long idx), size_t ps, ...) {
 	if (!cstringcheck(cstr)) { return false; }
-
 	va_list list;
-	va_start(list, cstr);
+	va_start(list, ps);
+	if (cstringlength(cstr) < 1 ) { return false; }
 
-	long length = cstringlength(cstr);
-	long volume = cstringvolume(cstr);
-
-	if (length < 1 ) { return false; }
-
-	uint64_t result = va_arg(list, uint64_t);
-
-	if (0x00 <= result && result <= 0xff) {
-		char data = result;
+	switch (t) {
+	case character: {
+		for (long i = 0; i < ps; i ++) {
+			int value = va_arg(list, int);
+			cstringdelete(cstr, value);
+		}
+	} break;
+	case position: {
+		long source[ps];
+		memset(source, -1, sizeof(long) * ps);
 		long count = 0;
-		for (int i = 0; i < length; i ++) {
-			if (data == cstr[i]) {
-				++ count;
-			}
-		}
-		long indexes[count];
-		// 为了节省空间,所以采用了牺牲运行时间的方法处理
-		({
-			long index = 0;
-			for (int i = 0; i < length; i ++) {
-				if (data == cstr[i]) {
-					indexes[index] = i;
-					++ index;
+		long length = cstringlength(cstr);
+		for (int i = 0; i < ps; i ++) {
+			long result = cfg && cfg(i) == 8 ? va_arg(list, long) : va_arg(list, int);
+			if (result < length && result >= 0) {
+				bool flag = false;
+				for (int j = 0; j < i; j ++) {
+					if (source[j] != result) { continue;}
+					else {flag = !flag; break; }
 				}
+				if (!flag) { source[count ++] = result; }
 			}
-		});
-
-		long index = 0;
-		for (int i = 0; i < count; i ++) {
-			memmove(cstr + indexes[i] - index, cstr + indexes[i] + 1 - index, length - indexes[i] - 1 + index);
-			memmove(cstr + length - 1, &data, 1);
-			cstringdescribe(cstr, 0b001);
-			++ index;
 		}
-	
-		setcstringlength(cstr, length - count);
-		va_end(list);
-		return true;
-	} else {
-		char * data = (void *)result;
-		long size = cstringlength(data);
-		long temp = length;
-		long i = cstringindex(cstr, 1, data, true);
-		do {
-			memmove(cstr, cstr + size, temp - size);
-			setcstringlength(cstr, temp - size);
-			temp -= size;
-			i = cstringindex(cstr, 1, data, true);
-		} while (i != -1);
-		/*
-			0000
-			00
-		*/
-
-		va_end(list);
-		return true;
+		for (int i = 0; i < count; i ++) {
+			cstringremove(cstr, source[i]);
+		}
+	} break;
+	case cstring: {
+		for (long i = 0; i < ps; i ++) {
+			long value = va_arg(list, long);
+			cstringexcise(cstr, (char *)value);
+		}
+	} break;
 	}
+	va_end(list);
+	return true;
 }
 
-bool cstringexcise(char * cstr, char * data) {
+static bool cstringexcise(char * cstr, char * data) {
 	if (!cstringcheck(cstr)) { return false; }
 	long length = cstringlength(cstr);
 	long size = cstringlength(data); 
@@ -344,7 +327,34 @@ bool cstringexcise(char * cstr, char * data) {
 	return true;
 }
 
-bool cstringdelete(char * cstr, char c) {
+bool cstringexcises(char * cstr, long ps, char * data, ...) {
+	if (!cstringcheck(cstr)) { return false; }
+	long length = cstringlength(cstr);
+	va_list list;
+	va_start(list, data);
+	long source[ps]; 
+	memset(source, -1, sizeof(char *) * ps);
+	source[0] = (long)data;
+	long scount = 1;
+	for (int i = 1; i < ps; i ++) {
+		long result = va_arg(list, long);
+		if (result < length - 1 && result >= 0) {
+			bool flag = false;
+			for (int j = 0; j < i; j ++) {
+				if (source[j] != result) { continue;}
+				else {flag = !flag; break; }
+			}
+			if (!flag) { source[scount ++] = result; }
+		}
+	}
+	for (int i = 0; i < scount; i ++) {
+		cstringexcise(cstr, (char *)source[i]);
+	}
+	va_end(list);
+	return true;
+}
+
+static bool cstringdelete(char * cstr, char c) {
 	if (!cstringcheck(cstr)) { return false; }
 
 	long length = cstringlength(cstr);
@@ -378,8 +388,7 @@ bool cstringdeletes(char * cstr, size_t ps, int c, ...) {
 	if (!cstringcheck(cstr)) { return false; }
 	long length = cstringlength(cstr);
 	va_list list;
-
-	va_start(list, ((int)c));
+	va_start(list, c);
 	int source[ps]; 
 	memset(source, -1, sizeof(int) * ps);
 	source[0] = c;
@@ -402,7 +411,7 @@ bool cstringdeletes(char * cstr, size_t ps, int c, ...) {
 	return true;
 }
 
-bool cstringremove(char * cstr, long index) {
+static bool cstringremove(char * cstr, long index) {
 	if (!cstringcheck(cstr)) { return false; }
 
 	long length = cstringlength(cstr);
@@ -424,7 +433,7 @@ bool cstringremoves(char * cstr, size_t ps, int index, ...) {
 	int source[ps]; 
 	memset(source, -1, sizeof(int) * ps);
 	source[0] = index;
-	long scount = 1;
+	long count = 1;
 	for (int i = 1; i < ps; i ++) {
 		long result = va_arg(list, int);
 		if (result < length - 1 && result >= 0) {
@@ -433,10 +442,10 @@ bool cstringremoves(char * cstr, size_t ps, int index, ...) {
 				if (source[j] != result) { continue;}
 				else {flag = !flag; break; }
 			}
-			if (!flag) { source[scount ++] = result; }
+			if (!flag) { source[count ++] = result; }
 		}
 	}
-	for (int i = 0; i < scount; i ++) {
+	for (int i = 0; i < count; i ++) {
 		cstringremove(cstr, source[i]);
 	}
 	va_end(list);

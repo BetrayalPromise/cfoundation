@@ -19,11 +19,10 @@ int main(int argc, char ** argv) {
 	// testcstringinit();
 	// testcstringtelescope();
 	// testcstringinsrt();
-	// testcstringremove();
 	// testcstringindex();
 	// testcstringunique();
 	// testcstringremoves();
-	testcstringexcise();
+	testcstringclean();
 
 	// int x;
 	// char x0, x1;

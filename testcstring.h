@@ -5,12 +5,9 @@ void testcstringinit();
 void testcstringinsrt();
 void testcstringtelescope();
 void testcstringclean();
-void testcstringremove();
-void testcstringremoves();
 void testcstringindex();
 void testcstringindexes();
 void testcstringunique();
-void testcstringdelete();
-void testcstringexcise();
+
 
 #endif
