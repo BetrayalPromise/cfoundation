@@ -171,23 +171,21 @@ extern bool     cstringcatenate(char * cstr, ...);
 //  @return             返回删除操作是否成功.
 //  @paramater cstr     cstring型.
 //  @paramater t        search_t型.
-//  @paramater cfg      int(*)(long)型.用以配置不定参数所占字长
 //  @paramater ...      清空内容(int, char型或cstring型),接受最多32个不定参数.
-extern bool     cstringremove(char * cstr, search_t t, int (* cfg)(long idx), size_t ps, ...);
-#if !defined (cstringremove0$) && !defined (cstringremove1$)
-    #define cstringremove0$(a, b, ...) cstringremove(a, b, NULL, ARGC(__VA_ARGS__), ##__VA_ARGS__)
-    #define cstringremove1$(a, b, c, ...) cstringremove(a, b, c, ARGC(__VA_ARGS__), ##__VA_ARGS__)
+extern bool     cstringremove(char * cstr, search_t t, size_t ps, ...);
+#if !defined (cstringremove$)
+    #define cstringremove$(a, b, ...) cstringremove(a, b, ARGC(__VA_ARGS__), ##__VA_ARGS__)
 #else
-    #warning "information: duplicate define macro 'cstringremove0$ or cstringremove1$'
+    #warning "information: duplicate define macro 'cstringremove$'
 #endif
 
 
 //  功能类似char *strchr(const char *s, int c); char *strstr(const char *s1, const char *s2);
 //  @return             返回第times次出现检索内容的索引值,若为-1则未找到.
 //  @paramater cstr     cstring型.
-//  @paramater t        search_t型.
+//  @paramater t        search_t型.若为position,则times参数无效,返回值没有意义.
 //  @paramater times    检索内容第times次出现次数.
-//  @paramater ...      检索内容(int型或char型或cstring型),若为int型,接受一个不定参数,若为char型,接受一个不定参数,若为cstring型,还需传入一个bool型(针对cstring型[111],[222]...,控制索引方式),接受两个不定参数.
+//  @paramater ...      检索内容(char型或cstring型),若为int型,接受一个不定参数,若为char型,接受一个不定参数,若为cstring型,还需传入一个bool型(针对cstring型[111],[222]...,控制索引方式),接受两个不定参数.
 extern long     cstringsearch(char * cstr, search_t t, long times, ...);
 
 
@@ -207,9 +205,10 @@ extern bool     cstringchange(char * cstr, long pos, ...);
 
 #define EXCHANGE(num1, num2) do { num1 = num1 ^ num2; num2 = num1 ^ num2; num1 = num1 ^ num2; } while(0)
 
+
 //  @return             无返回值.
 //  @paramater cstr     cstring型.
-//  @paramater ctl       bool型.为true:按照ASCII码从大到小排序;为false:按照ASCII码从小到大排序.
+//  @paramater ctl      bool型.为true:按照ASCII码从大到小排序;为false:按照ASCII码从小到大排序.
 extern void     cstringsort(char * cstr, bool ctl);
 
 #endif

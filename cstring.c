@@ -247,7 +247,7 @@ bool cstringcatenate(char * cstr, ...) {
 	}
 }
 
-bool cstringremove(char * cstr, search_t t, int(* cfg)(long idx), size_t ps, ...) {
+bool cstringremove(char * cstr, search_t t, size_t ps, ...) {
 	if (!cstringcheck(cstr)) { return false; }
 	va_list list;
 	va_start(list, ps);
@@ -266,7 +266,7 @@ bool cstringremove(char * cstr, search_t t, int(* cfg)(long idx), size_t ps, ...
 		long count = 0;
 		long length = cstringlength(cstr);
 		for (long i = 0; i < ps; i ++) {
-			long result = cfg && cfg(i) == 8 ? va_arg(list, long) : va_arg(list, int);
+			long result = va_arg(list, int);
 			if (result < length && result >= 0) {
 				bool flag = false;
 				for (long j = 0; j < i; j ++) {
@@ -392,15 +392,12 @@ static bool cstringremove2(char * cstr, long index) {
 
 long cstringsearch(char * cstr, search_t t, long times, ...) {
 	if (!cstringcheck(cstr)) { return false; }
-
 	long length = cstringlength(cstr);
 	long index = -1;
 	long total = 0;
 	if (times < 0 || times > length) { return -1; }
-
 	va_list list;
 	va_start(list, times);
-
 	switch (t) {
 	case character: {
 		char data = va_arg(list, int);
@@ -419,16 +416,15 @@ long cstringsearch(char * cstr, search_t t, long times, ...) {
 	} break;
 	case position: {
 		int data = va_arg(list, int);
+		va_end(list);
 		return data;
 	} break;
 	case cstring: {
 		char * data = (void *)va_arg(list, uint64_t);
 		long size = cstringlength(data); 
 		if (length <= 0 || size <= 0 || size > length) { return - 1; }
-
 		uint64_t flag = va_arg(list, int) != 0 ? true : false;
 		bool ctl = false;
-		
 		if (flag) {
 			for (int i = 0; i < size - 1; i ++) {
 				data[0] == data[i] ? ({ ctl = true; continue; }) : ({ ctl = false; break; });
@@ -541,34 +537,25 @@ bool cstringchange(char * cstr, long pos, ...) {
 	return true;
 }
 
-char * cstringtoken(char * cstr, size_t times, ...) {
-	va_list list;
-	va_start(list, times);
-	uint64_t result = va_arg(list, uint64_t);
-	long count = 0;
-	long index = cstringsearch(cstr, character, times, result);
-	if (index < 0) {
-		va_end(list);
-		return NULL;
-	} else {
-		char * p = cstringinit(NULL, false);
-		size_t volume = cstringvolume(p);
-
-		for (int i = 0; i < index; i ++) {
-			p[i] = cstr[i];
-		}
-		va_end(list);
-		return p;
-	}
-}
-
-long cstringprefix() {
-	return -1;
-}
-
-long cstringpresuffix() {
-	return -1;
-}
+// char * cstringtoken(char * cstr, size_t times, ...) {
+// 	va_list list;
+// 	va_start(list, times);
+// 	uint64_t result = va_arg(list, uint64_t);
+// 	long count = 0;
+// 	long index = cstringsearch(cstr, character, times, result);
+// 	if (index < 0) {
+// 		va_end(list);
+// 		return NULL;
+// 	} else {
+// 		char * p = cstringinit(NULL, false);
+// 		size_t volume = cstringvolume(p);
+// 		for (int i = 0; i < index; i ++) {
+// 			p[i] = cstr[i];
+// 		}
+// 		va_end(list);
+// 		return p;
+// 	}
+// }
 
 void cstringsort(char * cstr, bool ctl) {
 	long count = cstringlength(cstr);
@@ -602,5 +589,8 @@ void cstringsort(char * cstr, bool ctl) {
 	}
 }
 
+char * cstringmutate(char * cstr) {
+	return NULL;
+}
 
 #endif
