@@ -165,9 +165,8 @@ void testcstringindex() {
 		char * p0 = cstringinit$("0000000");
 		char * p1 = cstringinit$("00");
 		for (int i = -1; i < 10; i ++) {
-			long count;
-			long index = cstringsearch(p0, cstring, &count, i, p1, true);
-			printf("count = %ld i = %d, index = %ld\n", count, i, index);
+			long index = cstringsearch(p0, cstring, i, p1, true);
+			printf("i = %d, index = %ld\n", i, index);
 		}
 	}
 
@@ -211,16 +210,16 @@ void testcstringremove() {
 	// 	cstringremove0$(p0, cstring, p1);
 	// 	cstringdescribe(p0, 0b001);
 	// }
-	// if (true) {
-	// 	char * p0 = cstringinit$("12321");
-	// 	cstringremove0$(p0, character,'4');
-	// 	cstringdescribe(p0, 0b001);
-	// }
 	if (true) {
 		char * p0 = cstringinit$("12321");
-		cstringremove1$(p0, position, hander, 3);
+		cstringremove0$(p0, character, '4');
 		cstringdescribe(p0, 0b001);
 	}
+	// if (true) {
+	// 	char * p0 = cstringinit$("12321");
+	// 	cstringremove1$(p0, position, hander, 3);
+	// 	cstringdescribe(p0, 0b001);
+	// }
 }
 
 int hander(long index) {

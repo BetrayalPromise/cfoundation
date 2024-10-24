@@ -247,7 +247,7 @@ bool cstringcatenate(char * cstr, ...) {
 	}
 }
 
-bool cstringremove(char * cstr, search_t t, int (* cfg)(long idx), size_t ps, ...) {
+bool cstringremove(char * cstr, search_t t, int(* cfg)(long idx), size_t ps, ...) {
 	if (!cstringcheck(cstr)) { return false; }
 	va_list list;
 	va_start(list, ps);
@@ -265,13 +265,13 @@ bool cstringremove(char * cstr, search_t t, int (* cfg)(long idx), size_t ps, ..
 		memset(source, -1, sizeof(long) * ps);
 		long count = 0;
 		long length = cstringlength(cstr);
-		for (int i = 0; i < ps; i ++) {
+		for (long i = 0; i < ps; i ++) {
 			long result = cfg && cfg(i) == 8 ? va_arg(list, long) : va_arg(list, int);
 			if (result < length && result >= 0) {
 				bool flag = false;
-				for (int j = 0; j < i; j ++) {
-					if (source[j] != result) { continue;}
-					else {flag = !flag; break; }
+				for (long j = 0; j < i; j ++) {
+					if (source[j] != result) { continue; }
+					else { flag = !flag; break; }
 				}
 				if (!flag) { source[count ++] = result; }
 			}
@@ -295,7 +295,7 @@ bool cstringremove(char * cstr, search_t t, int (* cfg)(long idx), size_t ps, ..
 				source[end + gap] = temp;
 			}
 		}
-		for (int i = 0; i < count; i ++) {
+		for (long i = 0; i < count; i ++) {
 			cstringremove2(cstr, source[i]);
 		}
 	} break;
@@ -390,7 +390,7 @@ static bool cstringremove2(char * cstr, long index) {
 	}
 }
 
-long cstringsearch(char * cstr, search_t t, long * count, long times, ...) {
+long cstringsearch(char * cstr, search_t t, long times, ...) {
 	if (!cstringcheck(cstr)) { return false; }
 
 	long length = cstringlength(cstr);
@@ -414,7 +414,6 @@ long cstringsearch(char * cstr, search_t t, long * count, long times, ...) {
 				}
 			}
 		}
-		* count = total;
 		va_end(list);
 		return index;
 	} break;
@@ -449,7 +448,6 @@ long cstringsearch(char * cstr, search_t t, long * count, long times, ...) {
 				i -= (j - 1); j = 0;
 			}
 		}
-		* count = total;
 		va_end(list);
 		return index;
 	} break;
@@ -548,7 +546,7 @@ char * cstringtoken(char * cstr, size_t times, ...) {
 	va_start(list, times);
 	uint64_t result = va_arg(list, uint64_t);
 	long count = 0;
-	long index = cstringsearch(cstr, character, &count, times, result);
+	long index = cstringsearch(cstr, character, times, result);
 	if (index < 0) {
 		va_end(list);
 		return NULL;

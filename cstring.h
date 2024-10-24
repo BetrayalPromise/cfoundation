@@ -31,7 +31,7 @@ typedef enum search {
 #endif
 
 #if !defined (DEFAULTARGC)
-    #define DEFAULTARGC(a, value)           ((#a[0]) ? (a + 0) : value)
+    #define DEFAULTARGC(a, value) ((#a[0]) ? (a + 0) : value)
 #else
     #warning "information: duplicate define macro 'DEFAULTARGC'
 #endif
@@ -186,10 +186,9 @@ extern bool     cstringremove(char * cstr, search_t t, int (* cfg)(long idx), si
 //  @return             返回第times次出现检索内容的索引值,若为-1则未找到.
 //  @paramater cstr     cstring型.
 //  @paramater t        search_t型.
-//  @paramater count    long *型.检索内容共计出现次数.t若为position则,该项无效.
 //  @paramater times    检索内容第times次出现次数.
 //  @paramater ...      检索内容(int型或char型或cstring型),若为int型,接受一个不定参数,若为char型,接受一个不定参数,若为cstring型,还需传入一个bool型(针对cstring型[111],[222]...,控制索引方式),接受两个不定参数.
-extern long     cstringsearch(char * cstr, search_t t, long * count, long times, ...);
+extern long     cstringsearch(char * cstr, search_t t, long times, ...);
 
 
 //  数组去重复元素
