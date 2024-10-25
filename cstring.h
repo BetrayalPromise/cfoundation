@@ -185,8 +185,14 @@ extern bool     cstringremove(char * cstr, search_t t, size_t ps, ...);
 //  @paramater cstr     cstring型.
 //  @paramater t        search_t型.若为position,则times参数无效,返回值没有意义.
 //  @paramater times    检索内容第times次出现次数.
+//  @paramater complete void(*)(long)搜索完成回调函数指针
 //  @paramater ...      检索内容(char型或cstring型),若为int型,接受一个不定参数,若为char型,接受一个不定参数,若为cstring型,还需传入一个bool型(针对cstring型[111],[222]...,控制索引方式),接受两个不定参数.
-extern long     cstringsearch(char * cstr, search_t t, long times, ...);
+extern long     cstringsearch(char * cstr, search_t t, long times, void(* complete)(long), ...);
+#if !defined (cstringsearch$)
+    #define cstringsearch$(a, b, c, ...) cstringremove(a, b, c, NULL, ##__VA_ARGS__)
+#else
+    #warning "information: duplicate define macro 'cstringremove$'
+#endif
 
 
 //  数组去重复元素
@@ -201,9 +207,6 @@ extern bool     cstringunique(char * cstr, bool flag);
 //  @paramater pos      操作起始索引.
 //  @paramater ...      改变内容(char型或cstring型),接受一个不定参数.
 extern bool     cstringchange(char * cstr, long pos, ...);
-
-
-#define EXCHANGE(num1, num2) do { num1 = num1 ^ num2; num2 = num1 ^ num2; num1 = num1 ^ num2; } while(0)
 
 
 //  @return             无返回值.

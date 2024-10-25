@@ -390,14 +390,14 @@ static bool cstringremove2(char * cstr, long index) {
 	}
 }
 
-long cstringsearch(char * cstr, search_t t, long times, ...) {
+long cstringsearch(char * cstr, search_t t, long times, void(* complete)(long), ...) {
 	if (!cstringcheck(cstr)) { return false; }
 	long length = cstringlength(cstr);
 	long index = -1;
 	long total = 0;
 	if (times < 0 || times > length) { return -1; }
 	va_list list;
-	va_start(list, times);
+	va_start(list, complete);
 	switch (t) {
 	case character: {
 		char data = va_arg(list, int);
@@ -411,11 +411,13 @@ long cstringsearch(char * cstr, search_t t, long times, ...) {
 				}
 			}
 		}
+		if (complete) { complete(total); }
 		va_end(list);
 		return index;
 	} break;
 	case position: {
 		int data = va_arg(list, int);
+		if (complete) { complete(total); }
 		va_end(list);
 		return data;
 	} break;
@@ -444,6 +446,7 @@ long cstringsearch(char * cstr, search_t t, long times, ...) {
 				i -= (j - 1); j = 0;
 			}
 		}
+		if (complete) { complete(total); }
 		va_end(list);
 		return index;
 	} break;

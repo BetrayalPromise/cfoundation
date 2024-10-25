@@ -17,6 +17,8 @@ typedef enum ISO_IEC_646 {
 #define BitSET1(n, p) ((n)|= 1<<(p))        // 把某位置1
 #define BitSET0(n, p) ((n) &= ~(1<<(p)))    // 把某位置0
 
+#define EXCHANGE(num1, num2) do { num1 = num1 ^ num2; num2 = num1 ^ num2; num1 = num1 ^ num2; } while(0)
+
 extern long * numbersinit(long * n, long size);
 
 void endian();

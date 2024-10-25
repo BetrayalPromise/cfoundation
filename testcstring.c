@@ -125,28 +125,28 @@ void testcstringindex() {
 	if (true) {
 		char * p0 = cstringinit$(NULL);
 		char c  = 0x00;
-		cstringsearch(p0, character, 1, c);
+		cstringsearch(p0, character, 1, NULL, c);
 		cstringdescribe(p0, 0b001);
 	}
 
 	if (true) {
 		char * p0 = cstringinit$("\0");
 		char c  = 0x00;
-		cstringsearch(p0, character, 1, c);
+		cstringsearch(p0, character, 1, NULL, c);
 		cstringdescribe(p0, 0b001);
 	}
 
 	if (true) {
 		char * p0 = cstringinit$("\0");
 		char * p1 = cstringinit$("\0");
-		cstringsearch(p0, cstring, 1, p1);
+		cstringsearch(p0, cstring, 1, NULL, p1);
 		cstringdescribe(p0, 0b001);
 	}
 
 	if (true) {
 		char * p0 = cstringinit$("9900990099");
 		char * p1 = cstringinit$("99");
-		long index = cstringsearch(p0, cstring, 1, p1, false);
+		long index = cstringsearch(p0, cstring, 1, NULL, p1, false);
 		printf("index = %ld\n", index);
 	}
 
@@ -154,7 +154,7 @@ void testcstringindex() {
 		for (int i = -9; i < 8; i++) {
 			char * p0 = cstringinit$("00000000000000");
 			char * p1 = cstringinit$("00");
-			long index = cstringsearch(p0, cstring, i, p1, true);
+			long index = cstringsearch(p0, cstring, i, NULL, p1, true);
 			printf("times = %d  index = %ld\n", i, index);
 		}
 	}
@@ -163,7 +163,7 @@ void testcstringindex() {
 		char * p0 = cstringinit$("0000000");
 		char * p1 = cstringinit$("00");
 		for (int i = -1; i < 10; i ++) {
-			long index = cstringsearch(p0, cstring, i, p1, true);
+			long index = cstringsearch(p0, cstring, i, NULL, p1, true);
 			printf("i = %d, index = %ld\n", i, index);
 		}
 	}
