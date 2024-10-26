@@ -21,7 +21,7 @@ static bool cstringcheck(char * cstr) {
 	return cstr == NULL ? false : true;
 }
 
-long basesize(void) {
+static long basesize(void) {
 	return sizeof(long);
 }
 

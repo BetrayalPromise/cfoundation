@@ -1,3 +1,4 @@
+#include <i386/_types.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -5,10 +6,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/_types/_size_t.h>
+#include <sys/_types/_u_int16_t.h>
 #include "array.h"
 #include "cstring.h"
 #include "testcstring.h"
-#include "number.h"
+#include "cdata.h"
 
 // 0x0;
 // __asm__ __volatile__("movq %%## #r, %0" : "=r"(value))
@@ -22,7 +24,7 @@ int main(int argc, char ** argv) {
 	// testcstringindex();
 	// testcstringunique();
 	// testcstringremove();
-	testcstringsort();
+	// testcstringsort();
 
 	// int x;
 	// char x0, x1;
@@ -56,14 +58,32 @@ int main(int argc, char ** argv) {
 
 	// printf("%d\n", ARGC(1, 2, 3, 4, 5, 6, 7, 8, 9, 0));
 
-
-
 	/*
 		高位放在高地址,类似大端存储
 	*/
 
 	// long a = 0x77665544332211;
 	// printf("%d\n", (char)a);
+
+	
+
+	int a[] = { 11, 12 };
+	int * p = cdatainit(a, cint, sizeof(int), sizeof(a) / sizeof(int));
+
+	// for (int i = 0; i < 12; i ++) {
+	// 	setcdatactype(p, i);
+	// 	printf("%u\n", cdatactype(p));
+	// }
+
+
+	// setcdatalength(p, 10);
+	// printf("%zu\n", cdatalength(p));
+	// setcdatastep(p, 11);
+	// printf("%zu\n", cdatastep(p));
+	// setcdatavolume(p, 13);
+	// printf("%zu\n", cdatavolume(p));
+
+	cdatadescribe(p);
 
 	return EXIT_SUCCESS;
 }

@@ -1,44 +1,131 @@
-#ifndef __NUMBER_C__
-#define __NUMBER_C__
+#ifndef __CDATA_C__
+#define __CDATA_C__
 
 #include <stdio.h>
-#include "number.h"
+#include "cdata.h"
 #include <math.h>
 #include <stdlib.h>
 
-
-static void setnumbersvolume(long * ns, size_t value) {
-	*(size_t *)(ns - 2) = value;
+void setcdatactype(void * cs, ctype_t value) {
+    if (cs == NULL) { return; }
+	*(size_t *)(cs - 4 * sizeof(long)) = value;
 }
 
-size_t numbersvolume(long * ns) {
-	if (ns == NULL) { return -1; }
-    return *(size_t *)(ns - 2);
+ctype_t cdatactype(void * cs) {
+	if (cs == NULL) { return -1; }
+    return *(ctype_t *)(cs - 4 * sizeof(long));
 }
 
-static void setnumberslength(long * ns, size_t value) {
-	*(long *)(ns - 1) = value;
+void setcdatastep(void * cs, size_t value) {
+    if (cs == NULL) { return; }
+	*(size_t *)(cs - 3 * sizeof(long)) = value;
 }
 
-size_t numberslength(long * ns) {
-	if (ns == NULL) { return -1; }
-    return *(size_t *)(ns - 1);
+size_t cdatastep(void * cs) {
+	if (cs == NULL) { return -1; }
+    return *(size_t *)(cs - 3 * sizeof(long));
 }
 
-long * numbersinit(long * n, long size) {
-    long vstep = 1;
-	long lstep = 1;
-	long volume = 32;
-	long length = 0;
-    long * space = malloc(vstep + lstep + volume);
-    long * ns = space + vstep + lstep;
-	setnumberslength(ns, 0);
-	setnumbersvolume(ns, volume);
-    return ns;
+void setcdatavolume(void * cs, size_t value) {
+    if (cs == NULL) { return; }
+	*(size_t *)(cs - 2 * sizeof(long)) = value;
 }
 
-void numbersfree(long * ns) {
-    free(ns + 2);
+size_t cdatavolume(void * cs) {
+	if (cs == NULL) { return -1; }
+    return *(size_t *)(cs - 2 * sizeof(long));
+}
+
+void setcdatalength(void * cs, size_t value) {
+    if (cs == NULL) { return; }
+	*(long *)(cs - 1 * sizeof(long)) = value;
+}
+
+size_t cdatalength(void * cs) {
+	if (cs == NULL) { return -1; }
+    return *(size_t *)(cs - 1 * sizeof(long));
+}
+
+void * cdatainit(void * src, ctype_t type, size_t step, size_t length) {
+    if (!src && step > 0 && length > 0) { return NULL; }
+    long base = sizeof(long) * 4;
+    long store = step * length;
+    long volume = 32;
+    while (volume <= length) {
+		volume *= 2;
+	}
+    void * space = malloc(base + store);
+    void * cstr = space + base;
+	for (long i = 0; i < length * step; i ++) {
+		((char *)cstr)[i] = ((char *)src)[i];
+	}
+    setcdatactype(cstr, type);
+    setcdatastep(cstr, step);
+	setcdatalength(cstr, length);
+	setcdatavolume(cstr, volume);
+    return cstr;
+}
+
+void numbersfree(void * cs) {
+    free(cs + 4);
+}
+
+void cdatadescribe(void * cs) {
+	if (!cs) { return; }
+    printf("\n[long|long|long|long|bin...]: (%p)\n[\n", cs);
+
+    ctype_t type = cdatactype(cs);
+    char * info = NULL;
+    switch (type) {
+    case cunknow: info = "unknow"; break;
+    case cchar:   info = "char"; break;
+    case cuchar:  info = "unsigned char"; break;
+    case cshort:  info = "short"; break;
+    case cushort: info = "unsigned short"; break;
+    case cint:    info = "int"; break;
+    case cuint:   info = "unsigned int"; break;
+    case cfloat:  info = "float"; break;
+    case clong:   info = "long"; break;
+    case culong:  info = "unsigned long"; break;
+    case cdouble: info = "double"; break;
+    }
+    printf("    (%ld Byte  H:0x%016x  D:%032u  Array.type = %s),\n", sizeof(long), type, type, info);
+
+    long step = cdatastep(cs);
+	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Array.step = %ld),\n", sizeof(long), step, step, step);
+
+    long volume = cdatavolume(cs);
+	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Array.volume = %ld),\n", sizeof(long), volume, volume, volume);
+
+    long length = cdatalength(cs);
+	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Array.length = %ld)", sizeof(long), length, length, length);
+	
+	if (length != 0) {
+		printf(",");
+	}
+	printf("\n");
+
+	for (int i = 0; i < length; i ++) {
+        switch (type) {
+        case cunknow: printf("    unknow"); break;
+        case cchar:   printf("    %d", ((char *)cs)[i]); break;
+        case cuchar:  printf("    %d", ((unsigned char *)cs)[i]); break;
+        case cshort:  printf("    %d", ((short *)cs)[i]); break;
+        case cushort: printf("    %d", ((unsigned short *)cs)[i]); break;
+        case cint:    printf("    %d", ((int *)cs)[i]); break;
+        case cuint:   printf("    %d", ((unsigned int *)cs)[i]); break;
+        case cfloat:  printf("    %f", ((float *)cs)[i]); break;
+        case clong:   printf("    %ld", ((long *)cs)[i]); break;
+        case culong:  printf("    %ld", ((unsigned long *)cs)[i]); break;
+        case cdouble: printf("    %lf", ((double *)cs)[i]); break;
+        }
+		if (i != length - 1) {
+			printf(",\n");
+		} else {
+			printf("\n");
+		}
+	}
+	printf("]\n\n");
 }
 
 void char2binary(char value, format_t fmt) {
