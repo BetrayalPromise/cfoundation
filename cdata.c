@@ -1,83 +1,98 @@
 #ifndef __CDATA_C__
 #define __CDATA_C__
 
+#include <stddef.h>
 #include <stdio.h>
 #include "cdata.h"
 #include <math.h>
 #include <stdlib.h>
 
-void setcdatactype(void * cs, ctype_t value) {
-    if (cs == NULL) { return; }
-	*(size_t *)(cs - 4 * sizeof(long)) = value;
+static long basesize(void) {
+	return sizeof(long);
 }
 
-ctype_t cdatactype(void * cs) {
+static void setcdatatype(void * cs, cbasetype_t value) {
+    if (cs == NULL) { return; }
+	*(size_t *)(cs - 4 * basesize()) = value;
+}
+
+cbasetype_t cdatatype(void * cs) {
 	if (cs == NULL) { return -1; }
-    return *(ctype_t *)(cs - 4 * sizeof(long));
+    return *(cbasetype_t *)(cs - 4 * basesize());
 }
 
-void setcdatastep(void * cs, size_t value) {
+static void setcdatastep(void * cs, size_t value) {
     if (cs == NULL) { return; }
-	*(size_t *)(cs - 3 * sizeof(long)) = value;
+	*(size_t *)(cs - 3 * basesize()) = value;
 }
 
 size_t cdatastep(void * cs) {
 	if (cs == NULL) { return -1; }
-    return *(size_t *)(cs - 3 * sizeof(long));
+    return *(size_t *)(cs - 3 * basesize());
 }
 
-void setcdatavolume(void * cs, size_t value) {
+static void setcdatavolume(void * cs, size_t value) {
     if (cs == NULL) { return; }
-	*(size_t *)(cs - 2 * sizeof(long)) = value;
+	*(size_t *)(cs - 2 * basesize()) = value;
 }
 
 size_t cdatavolume(void * cs) {
 	if (cs == NULL) { return -1; }
-    return *(size_t *)(cs - 2 * sizeof(long));
+    return *(size_t *)(cs - 2 * basesize());
 }
 
-void setcdatalength(void * cs, size_t value) {
+static void setcdatalength(void * cs, size_t value) {
     if (cs == NULL) { return; }
-	*(long *)(cs - 1 * sizeof(long)) = value;
+	*(long *)(cs - 1 * basesize()) = value;
 }
 
 size_t cdatalength(void * cs) {
 	if (cs == NULL) { return -1; }
-    return *(size_t *)(cs - 1 * sizeof(long));
+    return *(size_t *)(cs - 1 * basesize());
 }
 
-void * cdatainit(void * src, ctype_t type, size_t step, size_t length) {
-    if (!src && step > 0 && length > 0) { return NULL; }
-    long base = sizeof(long) * 4;
-    long store = step * length;
+void * cdatainit(void * src, cbasetype_t type, size_t length) {
+    if (!src || length < 0) { return NULL; }
+    size_t step = 0;
+    switch (type) {
+    case cchar:   step = sizeof(char); break;
+    case cuchar:  step = sizeof(unsigned char); break;
+    case cshort:  step = sizeof(short); break;
+    case cushort: step = sizeof(unsigned short); break;
+    case cint:    step = sizeof(int); break;
+    case cuint:   step = sizeof(unsigned int); break;
+    case cfloat:  step = sizeof(float); break;
+    case clong:   step = sizeof(long); break;
+    case culong:  step = sizeof(unsigned long); break;
+    case cdouble: step = sizeof(double); break;
+    }
+    long base = 4 * basesize();
     long volume = 32;
     while (volume <= length) {
 		volume *= 2;
 	}
-    void * space = malloc(base + store);
-    void * cstr = space + base;
+    void * space = malloc(base + step * length);
+    void * cs = space + base;
 	for (long i = 0; i < length * step; i ++) {
-		((char *)cstr)[i] = ((char *)src)[i];
+		((char *)cs)[i] = ((char *)src)[i];
 	}
-    setcdatactype(cstr, type);
-    setcdatastep(cstr, step);
-	setcdatalength(cstr, length);
-	setcdatavolume(cstr, volume);
-    return cstr;
+    setcdatatype(cs, type);
+    setcdatastep(cs, step);
+	setcdatalength(cs, length);
+	setcdatavolume(cs, volume);
+    return cs;
 }
 
 void numbersfree(void * cs) {
-    free(cs + 4);
+    free(cs - 4);
 }
 
 void cdatadescribe(void * cs) {
 	if (!cs) { return; }
     printf("\n[long|long|long|long|bin...]: (%p)\n[\n", cs);
-
-    ctype_t type = cdatactype(cs);
+    cbasetype_t type = cdatatype(cs);
     char * info = NULL;
     switch (type) {
-    case cunknow: info = "unknow"; break;
     case cchar:   info = "char"; break;
     case cuchar:  info = "unsigned char"; break;
     case cshort:  info = "short"; break;
@@ -107,7 +122,6 @@ void cdatadescribe(void * cs) {
 
 	for (int i = 0; i < length; i ++) {
         switch (type) {
-        case cunknow: printf("    unknow"); break;
         case cchar:   printf("    %d", ((char *)cs)[i]); break;
         case cuchar:  printf("    %d", ((unsigned char *)cs)[i]); break;
         case cshort:  printf("    %d", ((short *)cs)[i]); break;

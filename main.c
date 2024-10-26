@@ -12,6 +12,8 @@
 #include "testcstring.h"
 #include "cdata.h"
 
+void func(void * d);
+
 // 0x0;
 // __asm__ __volatile__("movq %%## #r, %0" : "=r"(value))
 //#define readdata(r)
@@ -67,24 +69,10 @@ int main(int argc, char ** argv) {
 
 	
 
-	int a[] = { 11, 12 };
-	int * p = cdatainit(a, cint, sizeof(int), sizeof(a) / sizeof(int));
-
-	// for (int i = 0; i < 12; i ++) {
-	// 	setcdatactype(p, i);
-	// 	printf("%u\n", cdatactype(p));
-	// }
-
-
-	// setcdatalength(p, 10);
-	// printf("%zu\n", cdatalength(p));
-	// setcdatastep(p, 11);
-	// printf("%zu\n", cdatastep(p));
-	// setcdatavolume(p, 13);
-	// printf("%zu\n", cdatavolume(p));
-
+	int a[] = { 11, 12, 13 };
+	int * p = cdatainit(a, cint, sizeof(a) / sizeof(int));
+	cdatainit((void *)56, cint, 1);
 	cdatadescribe(p);
-
 	return EXIT_SUCCESS;
 }
 
