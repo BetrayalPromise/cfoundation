@@ -69,7 +69,8 @@ char * cstringinit(char * str, bool ctl) {
 
 void cstringdescribe(char * cstr, unsigned short flag) {
 	if (!cstringcheck(cstr)) { return; }
-    printf("\n[long|long|char...]: (%p)\n[\n", cstr);
+    printf("\n[lvolume(8 Byte)|length(8 Byte)|char...]: (%p)\n[\n", cstr);
+	
 	char * show = NULL;
 	switch (flag) {
 	case 0b111: show = "    (%ld Byte  H:0x%02x  D:%03d  C:%c)"; break;

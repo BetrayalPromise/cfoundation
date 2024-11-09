@@ -1,10 +1,8 @@
-#ifndef __CDATA_H__
-#define __CDATA_H__
+#ifndef __carray_H__
+#define __carray_H__
 
 #include "cstring.h"
 #include <sys/_types/_size_t.h>
-
-typedef char cdata_t;
 
 typedef enum format {
     original,   // 原码
@@ -37,14 +35,14 @@ typedef enum cbasetype {
     cdouble = 0x09UL,
 } cbasetype_t;
 
-extern void *       cdatainit(void * src, cbasetype_t type, size_t length);
+extern void *       carrayinit(void * src, cbasetype_t type, size_t length);
 
-extern cbasetype_t  cdatatype(void * cs);
-extern size_t       cdatastep(void * cs);
-extern size_t       cdatavolume(void * cs);
-extern size_t       cdatalength(void * cs);
+extern cbasetype_t  carraytype(void * cs);
+extern size_t       carraystep(void * cs);
+extern size_t       carrayvolume(void * cs);
+extern size_t       carraylength(void * cs);
 
-extern void         cdatadescribe(void * cs);
+extern void         carraydescribe(void * cs);
 
 void endian();
 

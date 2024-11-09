@@ -10,7 +10,8 @@
 #include "array.h"
 #include "cstring.h"
 #include "testcstring.h"
-#include "cdata.h"
+#include "carray.h"
+#include "testcarray.h"
 
 void func(void * d);
 
@@ -67,12 +68,8 @@ int main(int argc, char ** argv) {
 	// long a = 0x77665544332211;
 	// printf("%d\n", (char)a);
 
-	
+	testcarrayinit();
 
-	int a[] = { 11, 12, 13 };
-	int * p = cdatainit(a, cint, sizeof(a) / sizeof(int));
-	cdatainit((void *)56, cint, 1);
-	cdatadescribe(p);
 	return EXIT_SUCCESS;
 }
 

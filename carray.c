@@ -1,9 +1,9 @@
-#ifndef __CDATA_C__
-#define __CDATA_C__
+#ifndef __carray_C__
+#define __carray_C__
 
 #include <stddef.h>
 #include <stdio.h>
-#include "cdata.h"
+#include "carray.h"
 #include <math.h>
 #include <stdlib.h>
 
@@ -11,47 +11,47 @@ static long basesize(void) {
 	return sizeof(long);
 }
 
-static void setcdatatype(void * cs, cbasetype_t value) {
+static void setcarraytype(void * cs, cbasetype_t value) {
     if (cs == NULL) { return; }
 	*(size_t *)(cs - 4 * basesize()) = value;
 }
 
-cbasetype_t cdatatype(void * cs) {
+cbasetype_t carraytype(void * cs) {
 	if (cs == NULL) { return -1; }
     return *(cbasetype_t *)(cs - 4 * basesize());
 }
 
-static void setcdatastep(void * cs, size_t value) {
+static void setcarraystep(void * cs, size_t value) {
     if (cs == NULL) { return; }
 	*(size_t *)(cs - 3 * basesize()) = value;
 }
 
-size_t cdatastep(void * cs) {
+size_t carraystep(void * cs) {
 	if (cs == NULL) { return -1; }
     return *(size_t *)(cs - 3 * basesize());
 }
 
-static void setcdatavolume(void * cs, size_t value) {
+static void setcarrayvolume(void * cs, size_t value) {
     if (cs == NULL) { return; }
 	*(size_t *)(cs - 2 * basesize()) = value;
 }
 
-size_t cdatavolume(void * cs) {
+size_t carrayvolume(void * cs) {
 	if (cs == NULL) { return -1; }
     return *(size_t *)(cs - 2 * basesize());
 }
 
-static void setcdatalength(void * cs, size_t value) {
+static void setcarraylength(void * cs, size_t value) {
     if (cs == NULL) { return; }
 	*(long *)(cs - 1 * basesize()) = value;
 }
 
-size_t cdatalength(void * cs) {
+size_t carraylength(void * cs) {
 	if (cs == NULL) { return -1; }
     return *(size_t *)(cs - 1 * basesize());
 }
 
-void * cdatainit(void * src, cbasetype_t type, size_t length) {
+void * carrayinit(void * src, cbasetype_t type, size_t length) {
     if (!src || length < 0) { return NULL; }
     size_t step = 0;
     switch (type) {
@@ -76,21 +76,21 @@ void * cdatainit(void * src, cbasetype_t type, size_t length) {
 	for (long i = 0; i < length * step; i ++) {
 		((char *)cs)[i] = ((char *)src)[i];
 	}
-    setcdatatype(cs, type);
-    setcdatastep(cs, step);
-	setcdatalength(cs, length);
-	setcdatavolume(cs, volume);
+    setcarraytype(cs, type);
+    setcarraystep(cs, step);
+	setcarraylength(cs, length);
+	setcarrayvolume(cs, volume);
     return cs;
 }
 
-void numbersfree(void * cs) {
+void carrayfree(void * cs) {
     free(cs - 4);
 }
 
-void cdatadescribe(void * cs) {
+void carraydescribe(void * cs) {
 	if (!cs) { return; }
-    printf("\n[long|long|long|long|bin...]: (%p)\n[\n", cs);
-    cbasetype_t type = cdatatype(cs);
+    printf("\n[type(8 Byte)|step(8 Bytpe)|volume(8 Byte)|length(8 Byte)|data...]: (%p)\n[\n", cs);
+    cbasetype_t type = carraytype(cs);
     char * info = NULL;
     switch (type) {
     case cchar:   info = "char"; break;
@@ -106,13 +106,13 @@ void cdatadescribe(void * cs) {
     }
     printf("    (%ld Byte  H:0x%016x  D:%032u  Array.type = %s),\n", sizeof(long), type, type, info);
 
-    long step = cdatastep(cs);
+    long step = carraystep(cs);
 	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Array.step = %ld),\n", sizeof(long), step, step, step);
 
-    long volume = cdatavolume(cs);
+    long volume = carrayvolume(cs);
 	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Array.volume = %ld),\n", sizeof(long), volume, volume, volume);
 
-    long length = cdatalength(cs);
+    long length = carraylength(cs);
 	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Array.length = %ld)", sizeof(long), length, length, length);
 	
 	if (length != 0) {
