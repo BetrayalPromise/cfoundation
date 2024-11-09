@@ -52,9 +52,9 @@ typedef enum cbasetype {
 
 //  @return             返回一个如7行所示的包含信息的数据结构carray,结构与其一致.
 //  @paramater src      常规数组.
-//  @paramater type     存在类型.因为C语言数组参数入参时降级为指针,无法根据其获取类型,故而需要指定类型
-//  @paramater type     存在长度.
-extern void *       carrayinit(void * src, cbasetype_t type, size_t length);
+//  @paramater length   存在长度.
+//  @paramater type     存在类型.因为C语言数组参数入参时降级为指针,无法根据其获取类型,故而需要指定类型.
+extern void *       carrayinit(void * src, size_t length, cbasetype_t type);
 
 
 //  @paramater ca       数据结构carray数组.

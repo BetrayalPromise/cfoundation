@@ -1,11 +1,13 @@
 #ifndef __CARRAY_C__
 #define __CARRAY_C__
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include "carray.h"
 #include <math.h>
 #include <stdlib.h>
+#include <string.h>
 
 static long basesize(void) {
 	return sizeof(long);
@@ -51,7 +53,7 @@ size_t carraylength(void * ca) {
     return *(size_t *)(ca - 1 * basesize());
 }
 
-void * carrayinit(void * src, cbasetype_t type, size_t length) {
+void * carrayinit(void * src, size_t length, cbasetype_t type) {
     if (!src || length < 0) { return NULL; }
     size_t step = 0;
     switch (type) {
@@ -133,6 +135,28 @@ void carraydescribe(void * ca) {
 		printf(",\n");
 	}
 	printf("]\n\n");
+}
+
+bool carrayinsert(void * ca, long index, ...) {
+    return true;
+}
+
+void carraytelescope(void ** pcarray, bool ctl, size_t m) {
+	if (!(*pcarray)) { return; }
+	long volume = carrayvolume(* pcarray);
+	long length = carraylength(* pcarray);
+	
+	volume = ctl == true ? volume * m : volume / m;
+
+	if (volume < length) { printf("WARNNING: cstring.volume(%ld) < cstring.length(%ld), operation will lose information.\n", volume, length); }
+	if (volume <= 1) { return; }
+
+	char * space = malloc(4 * basesize() + volume);
+	memcpy(space, *pcarray, 4 * basesize() + volume);
+	printf("cstring: (%p) -> (%p)\n", * pcarray, space);
+	free(*pcarray - 4 * basesize());
+	* pcarray = space + 4 * basesize();
+	*(long *)(* pcarray - 2 * basesize()) = volume;
 }
 
 void char2binary(char value, format_t fmt) {

@@ -7,7 +7,6 @@
 #include <string.h>
 #include <sys/_types/_size_t.h>
 #include <sys/_types/_u_int16_t.h>
-#include "array.h"
 #include "cstring.h"
 #include "testcstring.h"
 #include "carray.h"

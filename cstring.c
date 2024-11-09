@@ -153,7 +153,7 @@ void cstringtelescope(char ** pcstr, bool ctl, size_t m) {
 	memcpy(space, *pcstr, 2 * basesize() + volume);
 	printf("cstring: (%p) -> (%p)\n", * pcstr, space);
 	free(*pcstr - 2 * basesize());
-	* pcstr = space;
+	* pcstr = space + 2 * basesize();
 	*(long *)(* pcstr - 2 * basesize()) = volume;
 }
 

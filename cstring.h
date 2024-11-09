@@ -171,6 +171,7 @@ extern bool     cstringcatenate(char * cstr, ...);
 //  @return             返回删除操作是否成功.
 //  @paramater cstr     cstring型.
 //  @paramater t        search_t型.
+//  @paramater ps       不定参数个数.
 //  @paramater ...      清空内容(int, char型或cstring型),接受最多32个不定参数.
 extern bool     cstringremove(char * cstr, search_t t, size_t ps, ...);
 #if !defined (cstringremove$)
