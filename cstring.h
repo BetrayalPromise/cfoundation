@@ -6,14 +6,7 @@
 #include <stdint.h>
 #include "cutils.h"
 
-typedef enum search {
-    character,  // 单个字符
-    position,   // 位置索引
-    cstring,    // 字符串
-} search_t;
 
-
-// return "zzz"; "zzz" 字面量存储在静态区域里 不需要释放
 /*
     数据结构cstring
     ------------------0++++++++++++++++++
@@ -38,7 +31,6 @@ typedef enum search {
 #else
     #warning "information: duplicate define macro 'S2CSTRING'
 #endif
-
 
 
 // 小端存储能使用,栈数据,不能扩容
@@ -72,8 +64,6 @@ typedef enum search {
 #else
     #warning "information: duplicate define macro 'C2CSTRING'
 #endif
-
-
 
 
 //  @return             返回一个如13行所示的包含信息的字符串,结构与其一致.
@@ -154,12 +144,17 @@ extern bool     cstringinsert(char * cstr, long index, ...);
 extern bool     cstringcatenate(char * cstr, ...);
 
 
+typedef enum csremove {
+    removecharacter,  // 单个字符
+    removeposition,   // 位置索引
+    removecstring,    // 字符串
+} csremove_t;
 //  @return             返回删除操作是否成功.
 //  @paramater cstr     cstring型.
-//  @paramater t        search_t型.
+//  @paramater t        csremove_t型.
 //  @paramater ps       不定参数个数.
 //  @paramater ...      清空内容(int, char型或cstring型),接受最多32个不定参数.
-extern bool     cstringremove(char * cstr, search_t t, size_t ps, ...);
+extern bool     cstringremove(char * cstr, csremove_t t, size_t ps, ...);
 #if !defined (cstringremove$)
     #define cstringremove$(a, b, ...) cstringremove(a, b, ARGC(__VA_ARGS__), ##__VA_ARGS__)
 #else
@@ -167,14 +162,18 @@ extern bool     cstringremove(char * cstr, search_t t, size_t ps, ...);
 #endif
 
 
+typedef enum cssearch {
+    searchcharacter,  // 单个字符
+    searchcstring,    // 字符串
+} cssearch_t;
 //  功能类似char *strchr(const char *s, int c); char *strstr(const char *s1, const char *s2);
 //  @return             返回第times次出现检索内容的索引值,若为-1则未找到.
 //  @paramater cstr     cstring型.
-//  @paramater t        search_t型.若为position,则times参数无效,返回值没有意义.
+//  @paramater t        cssearch_t型.
 //  @paramater times    检索内容第times次出现次数.
 //  @paramater complete void(*)(long)搜索完成回调函数指针
 //  @paramater ...      检索内容(char型或cstring型),若为int型,接受一个不定参数,若为char型,接受一个不定参数,若为cstring型,还需传入一个bool型(针对cstring型[111],[222]...,控制索引方式),接受两个不定参数.
-extern long     cstringsearch(char * cstr, search_t t, long times, void(* complete)(long), ...);
+extern long     cstringsearch(char * cstr, cssearch_t t, long times, void(* complete)(long), ...);
 #if !defined (cstringsearch$)
     #define cstringsearch$(a, b, c, ...) cstringremove(a, b, c, NULL, ##__VA_ARGS__)
 #else

@@ -248,20 +248,20 @@ bool cstringcatenate(char * cstr, ...) {
 	}
 }
 
-bool cstringremove(char * cstr, search_t t, size_t ps, ...) {
+bool cstringremove(char * cstr, csremove_t t, size_t ps, ...) {
 	if (!cstringcheck(cstr)) { return false; }
 	va_list list;
 	va_start(list, ps);
 	if (cstringlength(cstr) < 1 ) { return false; }
 
 	switch (t) {
-	case character: {
+	case removecharacter: {
 		for (long i = 0; i < ps; i ++) {
 			int value = va_arg(list, int);
 			cstringremove1(cstr, value);
 		}
 	} break;
-	case position: {
+	case removeposition: {
 		long source[ps];
 		memset(source, -1, sizeof(long) * ps);
 		long count = 0;
@@ -300,7 +300,7 @@ bool cstringremove(char * cstr, search_t t, size_t ps, ...) {
 			cstringremove2(cstr, source[i]);
 		}
 	} break;
-	case cstring: {
+	case removecstring: {
 		for (long i = 0; i < ps; i ++) {
 			long value = va_arg(list, long);
 			cstringremove0(cstr, (char *)value);
@@ -391,7 +391,7 @@ static bool cstringremove2(char * cstr, long index) {
 	}
 }
 
-long cstringsearch(char * cstr, search_t t, long times, void(* complete)(long), ...) {
+long cstringsearch(char * cstr, cssearch_t t, long times, void(* complete)(long), ...) {
 	if (!cstringcheck(cstr)) { return false; }
 	long length = cstringlength(cstr);
 	long index = -1;
@@ -400,7 +400,7 @@ long cstringsearch(char * cstr, search_t t, long times, void(* complete)(long), 
 	va_list list;
 	va_start(list, complete);
 	switch (t) {
-	case character: {
+	case searchcharacter: {
 		char data = va_arg(list, int);
 		for (int i = 0; i < length; i ++) {
 			if (data == cstr[i]) {
@@ -416,13 +416,7 @@ long cstringsearch(char * cstr, search_t t, long times, void(* complete)(long), 
 		va_end(list);
 		return index;
 	} break;
-	case position: {
-		int data = va_arg(list, int);
-		if (complete) { complete(total); }
-		va_end(list);
-		return data;
-	} break;
-	case cstring: {
+	case searchcstring: {
 		char * data = (void *)va_arg(list, uint64_t);
 		long size = cstringlength(data); 
 		if (length <= 0 || size <= 0 || size > length) { return - 1; }
