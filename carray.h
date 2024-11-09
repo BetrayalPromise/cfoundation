@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <sys/_types/_size_t.h>
 #include <sys/_types/_u_int16_t.h>
+#include <stdbool.h>
+#include "cutils.h"
 
 typedef unsigned char  uchar;
 typedef unsigned short ushort;
@@ -83,6 +85,18 @@ extern size_t       carraylength(void * ca);
 
 //  @paramater ca       数据结构carray数组.
 extern void         carraydescribe(void * ca);
+
+
+typedef enum insert {
+    single,   // 单个元素
+    carray,   // 数组
+} insert_t;
+extern bool         carrayinsert(void * ca, insert_t t, long idx, long ps, ...);
+#if !defined (carrayinsert$)
+    #define carrayinsert$(a, b, c, ...) carrayinsert(a, b, c, ARGC(__VA_ARGS__), ##__VA_ARGS__)
+#else
+    #warning "information: duplicate define macro 'carrayinsert$'
+#endif
 
 
 void endian();

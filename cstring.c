@@ -157,33 +157,33 @@ void cstringtelescope(char ** pcstr, bool ctl, size_t m) {
 	*(long *)(* pcstr - 2 * basesize()) = volume;
 }
 
-bool cstringinsert(char * cstr, long index, ...) {
-	uint64_t rdi = 0x0;
-    __asm__ __volatile__("movq %%rdi, %%rax;\n\t" : "=a"(rdi));
-	uint64_t rsi = 0x0;
-    __asm__ __volatile__("movq %%rsi, %%rax;\n\t" : "=a"(rsi));
-	uint64_t rdx = 0x0;
-    __asm__ __volatile__("movq %%rdx, %%rax;\n\t" : "=a"(rdx));
-	uint64_t rcx = 0x0;
-    __asm__ __volatile__("movq %%rcx, %%rax;\n\t" : "=a"(rcx));
-	uint64_t r8 = 0x0;
-    __asm__ __volatile__("movq %%r8, %%rax;\n\t" : "=a"(r8));
-	uint64_t r9 = 0x0;
-    __asm__ __volatile__("movq %%r9, %%rax;\n\t" : "=a"(r9));
+bool cstringinsert(char * cstr, long idx, ...) {
+	// uint64_t rdi = 0x0;
+    // __asm__ __volatile__("movq %%rdi, %%rax;\n\t" : "=a"(rdi));
+	// uint64_t rsi = 0x0;
+    // __asm__ __volatile__("movq %%rsi, %%rax;\n\t" : "=a"(rsi));
+	// uint64_t rdx = 0x0;
+    // __asm__ __volatile__("movq %%rdx, %%rax;\n\t" : "=a"(rdx));
+	// uint64_t rcx = 0x0;
+    // __asm__ __volatile__("movq %%rcx, %%rax;\n\t" : "=a"(rcx));
+	// uint64_t r8 = 0x0;
+    // __asm__ __volatile__("movq %%r8, %%rax;\n\t" : "=a"(r8));
+	// uint64_t r9 = 0x0;
+    // __asm__ __volatile__("movq %%r9, %%rax;\n\t" : "=a"(r9));
 
 	if (!cstringcheck(cstr)) { return false; }
 
 	va_list list;
-	va_start(list, index);
+	va_start(list, idx);
 
 	uint64_t result = va_arg(list, uint64_t);
 
 	long length = cstringlength(cstr);
 	long volume = cstringvolume(cstr);
 
-	if (index < 0) { index = 0; }
-	else if (index < length + 1) { ({}); }
-	else { index = length; }
+	if (idx < 0) { idx = 0; }
+	else if (idx < length + 1) { ({}); }
+	else { idx = length; }
 	
 	if (0x00 <= result && result <= 0xff) {
 		char data = result;
@@ -192,8 +192,8 @@ bool cstringinsert(char * cstr, long index, ...) {
 			volume = cstringvolume(cstr);
 		}
 
-		memmove(cstr + index, cstr, length - index);
-		memmove(cstr + index, &data, 1);
+		memmove(cstr + idx, cstr, length - idx);
+		memmove(cstr + idx, &data, 1);
 		setcstringlength(cstr, length + 1);
 
 		va_end(list);
@@ -205,8 +205,8 @@ bool cstringinsert(char * cstr, long index, ...) {
 			volume = cstringvolume(cstr);
 		}
 
-		memmove(cstr + cstringlength(data), cstr, cstringlength(cstr) - index);
-		memmove(cstr + index, data, cstringlength(data));
+		memmove(cstr + cstringlength(data), cstr, cstringlength(cstr) - idx);
+		memmove(cstr + idx, data, cstringlength(data));
 		setcstringlength(cstr, length + cstringlength(data));
 
 		va_end(list);
