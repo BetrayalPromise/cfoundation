@@ -1,5 +1,5 @@
-#ifndef __carray_C__
-#define __carray_C__
+#ifndef __CARRAY_C__
+#define __CARRAY_C__
 
 #include <stddef.h>
 #include <stdio.h>
@@ -11,60 +11,60 @@ static long basesize(void) {
 	return sizeof(long);
 }
 
-static void setcarraytype(void * cs, cbasetype_t value) {
-    if (cs == NULL) { return; }
-	*(size_t *)(cs - 4 * basesize()) = value;
+static void setcarraytype(void * ca, cbasetype_t value) {
+    if (ca == NULL) { return; }
+	*(size_t *)(ca - 4 * basesize()) = value;
 }
 
-cbasetype_t carraytype(void * cs) {
-	if (cs == NULL) { return -1; }
-    return *(cbasetype_t *)(cs - 4 * basesize());
+cbasetype_t carraytype(void * ca) {
+	if (ca == NULL) { return -1; }
+    return *(cbasetype_t *)(ca - 4 * basesize());
 }
 
-static void setcarraystep(void * cs, size_t value) {
-    if (cs == NULL) { return; }
-	*(size_t *)(cs - 3 * basesize()) = value;
+static void setcarraystep(void * ca, size_t value) {
+    if (ca == NULL) { return; }
+	*(size_t *)(ca - 3 * basesize()) = value;
 }
 
-size_t carraystep(void * cs) {
-	if (cs == NULL) { return -1; }
-    return *(size_t *)(cs - 3 * basesize());
+size_t carraystep(void * ca) {
+	if (ca == NULL) { return -1; }
+    return *(size_t *)(ca - 3 * basesize());
 }
 
-static void setcarrayvolume(void * cs, size_t value) {
-    if (cs == NULL) { return; }
-	*(size_t *)(cs - 2 * basesize()) = value;
+static void setcarrayvolume(void * ca, size_t value) {
+    if (ca == NULL) { return; }
+	*(size_t *)(ca - 2 * basesize()) = value;
 }
 
-size_t carrayvolume(void * cs) {
-	if (cs == NULL) { return -1; }
-    return *(size_t *)(cs - 2 * basesize());
+size_t carrayvolume(void * ca) {
+	if (ca == NULL) { return -1; }
+    return *(size_t *)(ca - 2 * basesize());
 }
 
-static void setcarraylength(void * cs, size_t value) {
-    if (cs == NULL) { return; }
-	*(long *)(cs - 1 * basesize()) = value;
+static void setcarraylength(void * ca, size_t value) {
+    if (ca == NULL) { return; }
+	*(long *)(ca - 1 * basesize()) = value;
 }
 
-size_t carraylength(void * cs) {
-	if (cs == NULL) { return -1; }
-    return *(size_t *)(cs - 1 * basesize());
+size_t carraylength(void * ca) {
+	if (ca == NULL) { return -1; }
+    return *(size_t *)(ca - 1 * basesize());
 }
 
 void * carrayinit(void * src, cbasetype_t type, size_t length) {
     if (!src || length < 0) { return NULL; }
     size_t step = 0;
     switch (type) {
-    case cchar:   step = sizeof(char); break;
-    case cuchar:  step = sizeof(unsigned char); break;
-    case cshort:  step = sizeof(short); break;
-    case cushort: step = sizeof(unsigned short); break;
-    case cint:    step = sizeof(int); break;
-    case cuint:   step = sizeof(unsigned int); break;
-    case cfloat:  step = sizeof(float); break;
-    case clong:   step = sizeof(long); break;
-    case culong:  step = sizeof(unsigned long); break;
-    case cdouble: step = sizeof(double); break;
+    case cbasechar:   step = sizeof(char); break;
+    case cbaseuchar:  step = sizeof(unsigned char); break;
+    case cbaseshort:  step = sizeof(short); break;
+    case cbaseushort: step = sizeof(unsigned short); break;
+    case cbaseint:    step = sizeof(int); break;
+    case cbaseuint:   step = sizeof(unsigned int); break;
+    case cbasefloat:  step = sizeof(float); break;
+    case cbaselong:   step = sizeof(long); break;
+    case cbaseulong:  step = sizeof(unsigned long); break;
+    case cbasedouble: step = sizeof(double); break;
     }
     long base = 4 * basesize();
     long volume = 32;
@@ -72,72 +72,65 @@ void * carrayinit(void * src, cbasetype_t type, size_t length) {
 		volume *= 2;
 	}
     void * space = malloc(base + step * length);
-    void * cs = space + base;
+    void * ca = space + base;
 	for (long i = 0; i < length * step; i ++) {
-		((char *)cs)[i] = ((char *)src)[i];
+		((char *)ca)[i] = ((char *)src)[i];
 	}
-    setcarraytype(cs, type);
-    setcarraystep(cs, step);
-	setcarraylength(cs, length);
-	setcarrayvolume(cs, volume);
-    return cs;
+    setcarraytype(ca, type);
+    setcarraystep(ca, step);
+	setcarraylength(ca, length);
+	setcarrayvolume(ca, volume);
+    return ca;
 }
 
-void carrayfree(void * cs) {
-    free(cs - 4);
+void carrayfree(void * ca) {
+    free(ca - 4 * basesize());
 }
 
-void carraydescribe(void * cs) {
-	if (!cs) { return; }
-    printf("\n[type(8 Byte)|step(8 Bytpe)|volume(8 Byte)|length(8 Byte)|data...]: (%p)\n[\n", cs);
-    cbasetype_t type = carraytype(cs);
+void carraydescribe(void * ca) {
+	if (!ca) { return; }
+    printf("\n[type(8 Byte)|step(8 Bytpe)|volume(8 Byte)|length(8 Byte)|data...]: (%p)\n[\n", ca);
+    cbasetype_t type = carraytype(ca);
     char * info = NULL;
     switch (type) {
-    case cchar:   info = "char"; break;
-    case cuchar:  info = "unsigned char"; break;
-    case cshort:  info = "short"; break;
-    case cushort: info = "unsigned short"; break;
-    case cint:    info = "int"; break;
-    case cuint:   info = "unsigned int"; break;
-    case cfloat:  info = "float"; break;
-    case clong:   info = "long"; break;
-    case culong:  info = "unsigned long"; break;
-    case cdouble: info = "double"; break;
+    case cbasechar:   info = "char"; break;
+    case cbaseuchar:  info = "uchar"; break;
+    case cbaseshort:  info = "short"; break;
+    case cbaseushort: info = "ushort"; break;
+    case cbaseint:    info = "int"; break;
+    case cbaseuint:   info = "uint"; break;
+    case cbasefloat:  info = "float"; break;
+    case cbaselong:   info = "long"; break;
+    case cbaseulong:  info = "ulong"; break;
+    case cbasedouble: info = "double"; break;
     }
-    printf("    (%ld Byte  H:0x%016x  D:%032u  Array.type = %s),\n", sizeof(long), type, type, info);
 
-    long step = carraystep(cs);
-	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Array.step = %ld),\n", sizeof(long), step, step, step);
+    printf("\033[34m"); printf("    (%ld Byte  H:0x%016x  D:%032u  Array.type = %s),\n", basesize(), type, type, info); printf("\033[0m");
 
-    long volume = carrayvolume(cs);
-	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Array.volume = %ld),\n", sizeof(long), volume, volume, volume);
+    long step = carraystep(ca);
+	printf("\033[31m"); printf("    (%ld Byte  H:0x%016lx  D:%032ld  Array.step = %ld),\n", basesize(), step, step, step); printf("\033[0m");
 
-    long length = carraylength(cs);
-	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Array.length = %ld)", sizeof(long), length, length, length);
-	
-	if (length != 0) {
-		printf(",");
-	}
+    long volume = carrayvolume(ca);
+	printf("\033[32m"); printf("    (%ld Byte  H:0x%016lx  D:%032ld  Array.volume = %ld),\n", basesize(), volume, volume, volume); printf("\033[0m");
+
+    long length = carraylength(ca);
+	printf("\033[33m"); printf("    (%ld Byte  H:0x%016lx  D:%032ld  Array.length = %ld),", basesize(), length, length, length); printf("\033[0m");
+
 	printf("\n");
-
 	for (int i = 0; i < length; i ++) {
         switch (type) {
-        case cchar:   printf("    %d", ((char *)cs)[i]); break;
-        case cuchar:  printf("    %d", ((unsigned char *)cs)[i]); break;
-        case cshort:  printf("    %d", ((short *)cs)[i]); break;
-        case cushort: printf("    %d", ((unsigned short *)cs)[i]); break;
-        case cint:    printf("    %d", ((int *)cs)[i]); break;
-        case cuint:   printf("    %d", ((unsigned int *)cs)[i]); break;
-        case cfloat:  printf("    %f", ((float *)cs)[i]); break;
-        case clong:   printf("    %ld", ((long *)cs)[i]); break;
-        case culong:  printf("    %ld", ((unsigned long *)cs)[i]); break;
-        case cdouble: printf("    %lf", ((double *)cs)[i]); break;
+        case cbasechar:   printf("    %d", ((char *)ca)[i]); break;
+        case cbaseuchar:  printf("    %d", ((unsigned char *)ca)[i]); break;
+        case cbaseshort:  printf("    %d", ((short *)ca)[i]); break;
+        case cbaseushort: printf("    %d", ((unsigned short *)ca)[i]); break;
+        case cbaseint:    printf("    %d", ((int *)ca)[i]); break;
+        case cbaseuint:   printf("    %d", ((unsigned int *)ca)[i]); break;
+        case cbasefloat:  printf("    %f", ((float *)ca)[i]); break;
+        case cbaselong:   printf("    %ld", ((long *)ca)[i]); break;
+        case cbaseulong:  printf("    %ld", ((unsigned long *)ca)[i]); break;
+        case cbasedouble: printf("    %lf", ((double *)ca)[i]); break;
         }
-		if (i != length - 1) {
-			printf(",\n");
-		} else {
-			printf("\n");
-		}
+		printf(",\n");
 	}
 	printf("]\n\n");
 }

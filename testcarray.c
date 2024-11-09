@@ -3,10 +3,13 @@
 
 #include "carray.h"
 
+#define GET_ARRAY_COUNT(a) sizeof(a) / sizeof(a[0])
+
 void testcarrayinit() {
-    int a[] = { 11, 12, 13 };
-	int * p = carrayinit(a, cint, sizeof(a) / sizeof(int));
+    int a[] = { 1, 2, 4, 10 };
+	int * p = carrayinit(a, cbaseint, GET_ARRAY_COUNT(a));
 	carraydescribe(p);
+	carrayfree(p);
 }
 
 #endif
