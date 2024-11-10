@@ -115,7 +115,10 @@ char * cstringcopy(char * cstr) {
 }
 
 void cstringfree(char * cstr) {
-	free(cstr - 2 * basesize());
+	char * src = cstr - 2 * basesize();
+	free(src);
+	src = NULL;
+	cstr = NULL;
 }
 
 bool cstringcompare(char * cstr, char * data) {

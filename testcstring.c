@@ -125,28 +125,28 @@ void testcstringindex() {
 	if (true) {
 		char * p0 = cstringinit$(NULL);
 		char c  = 0x00;
-		cstringsearch(p0, character, 1, NULL, c);
+		cstringsearch(p0, searchcharacter, 1, NULL, c);
 		cstringdescribe(p0, 0b001);
 	}
 
 	if (true) {
 		char * p0 = cstringinit$("\0");
 		char c  = 0x00;
-		cstringsearch(p0, character, 1, NULL, c);
+		cstringsearch(p0, searchcharacter, 1, NULL, c);
 		cstringdescribe(p0, 0b001);
 	}
 
 	if (true) {
 		char * p0 = cstringinit$("\0");
 		char * p1 = cstringinit$("\0");
-		cstringsearch(p0, cstring, 1, NULL, p1);
+		cstringsearch(p0, searchcstring, 1, NULL, p1);
 		cstringdescribe(p0, 0b001);
 	}
 
 	if (true) {
 		char * p0 = cstringinit$("9900990099");
 		char * p1 = cstringinit$("99");
-		long index = cstringsearch(p0, cstring, 1, NULL, p1, false);
+		long index = cstringsearch(p0, searchcstring, 1, NULL, p1, false);
 		printf("index = %ld\n", index);
 	}
 
@@ -154,7 +154,7 @@ void testcstringindex() {
 		for (int i = -9; i < 8; i++) {
 			char * p0 = cstringinit$("00000000000000");
 			char * p1 = cstringinit$("00");
-			long index = cstringsearch(p0, cstring, i, NULL, p1, true);
+			long index = cstringsearch(p0, searchcstring, i, NULL, p1, true);
 			printf("times = %d  index = %ld\n", i, index);
 		}
 	}
@@ -163,7 +163,7 @@ void testcstringindex() {
 		char * p0 = cstringinit$("0000000");
 		char * p1 = cstringinit$("00");
 		for (int i = -1; i < 10; i ++) {
-			long index = cstringsearch(p0, cstring, i, NULL, p1, true);
+			long index = cstringsearch(p0, searchcstring, i, NULL, p1, true);
 			printf("i = %d, index = %ld\n", i, index);
 		}
 	}
@@ -175,47 +175,47 @@ void testcstringremove() {
 	if (true) {
 		char * p0 = cstringinit$(NULL);
 		char c  = 0x00;
-		cstringremove(p0, character, c);
+		cstringremove(p0, removecharacter, c);
 		cstringdescribe(p0, 0b001);
 	}
 	if (true) {
 		char * p0 = cstringinit$(0x00);
 		char c  = 0x00;
-		cstringremove(p0, character, c);
+		cstringremove(p0, removecharacter, c);
 		cstringdescribe(p0, 0b001);
 	}
 	if (true) {
 		char * p0 = cstringinit$(0x00);
 		char c  = 0x00;
-		cstringremove(p0, character, c);
+		cstringremove(p0, removecharacter, c);
 		cstringdescribe(p0, 0b001);
 	}
 	if (true) {
 		for (int i = -1; i < 6; i ++) {
 			char * p0 = cstringinit$("12321");
-			cstringremove$(p0, position, i);
+			cstringremove$(p0, removeposition, i);
 			cstringdescribe(p0, 0b001);
 		}
 	}
 	if (true) {
 		char * p = cstringinit$("abcdefgh");
-		cstringremove$(p, position , -1, -1, 5, 5, 0, 0, 3, 3, 0, 0);
+		cstringremove$(p, removeposition , -1, -1, 5, 5, 0, 0, 3, 3, 0, 0);
 		cstringdescribe$(p);
 	}
 	if (true) {
 		char * p0 = cstringinit$("123211212");
 		char * p1 = cstringinit$("1"); 
-		cstringremove$(p0, cstring, p1);
+		cstringremove$(p0, removecstring, p1);
 		cstringdescribe(p0, 0b001);
 	}
 	if (true) {
 		char * p0 = cstringinit$("12321");
-		cstringremove$(p0, character, '4');
+		cstringremove$(p0, removecharacter, '4');
 		cstringdescribe(p0, 0b001);
 	}
 	if (true) {
 		char * p0 = cstringinit$("12321");
-		cstringremove$(p0, position, 3);
+		cstringremove$(p0, removeposition, 3);
 		cstringdescribe(p0, 0b001);
 	}
 }

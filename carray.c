@@ -90,7 +90,9 @@ void * carrayinit(void * src, size_t length, cbasetype_t type) {
 }
 
 void carrayfree(void * ca) {
-    free(ca - 4 * basesize());
+    if (!ca) { return; }
+    free(ca - 0x20);
+    ca = NULL;
 }
 
 void carraydescribe(void * ca) {
@@ -111,16 +113,16 @@ void carraydescribe(void * ca) {
     case cbasedouble: info = "double"; break;
     }
 
-    printf("\033[34m"); printf("    (%ld Byte  H:0x%016x  D:%032u  Array.type = %s),\n", basesize(), type, type, info); printf("\033[0m");
+    printf("    (%ld Byte  H:0x%016x  D:%032u  Array.type = %s),\n", basesize(), type, type, info);
 
     long step = carraystep(ca);
-	printf("\033[31m"); printf("    (%ld Byte  H:0x%016lx  D:%032ld  Array.step = %ld),\n", basesize(), step, step, step); printf("\033[0m");
+	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Array.step = %ld),\n", basesize(), step, step, step);
 
     long volume = carrayvolume(ca);
-	printf("\033[32m"); printf("    (%ld Byte  H:0x%016lx  D:%032ld  Array.volume = %ld),\n", basesize(), volume, volume, volume); printf("\033[0m");
+	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Array.volume = %ld),\n", basesize(), volume, volume, volume);
 
     long length = carraylength(ca);
-	printf("\033[33m"); printf("    (%ld Byte  H:0x%016lx  D:%032ld  Array.length = %ld),", basesize(), length, length, length); printf("\033[0m");
+	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Array.length = %ld),", basesize(), length, length, length);
 
 	printf("\n");
 	for (int i = 0; i < length; i ++) {
@@ -141,7 +143,7 @@ void carraydescribe(void * ca) {
 	printf("]\n\n");
 }
 
-bool carrayinsert(void * ca, insert_t t, long idx, long ps, ...) {
+bool carrayinsert(void * ca, carrayinsert_t t, long idx, long ps, ...) {
     if (!ca) { return false; }
     va_list list;
 	va_start(list, ps);
@@ -149,64 +151,41 @@ bool carrayinsert(void * ca, insert_t t, long idx, long ps, ...) {
 	long length      = carraylength(ca);
 	long volume      = carrayvolume(ca);
     cbasetype_t type = carraytype(ca);
-    // int bitflag = 0;
-    // switch (type) {
-    // case cbasechar: case cbaseuchar: case cbaseshort: case cbaseushort: case cbaseint: case cbaseuint:case cbasefloat:
-    //     bitflag = 32; break;
-    // case cbaselong: case cbaseulong: case cbasedouble:
-    //     bitflag = 64; break;
-    // }
+    long step        = carraystep(ca);
+    bool bitflag     = false; 
+    switch (type) {
+    case cbasechar: case cbaseuchar: case cbaseshort: case cbaseushort: case cbaseint: case cbaseuint:
+        bitflag = false; break;
+    case cbaselong: case cbaseulong: 
+        bitflag = true; break;
+    case cbasefloat: case cbasedouble:
+        bitflag = true; break;
+    }
     switch (t) {
-    case character: {
+    case single: {
         while (length + ps > volume) {
 			carraytelescope(&ca, true, 2);
 			volume = carrayvolume(ca);
 		}
         long temp[ps];
-        for (int i = 0; i < ps; i ++) {
-            temp[i] = va_arg(list, int);
+        if (!bitflag) {
+            for (int i = 0; i < ps; i ++) { temp[i] = va_arg(list, int); }
+        } else {
+            for (int i = 0; i < ps; i ++) { temp[i] = va_arg(list, long); }
         }
-        printf("%lx", temp[0]);
+
+        if (idx < 0) { idx = 0; } else if (idx < length + 1) { ; } else { idx = length; }
+        memmove(ca + idx, ca + idx + step * length, step * length);
+        for (int i = 0; i < ps; i ++) {
+            memcpy(ca + idx + i * step, temp + i, step);
+        }
+        setcarraylength(ca, length + ps);
     } break;
     case carray: {
 
     } break;
     }
-
-    uint64_t result = va_arg(list, uint64_t);
-
-	if (idx < 0) { idx = 0; }
-	else if (idx < length + 1) { ({}); }
-	else { idx = length; }
-	
-	if (0x00 <= result && result <= 0xff) {
-		char data = result;
-		while (length + 1 > volume) {
-			carraytelescope(&ca, true, 2);
-			volume = carrayvolume(ca);
-		}
-
-		memmove(ca + idx, ca, length - idx);
-		memmove(ca + idx, &data, 1);
-		setcarraylength(ca, length + 1);
-
-		va_end(list);
-		return true;
-	} else {
-		char * data = (void *)result;
-		while (length + carraylength(data) > volume) {
-			carraytelescope(&ca, true, 2);
-			volume = carrayvolume(ca);
-		}
-
-		memmove(ca + carraylength(data), ca, carraylength(ca) - idx);
-		memmove(ca + idx, data, carraylength(data));
-		setcarraylength(ca, length + carraylength(data));
-
-		va_end(list);
-		return true;
-	}
-    return true;
+	return true;
 }
 
 void carraytelescope(void ** pcarray, bool ctl, size_t m) {

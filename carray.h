@@ -87,11 +87,11 @@ extern size_t       carraylength(void * ca);
 extern void         carraydescribe(void * ca);
 
 
-typedef enum insert {
+typedef enum carrayinsert {
     single,   // 单个元素
-    carray,   // 数组
-} insert_t;
-extern bool         carrayinsert(void * ca, insert_t t, long idx, long ps, ...);
+    carray,   // 数组元素
+} carrayinsert_t;
+extern bool         carrayinsert(void * ca, carrayinsert_t t, long idx, long ps, ...);
 #if !defined (carrayinsert$)
     #define carrayinsert$(a, b, c, ...) carrayinsert(a, b, c, ARGC(__VA_ARGS__), ##__VA_ARGS__)
 #else
