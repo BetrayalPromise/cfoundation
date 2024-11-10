@@ -143,7 +143,7 @@ void carraydescribe(void * ca) {
 	printf("]\n\n");
 }
 
-bool carrayinsert(void * ca, carrayinsert_t t, long idx, long ps, ...) {
+bool carrayinsert(void * ca, cainsert_t t, long idx, long ps, ...) {
     if (!ca) { return false; }
     va_list list;
 	va_start(list, ps);

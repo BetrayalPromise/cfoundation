@@ -171,9 +171,8 @@ typedef enum cssearch {
 //  @paramater cstr     cstring型.
 //  @paramater t        cssearch_t型.
 //  @paramater times    检索内容第times次出现次数.
-//  @paramater complete void(*)(long)搜索完成回调函数指针
 //  @paramater ...      检索内容(char型或cstring型),若为int型,接受一个不定参数,若为char型,接受一个不定参数,若为cstring型,还需传入一个bool型(针对cstring型[111],[222]...,控制索引方式),接受两个不定参数.
-extern long     cstringsearch(char * cstr, cssearch_t t, long times, void(* complete)(long), ...);
+extern long     cstringsearch(char * cstr, cssearch_t t, long times, ...);
 #if !defined (cstringsearch$)
     #define cstringsearch$(a, b, c, ...) cstringremove(a, b, c, NULL, ##__VA_ARGS__)
 #else

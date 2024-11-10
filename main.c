@@ -12,8 +12,6 @@
 #include "carray.h"
 #include "testcarray.h"
 
-void func(void * d);
-
 // 0x0;
 // __asm__ __volatile__("movq %%## #r, %0" : "=r"(value))
 //#define readdata(r)
