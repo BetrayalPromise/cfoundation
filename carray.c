@@ -74,10 +74,10 @@ void * carrayinit(void * src, size_t length, cbasetype_t type) {
     }
     long base = 4 * basesize();
     long volume = 32;
-    while (volume <= length) {
+    while (volume <= length * step) {
 		volume *= 2;
 	}
-    void * space = malloc(base + step * length);
+    void * space = malloc(base + volume);
     void * ca = space + base;
 	for (long i = 0; i < length * step; i ++) {
 		((char *)ca)[i] = ((char *)src)[i];

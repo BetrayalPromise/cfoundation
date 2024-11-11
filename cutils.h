@@ -116,10 +116,10 @@
 #endif
 
 #if !defined(BitGet) && !defined(BitNOT) && !defined(BitSET1) && !defined(BitSET0)
-    #define BitGet(n, p)  ((n) >> (p)&1)        // 得到某数的某位
-    #define BitNOT(n, p)  ((n) ^= 1<<(p))       // 把n的p位取反
-    #define BitSET1(n, p) ((n)|= 1<<(p))        // 把某位置1
-    #define BitSET0(n, p) ((n) &= ~(1<<(p)))    // 把某位置0
+    #define BitGet(n, p)  ((n) >> (p)&1)
+    #define BitNOT(n, p)  ((n) ^= 1<<(p))
+    #define BitSET1(n, p) ((n)|= 1<<(p))
+    #define BitSET0(n, p) ((n) &= ~(1<<(p)))
 #else
     #warning "information: duplicate define macro 'BitGet', 'BitNOT', 'BitSET0', 'BitSET1'!"
 #endif
