@@ -7,11 +7,6 @@
 #include <stdbool.h>
 #include "cutils.h"
 
-typedef unsigned char  uchar;
-typedef unsigned short ushort;
-typedef unsigned int   uint;
-typedef unsigned long  ulong;
-
 /*
     数据结构carray
     ------------------0++++++++++++++++++
@@ -38,6 +33,7 @@ typedef enum cbasetype {
     cbasedouble = 0x09UL,
 } cbasetype_t;
 
+#define Double(x) (x * 1.0000000f)
 
 //  @return             返回一个如7行所示的包含信息的数据结构carray,结构与其一致.
 //  @paramater src      常规数组.
@@ -78,9 +74,16 @@ typedef enum cainsert {
     single,   // 单个元素
     carray,   // 数组元素
 } cainsert_t;
-extern bool         carrayinsert(void * ca, cainsert_t t, long idx, long ps, ...);
+extern bool         carrayinsert(void * ca, cainsert_t t, long idx, long pc, ...);
 #if !defined (carrayinsert$)
     #define carrayinsert$(a, b, c, ...) carrayinsert(a, b, c, ARGC(__VA_ARGS__), ##__VA_ARGS__)
+#else
+    #warning "information: duplicate define macro 'carrayinsert$'
+#endif
+
+bool carrayinsert0(void * ca, long idx, long pc, ...);
+#if !defined (carrayinsert0$)
+    #define carrayinsert0$(a, b, ...) carrayinsert0(a, b, ARGC(__VA_ARGS__), ##__VA_ARGS__)
 #else
     #warning "information: duplicate define macro 'carrayinsert$'
 #endif

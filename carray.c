@@ -143,48 +143,122 @@ void carraydescribe(void * ca) {
 	printf("]\n\n");
 }
 
-bool carrayinsert(void * ca, cainsert_t t, long idx, long ps, ...) {
+bool carrayinsert(void * ca, cainsert_t t, long idx, long pc, ...) {
     if (!ca) { return false; }
     va_list list;
-	va_start(list, ps);
+	va_start(list, pc);
 
 	long length      = carraylength(ca);
 	long volume      = carrayvolume(ca);
     cbasetype_t type = carraytype(ca);
     long step        = carraystep(ca);
-    bool bitflag     = false; 
-    switch (type) {
-    case cbasechar: case cbaseuchar: case cbaseshort: case cbaseushort: case cbaseint: case cbaseuint:
-        bitflag = false; break;
-    case cbaselong: case cbaseulong: 
-        bitflag = true; break;
-    case cbasefloat: case cbasedouble:
-        bitflag = true; break;
-    }
+
     switch (t) {
     case single: {
-        while (length + ps > volume) {
+        while (length + pc > volume) {
 			carraytelescope(&ca, true, 2);
 			volume = carrayvolume(ca);
 		}
-        long temp[ps];
-        if (!bitflag) {
-            for (int i = 0; i < ps; i ++) { temp[i] = va_arg(list, int); }
-        } else {
-            for (int i = 0; i < ps; i ++) { temp[i] = va_arg(list, long); }
-        }
 
-        if (idx < 0) { idx = 0; } else if (idx < length + 1) { ; } else { idx = length; }
-        memmove(ca + idx, ca + idx + step * length, step * length);
-        for (int i = 0; i < ps; i ++) {
-            memcpy(ca + idx + i * step, temp + i, step);
+        bool floatflag = false;
+
+        switch (type) {
+        case cbasechar: case cbaseuchar: case cbaseshort: case cbaseushort: case cbaseint: case cbaseuint: {
+            int temp[pc];
+            for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, int); }
+            if (idx < 0) { idx = 0; } else if (idx < length + 1) { ; } else { idx = length; }
+            memmove(ca + idx, ca + idx + step * length, step * length);
+            for (int i = 0; i < pc; i ++) {
+                memcpy(ca + idx + i * step, temp + i, step);
+            }
+        } break;
+        case cbaselong: case cbaseulong: {
+            long temp[pc];
+            for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, long); }
+            if (idx < 0) { idx = 0; } else if (idx < length + 1) { ; } else { idx = length; }
+            memmove(ca + idx, ca + idx + step * length, step * length);
+            for (int i = 0; i < pc; i ++) {
+                memcpy(ca + idx + i * step, temp + i, step);
+            }
+        } break;
+        case cbasefloat: floatflag = true;
+        case cbasedouble: {
+            double temp[pc]; float temp1[pc];
+            for (int i = 0; i < pc; i ++) { 
+                double x = va_arg(list, double);
+                temp[i] = x;
+            }
+            if (idx < 0) { idx = 0; } else if (idx < length + 1) { ; } else { idx = length; }
+            if (floatflag) {
+                for (size_t i = 0; i < pc; i++) {
+                    temp1[i] = (float)(temp[i]);
+                }
+                memmove(ca + idx, ca + idx + step * length, step * length);
+                for (int i = 0; i < pc; i ++) {
+                    memcpy(ca + idx + i * step, temp1 + i, step);
+                }
+            } else {
+                memmove(ca + idx, ca + idx + step * length, step * length);
+                for (int i = 0; i < pc; i ++) {
+                    memcpy(ca + idx + i * step, temp + i, step);
+                }
+            }
+        } break;
         }
-        setcarraylength(ca, length + ps);
+        setcarraylength(ca, length + pc);
     } break;
     case carray: {
 
     } break;
     }
+	return true;
+}
+
+bool carrayinsert0(void * ca, long idx, long pc, ...) {
+    if (!ca) { return false; }
+    va_list list;
+	va_start(list, pc);
+
+	long length      = carraylength(ca);
+	long volume      = carrayvolume(ca);
+    cbasetype_t type = carraytype(ca);
+    long step        = carraystep(ca);
+
+    while (length * step + pc * step  > volume) {
+		carraytelescope(&ca, true, 2);
+		volume = carrayvolume(ca);
+	}
+
+    bool flag = false;
+
+    int i_temp4[pc]; long l_temp8[pc]; double d_temp8[pc];
+    if (idx < 0) { idx = 0; } else if (idx < length + 1) { ; } else { idx = length; }
+
+    switch (type) {
+    case cbasechar: case cbaseuchar: case cbaseshort: case cbaseushort: case cbaseint: case cbaseuint: {
+        for (int i = 0; i < pc; i ++) { i_temp4[i] = va_arg(list, int); }
+        memmove(ca + idx, ca + idx + step * length, step * length);
+        for (int i = 0; i < pc; i ++) {
+            memcpy(ca + idx + i * step, i_temp4 + i, step);
+        }
+    } break;
+    case cbaselong: case cbaseulong: {
+        for (int i = 0; i < pc; i ++) { l_temp8[i] = va_arg(list, long); }
+        memmove(ca + idx, ca + idx + step * length, step * length);
+        for (int i = 0; i < pc; i ++) {
+            memcpy(ca + idx + i * step, l_temp8 + i, step);
+        }
+    } break;
+    case cbasefloat: flag = true;
+    case cbasedouble: {
+        for (int i = 0; i < pc; i ++) { d_temp8[i] = va_arg(list, double); }
+        memmove(ca + idx, ca + idx + step * length, step * length);
+        for (int i = 0; i < pc; i ++) {
+            memcpy(ca + idx + i * step, d_temp8 + i, step);
+        }
+    } break;
+    }
+    setcarraylength(ca, length + pc);
 	return true;
 }
 

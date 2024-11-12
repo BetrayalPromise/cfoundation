@@ -1,6 +1,11 @@
 #ifndef __CUTILS_H__
 #define __CUTILS_H__
 
+typedef unsigned char  uchar;
+typedef unsigned short ushort;
+typedef unsigned int   uint;
+typedef unsigned long  ulong;
+
 #if !defined (__ARGS) && !defined (__ARGC_N) && !defined (__ARGC) && !defined (ARGC) 
     #define __ARGS(X) (X)
     #define __ARGC_N(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, _22, _23, _24, _25, _26, _27, _28, _29, _30, _31, N, ...)    N == 1 ? (#_0)[0] != 0 : N
@@ -122,6 +127,39 @@
     #define BitSET0(n, p) ((n) &= ~(1<<(p)))
 #else
     #warning "information: duplicate define macro 'BitGet', 'BitNOT', 'BitSET0', 'BitSET1'!"
+#endif
+
+#if !defined(ShowBit)
+	#define ShowBit(type, value) do {\
+		type x = value;\
+        int n = sizeof(type);\
+        if (n == 1) {\
+            unsigned char temp = *(uint8_t *)&x;\
+            for (int i = 0; i < 8 * sizeof(type); i ++) {\
+			    printf("%d", BitGet(temp, i));\
+		    }\
+        } else if (n == 2) {\
+            unsigned short temp = *(uint16_t *)&x;\
+            for (int i = 0; i < 8 * sizeof(type); i ++) {\
+			    printf("%d", BitGet(temp, i));\
+		    }\
+        } else if (n == 4) {\
+            unsigned int temp = *(uint32_t *)&x;\
+            for (int i = 0; i < 8 * sizeof(type); i ++) {\
+			    printf("%d", BitGet(temp, i));\
+		    }\
+        } else if (n == 8) {\
+            unsigned long temp = *(uint64_t *)&x;\
+            for (int i = 0; i < 8 * sizeof(type); i ++) {\
+			    printf("%lu", BitGet(temp, i));\
+		    }\
+        } else {\
+            printf("unknow");\
+        }\
+        printf("\n");\
+	} while(0)
+#else
+    #warning "information: duplicate define macro 'ShowBit'!"
 #endif
 
 

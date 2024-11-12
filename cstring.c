@@ -251,25 +251,25 @@ bool cstringcatenate(char * cstr, ...) {
 	}
 }
 
-bool cstringremove(char * cstr, csremove_t t, size_t ps, ...) {
+bool cstringremove(char * cstr, csremove_t t, size_t pc, ...) {
 	if (!cstringcheck(cstr)) { return false; }
 	va_list list;
-	va_start(list, ps);
+	va_start(list, pc);
 	if (cstringlength(cstr) < 1 ) { return false; }
 
 	switch (t) {
 	case removecharacter: {
-		for (long i = 0; i < ps; i ++) {
+		for (long i = 0; i < pc; i ++) {
 			int value = va_arg(list, int);
 			cstringremove1(cstr, value);
 		}
 	} break;
 	case removeposition: {
-		long source[ps];
-		memset(source, -1, sizeof(long) * ps);
+		long source[pc];
+		memset(source, -1, sizeof(long) * pc);
 		long count = 0;
 		long length = cstringlength(cstr);
-		for (long i = 0; i < ps; i ++) {
+		for (long i = 0; i < pc; i ++) {
 			long result = va_arg(list, int);
 			if (result < length && result >= 0) {
 				bool flag = false;
@@ -304,7 +304,7 @@ bool cstringremove(char * cstr, csremove_t t, size_t ps, ...) {
 		}
 	} break;
 	case removecstring: {
-		for (long i = 0; i < ps; i ++) {
+		for (long i = 0; i < pc; i ++) {
 			long value = va_arg(list, long);
 			cstringremove0(cstr, (char *)value);
 		}

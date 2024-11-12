@@ -11,6 +11,7 @@
 #include "testcstring.h"
 #include "carray.h"
 #include "testcarray.h"
+#include "cutils.h"
 
 // 0x0;
 // __asm__ __volatile__("movq %%## #r, %0" : "=r"(value))
@@ -58,14 +59,19 @@ int main(int argc, char ** argv) {
 
 	// printf("%d\n", ARGC(1, 2, 3, 4, 5, 6, 7, 8, 9, 0));
 
-	/*
-		高位放在高地址,类似大端存储
-	*/
+/*
+	0xFFFFFFFFFFFFFFFF                  0x0000000000000000
+	高------------------------>>>------------------------低
+	0x01实际以10000000方式存储
+*/
 
-	// long a = 0x77665544332211;
-	// printf("%d\n", (char)a);
-
-	testcarrayinit();
+	// unsigned long temp = (unsigned long)0.1;
+    // for (int i = 0; i < 8 * sizeof(long); i ++) {
+	//     printf("%lu", BitGet(temp, i));
+    // }
+	
+	ShowBit(double, 0.1);
+	// testcarrayinit();
 
 	return EXIT_SUCCESS;
 }
