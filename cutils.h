@@ -129,67 +129,51 @@ typedef unsigned long  ulong;
     #warning "information: duplicate define macro 'BitGet', 'BitNOT', 'BitSET0', 'BitSET1'!"
 #endif
 
-#if !defined(ShowBit)
-	#define ShowBit(type, value) do {\
-        unsigned short test = 0x1122;\
-        if(*((unsigned char*) &test) == 0x11) {\
-		    type x = value;\
-            int n = sizeof(type);\
-            if (n == 1) {\
-                unsigned char temp = *(uint8_t *)&x;\
-                for (int i = 0; i < 8 * sizeof(type); i ++) {\
-			        printf("%d", BitGet(temp, i));\
-		        }\
-            } else if (n == 2) {\
-                unsigned short temp = *(uint16_t *)&x;\
-                for (int i = 0; i < 8 * sizeof(type); i ++) {\
-			        printf("%d", BitGet(temp, i));\
-		        }\
-            } else if (n == 4) {\
-                unsigned int temp = *(uint32_t *)&x;\
-                for (int i = 0; i < 8 * sizeof(type); i ++) {\
-			        printf("%d", BitGet(temp, i));\
-		        }\
-            } else if (n == 8) {\
-                unsigned long temp = *(uint64_t *)&x;\
-                for (int i = 0; i < 8 * sizeof(type); i ++) {\
-			        printf("%lu", BitGet(temp, i));\
-		        }\
-            } else {\
-                printf("unknow");\
-            }\
-        } else {\
-		    type x = value;\
-            int n = sizeof(type);\
-            if (n == 1) {\
-                unsigned char temp = *(uint8_t *)&x;\
-                for (int i = 8 * sizeof(type) - 1; i >= 0; i --) {\
-			        printf("%d", BitGet(temp, i));\
-		        }\
-            } else if (n == 2) {\
-                unsigned short temp = *(uint16_t *)&x;\
-                for (int i = 8 * sizeof(type) - 1; i >= 0; i --) {\
-			        printf("%d", BitGet(temp, i));\
-		        }\
-            } else if (n == 4) {\
-                unsigned int temp = *(uint32_t *)&x;\
-                for (int i = 8 * sizeof(type) - 1; i >= 0; i --) {\
-			        printf("%d", BitGet(temp, i));\
-		        }\
-            } else if (n == 8) {\
-                unsigned long temp = *(uint64_t *)&x;\
-                for (int i = 8 * sizeof(type) - 1; i >= 0; i --) {\
-			        printf("%lu", BitGet(temp, i));\
-		        }\
-            } else {\
-                printf("unknow");\
-            }\
-        }\
+#if !defined(BitShow)
+	#define BitShow(type, value) do {\
+        type x = value;\
+        uint64_t * temp = ((uint64_t *) &x);\
+        for (int i = 0; i < 8 * sizeof(type); i ++) {\
+		    printf("%llu", BitGet(*temp, i));\
+	    }\
         printf("\n");\
 	} while(0)
 #else
     #warning "information: duplicate define macro 'ShowBit'!"
 #endif
+
+// #if !defined(ShowBit)
+// 	#define ShowBit(type, value) do {\
+// 	    type x = value;\
+//         int n = sizeof(type);\
+//         if (n == 1) {\
+//             unsigned char temp = *(uint8_t *)&x;\
+//             for (int i = 0; i < 8 * sizeof(type); i ++) {\
+// 		        printf("%d", BitGet(temp, i));\
+// 		    }\
+//         } else if (n == 2) {\
+//             unsigned short temp = *(uint16_t *)&x;\
+//             for (int i = 0; i < 8 * sizeof(type); i ++) {\
+// 			    printf("%d", BitGet(temp, i));\
+// 		    }\
+//         } else if (n == 4) {\
+//             unsigned int temp = *(uint32_t *)&x;\
+//             for (int i = 0; i < 8 * sizeof(type); i ++) {\
+// 			    printf("%d", BitGet(temp, i));\
+// 		    }\
+//         } else if (n == 8) {\
+//             unsigned long temp = *(uint64_t *)&x;\
+//             for (int i = 0; i < 8 * sizeof(type); i ++) {\
+// 			    printf("%lu", BitGet(temp, i));\
+// 		    }\
+//         } else {\
+//             printf("unknow");\
+//         }\
+//         printf("\n");\
+// 	} while(0)
+// #else
+//     #warning "information: duplicate define macro 'ShowBit'!"
+// #endif
 
 
 #if !defined(EXCHANGE)

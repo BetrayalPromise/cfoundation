@@ -60,14 +60,20 @@ int main(int argc, char ** argv) {
 	//     printf("%lu", BitGet(temp, i));
     // }
 	
-	ShowBit(double, 12.5);
-	// testcarrayinit();
+	BitShow(char, 0x01);
+	BitShow(char, -1);
+	BitShow(short, 0x01);
+	BitShow(int, 0x01);
+	BitShow(long, 0x01);
+	BitShow(float, 12.5);
+	BitShow(double, 12.5);
 
 	// float a = 12.5; 
     // int * p = (int *)&a;
     // int b = *p;
 	// printf("b: %d\n",b);
 
+	// testcarrayinit();
 	return EXIT_SUCCESS;
 }
 
