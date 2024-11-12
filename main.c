@@ -1,4 +1,5 @@
 #include <i386/_types.h>
+#include <math.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -41,17 +42,6 @@ int main(int argc, char ** argv) {
 		低
 	*/
 
-	// char2binary('c', original);
-	// short2binary(3, original);
-	// int2binary(3, original);
-	// long2binary(8, original);
-	// uchar2binary('c', original);
-	// ushort2binary(3, original);
-	// uint2binary(3, original);
-	// ulong2binary(8, original);
-	// float2binary(3.14, original);
-	// double2binary(3.14, original);
-
 	// char * p = STRING2CSTRING(p, "ABC");
 	// long length = cstringlength(p);
 	// long volume = cstringvolume(p);
@@ -70,8 +60,13 @@ int main(int argc, char ** argv) {
 	//     printf("%lu", BitGet(temp, i));
     // }
 	
-	ShowBit(double, 0.1);
+	ShowBit(double, 12.5);
 	// testcarrayinit();
+
+	// float a = 12.5; 
+    // int * p = (int *)&a;
+    // int b = *p;
+	// printf("b: %d\n",b);
 
 	return EXIT_SUCCESS;
 }

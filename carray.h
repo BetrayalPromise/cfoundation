@@ -88,8 +88,6 @@ bool carrayinsert0(void * ca, long idx, long pc, ...);
     #warning "information: duplicate define macro 'carrayinsert$'
 #endif
 
-
-void endian();
 void showcolor();
 
 #endif

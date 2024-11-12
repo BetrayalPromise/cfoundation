@@ -298,26 +298,6 @@ void showcolor() {
     printf("\033[46m"); printf("\033[0m\r\n");
     printf("\033[47m"); printf("\033[0m\r\n");	
 }
-
-void endian() {
-    unsigned short test = 0x1122;
-    if(*( (unsigned char*) &test ) == 0x11)
-        printf("大端\n");
-    else
-        printf("小端\n");
-
-    // unsigned char * p = (unsigned char*)&test;
-    // for (short i = 0; i < 2; i ++ ) {
-    //     printf("%x\n", p[i]);
-    // }
-
-    /*
-    +
-        11
-        22
-    -
-    */
-} 
  
 void ASCII(ISO_IEC_646_t standard, unsigned short flag) {
 	int size = standard == C89 ? 128 : 256;
