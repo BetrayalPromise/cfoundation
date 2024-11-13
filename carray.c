@@ -79,9 +79,25 @@ void * carrayinit(void * src, size_t length, cbasetype_t type) {
 	}
     void * space = malloc(base + volume);
     void * ca = space + base;
-	for (long i = 0; i < length * step; i ++) {
-		((char *)ca)[i] = ((char *)src)[i];
-	}
+    switch (type) {
+    case cbasechar: case cbaseuchar: case cbaseshort: case cbaseushort: case cbaseint: case cbaseuint: case cbaselong: case cbaseulong: {
+        memcpy(src, ca, step * length);
+    } break;
+    case cbasefloat: {
+        float * sf = src; float * tf = ca;
+        for (int i = 0; i < length; i ++) {
+            float temp = sf[i];
+            tf[i] = temp * 1.00000000;
+        }
+    } break;
+    case cbasedouble: {
+        double * sd = src; double * td = ca;
+        for (int i = 0; i < length; i ++) {
+            double temp = sd[i];
+            td[i] = temp * 1.00000000;
+        }
+    } break;
+    }
     setcarraytype(ca, type);
     setcarraystep(ca, step);
 	setcarraylength(ca, length);

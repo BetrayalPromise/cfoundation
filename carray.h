@@ -33,7 +33,7 @@ typedef enum cbasetype {
     cbasedouble = 0x09UL,
 } cbasetype_t;
 
-#define Double(x) (x * 1.0000000f)
+// #define Double(x) (x * 1.0000000f)
 
 //  @return             返回一个如7行所示的包含信息的数据结构carray,结构与其一致.
 //  @paramater src      常规数组.

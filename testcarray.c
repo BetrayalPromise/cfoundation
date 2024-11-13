@@ -4,6 +4,7 @@
 #include "carray.h"
 #include "cstring.h"
 #include <stdbool.h>
+#include <stdio.h>
 
 #define GET_ARRAY_COUNT(a) sizeof(a) / sizeof(a[0])
 
@@ -81,7 +82,10 @@ void testcarrayinit() {
 	// 	}
 	// }
 	if (true) {
-	    double a[] = { Double(4) };
+		BitShow(double, 4.00);
+
+	    double a[] = { 4.00 };
+		double v = a[0];
 		double * p = carrayinit(a, GET_ARRAY_COUNT(a), cbasedouble);
 		carraydescribe(p);
 		carrayinsert0$(p, 0, 1.0);
