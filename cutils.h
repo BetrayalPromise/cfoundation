@@ -129,52 +129,17 @@ typedef unsigned long  ulong;
     #warning "information: duplicate define macro 'BitGet', 'BitNOT', 'BitSET0', 'BitSET1'!"
 #endif
 
-#if !defined(BitShow)
-	#define BitShow(type, value) do {\
+#if !defined(BitDisplay)
+	#define BitDisplay(type, value) do {\
         type x = value;\
         uint64_t * temp = ((uint64_t *) &x);\
         for (int i = 0; i < 8 * sizeof(type); i ++) {\
 		    printf("%llu", BitGet(*temp, i));\
 	    }\
-        printf("\n");\
 	} while(0)
 #else
     #warning "information: duplicate define macro 'ShowBit'!"
 #endif
-
-// #if !defined(ShowBit)
-// 	#define ShowBit(type, value) do {\
-// 	    type x = value;\
-//         int n = sizeof(type);\
-//         if (n == 1) {\
-//             unsigned char temp = *(uint8_t *)&x;\
-//             for (int i = 0; i < 8 * sizeof(type); i ++) {\
-// 		        printf("%d", BitGet(temp, i));\
-// 		    }\
-//         } else if (n == 2) {\
-//             unsigned short temp = *(uint16_t *)&x;\
-//             for (int i = 0; i < 8 * sizeof(type); i ++) {\
-// 			    printf("%d", BitGet(temp, i));\
-// 		    }\
-//         } else if (n == 4) {\
-//             unsigned int temp = *(uint32_t *)&x;\
-//             for (int i = 0; i < 8 * sizeof(type); i ++) {\
-// 			    printf("%d", BitGet(temp, i));\
-// 		    }\
-//         } else if (n == 8) {\
-//             unsigned long temp = *(uint64_t *)&x;\
-//             for (int i = 0; i < 8 * sizeof(type); i ++) {\
-// 			    printf("%lu", BitGet(temp, i));\
-// 		    }\
-//         } else {\
-//             printf("unknow");\
-//         }\
-//         printf("\n");\
-// 	} while(0)
-// #else
-//     #warning "information: duplicate define macro 'ShowBit'!"
-// #endif
-
 
 #if !defined(EXCHANGE)
     #define EXCHANGE(n1, n2) do { n1 = n1 ^ n2; n2 = n1 ^ n2; n1 = n1 ^ n2; } while(0)
@@ -182,10 +147,18 @@ typedef unsigned long  ulong;
     #warning "information: duplicate define macro 'EXCHANGE'!"
 #endif
 
-// static inline void handler(void (^ * expr)(void)) { (* expr)(); }
-// #define DEFER_1(x, y) x##y
-// #define DEFER_2(x, y) DEFER_1(x, y)
-// #define DEFER_0(x)    DEFER_2(x, __COUNTER__)
-// #define defer __attribute__((cleanup(handler))) void (^ DEFER_0(option))(void) = ^
+#define  MEMORY_BIT1(x)   (*((bit*)(x)))
+#define  MEMORY_BIT8(x)   (*((byte*)(x)))
+#define  MEMORY_BIT16(x)  (*((word*)(x)))
+#define  MEMORY_BIT32(x)  (*((dword*)(x)))
+#define  MEMORY_BIT64(x)  (*((qword*)(x)))
+
+#define  WORD_LOW(xxx)    ((byte) ((word)(var) & 255))
+#define  WORD_HIGH(xxx)   ((byte) ((word)(var) >> 8))
+
+#define  POINTER( var )  ((void *) &(var))
+
+#define FPOS( type, field ) ((dword)&((type *)0)->field)
+#define FSIZ( type, field ) sizeof(((type *) 0)->field)
 
 #endif

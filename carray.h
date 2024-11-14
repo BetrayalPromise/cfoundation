@@ -74,12 +74,12 @@ typedef enum cainsert {
     single,   // 单个元素
     carray,   // 数组元素
 } cainsert_t;
-extern bool         carrayinsert(void * ca, cainsert_t t, long idx, long pc, ...);
-#if !defined (carrayinsert$)
-    #define carrayinsert$(a, b, c, ...) carrayinsert(a, b, c, ARGC(__VA_ARGS__), ##__VA_ARGS__)
-#else
-    #warning "information: duplicate define macro 'carrayinsert$'
-#endif
+// extern bool         carrayinsert(void * ca, cainsert_t t, long idx, long pc, ...);
+// #if !defined (carrayinsert$)
+//     #define carrayinsert$(a, b, c, ...) carrayinsert(a, b, c, ARGC(__VA_ARGS__), ##__VA_ARGS__)
+// #else
+//     #warning "information: duplicate define macro 'carrayinsert$'
+// #endif
 
 bool carrayinsert0(void * ca, long idx, long pc, ...);
 #if !defined (carrayinsert0$)

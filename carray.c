@@ -87,14 +87,14 @@ void * carrayinit(void * src, size_t length, cbasetype_t type) {
         float * sf = src; float * tf = ca;
         for (int i = 0; i < length; i ++) {
             float temp = sf[i];
-            tf[i] = temp * 1.00000000;
+            tf[i] = temp;
         }
     } break;
     case cbasedouble: {
         double * sd = src; double * td = ca;
         for (int i = 0; i < length; i ++) {
             double temp = sd[i];
-            td[i] = temp * 1.00000000;
+            td[i] = temp;
         }
     } break;
     }
@@ -129,32 +129,32 @@ void carraydescribe(void * ca) {
     case cbasedouble: info = "double"; break;
     }
 
-    printf("    (%ld Byte  H:0x%016x  D:%032u  Array.type = %s),\n", basesize(), type, type, info);
+    printf("    (%ld Byte  HEX:0x%016x  DEC:%032u  Array.type = %s),\n", basesize(), type, type, info);
 
     long step = carraystep(ca);
-	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Array.step = %ld),\n", basesize(), step, step, step);
+	printf("    (%ld Byte  HEX:0x%016lx  DEC:%032ld  Array.step = %ld),\n", basesize(), step, step, step);
 
     long volume = carrayvolume(ca);
-	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Array.volume = %ld),\n", basesize(), volume, volume, volume);
+	printf("    (%ld Byte  HEX:0x%016lx  DEC:%032ld  Array.volume = %ld),\n", basesize(), volume, volume, volume);
 
     long length = carraylength(ca);
-	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Array.length = %ld),", basesize(), length, length, length);
+	printf("    (%ld Byte  HEX:0x%016lx  DEC:%032ld  Array.length = %ld),", basesize(), length, length, length);
 
 	printf("\n");
 	for (int i = 0; i < length; i ++) {
         switch (type) {
-        case cbasechar:   printf("    %d", ((char *)ca)[i]); break;
-        case cbaseuchar:  printf("    %d", ((unsigned char *)ca)[i]); break;
-        case cbaseshort:  printf("    %d", ((short *)ca)[i]); break;
-        case cbaseushort: printf("    %d", ((unsigned short *)ca)[i]); break;
-        case cbaseint:    printf("    %d", ((int *)ca)[i]); break;
-        case cbaseuint:   printf("    %d", ((unsigned int *)ca)[i]); break;
-        case cbasefloat:  printf("    %f", ((float *)ca)[i]); break;
-        case cbaselong:   printf("    %ld", ((long *)ca)[i]); break;
-        case cbaseulong:  printf("    %ld", ((unsigned long *)ca)[i]); break;
-        case cbasedouble: printf("    %lf", ((double *)ca)[i]); break;
+        case cbasechar:   printf("    (%d  BIN:", ((char *)ca)[i]); BitDisplay(char, ((char *)ca)[i]); break;
+        case cbaseuchar:  printf("    (%d  BIN:", ((unsigned char *)ca)[i]); BitDisplay(unsigned char, ((unsigned char *)ca)[i]); break;
+        case cbaseshort:  printf("    (%d  BIN:", ((short *)ca)[i]); BitDisplay(short, ((short *)ca)[i]); break;
+        case cbaseushort: printf("    (%d  BIN:", ((unsigned short *)ca)[i]); BitDisplay(unsigned short, ((unsigned short *)ca)[i]); break;
+        case cbaseint:    printf("    (%d  BIN:", ((int *)ca)[i]); BitDisplay(int, ((int *)ca)[i]); break;
+        case cbaseuint:   printf("    (%d  BIN:", ((unsigned int *)ca)[i]); BitDisplay(unsigned int, ((unsigned int *)ca)[i]); break;
+        case cbasefloat:  printf("    (%f  BIN:", ((float *)ca)[i]); BitDisplay(float, ((float *)ca)[i]); break;
+        case cbaselong:   printf("    (%ld  BIN:", ((long *)ca)[i]); BitDisplay(long, ((long *)ca)[i]); break;
+        case cbaseulong:  printf("    (%ld  BIN:", ((unsigned long *)ca)[i]); BitDisplay(unsigned long, ((unsigned long *)ca)[i]); break;
+        case cbasedouble: printf("    (%lf  BIN:", ((double *)ca)[i]); BitDisplay(double, ((double *)ca)[i]); break;
         }
-		printf(",\n");
+		printf("),\n");
 	}
 	printf("]\n\n");
 }
@@ -245,32 +245,41 @@ bool carrayinsert0(void * ca, long idx, long pc, ...) {
 		volume = carrayvolume(ca);
 	}
 
-    bool flag = false;
-
-    int i_temp4[pc]; long l_temp8[pc]; double d_temp8[pc];
     if (idx < 0) { idx = 0; } else if (idx < length + 1) { ; } else { idx = length; }
 
     switch (type) {
     case cbasechar: case cbaseuchar: case cbaseshort: case cbaseushort: case cbaseint: case cbaseuint: {
-        for (int i = 0; i < pc; i ++) { i_temp4[i] = va_arg(list, int); }
+        int temp[pc];
+        for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, int); }
         memmove(ca + idx, ca + idx + step * length, step * length);
         for (int i = 0; i < pc; i ++) {
-            memcpy(ca + idx + i * step, i_temp4 + i, step);
+            memcpy(ca + idx + i * step, temp + i, step);
         }
     } break;
     case cbaselong: case cbaseulong: {
-        for (int i = 0; i < pc; i ++) { l_temp8[i] = va_arg(list, long); }
+        long temp[pc]; 
+        for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, long); }
         memmove(ca + idx, ca + idx + step * length, step * length);
         for (int i = 0; i < pc; i ++) {
-            memcpy(ca + idx + i * step, l_temp8 + i, step);
+            memcpy(ca + idx + i * step, temp + i, step);
         }
     } break;
-    case cbasefloat: flag = true;
-    case cbasedouble: {
-        for (int i = 0; i < pc; i ++) { d_temp8[i] = va_arg(list, double); }
-        memmove(ca + idx, ca + idx + step * length, step * length);
+    case cbasefloat: {
+        double temp[pc];
+        for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, double); }
+        memmove(ca + (idx + pc) * sizeof(float), ca + idx * sizeof(float), (length - idx) * sizeof(float));
         for (int i = 0; i < pc; i ++) {
-            memcpy(ca + idx + i * step, d_temp8 + i, step);
+            float value = (float)temp[i];
+            ((float *)ca)[i + idx] = value;
+        }
+    } break;
+    case cbasedouble: {
+        double temp[pc];
+        for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, double); }
+        memmove(ca + (idx + pc) * sizeof(double), ca + idx * sizeof(double), (length - idx) * sizeof(double));
+        for (int i = 0; i < pc; i ++) {
+            double value = (double)temp[i];
+            ((double *)ca)[i + idx] = value;
         }
     } break;
     }
@@ -319,16 +328,16 @@ void ASCII(ISO_IEC_646_t standard, unsigned short flag) {
 	int size = standard == C89 ? 128 : 256;
 	char * show = NULL;
 	switch (flag) {
-	case 0b111: show = "H:0x%02x  D:%03d  C:%c"; break;
-	case 0b110: show = "H:0x%02x  D:%03d)"; break;
-	case 0b101: show = "H:0x%02x  C:%c"; break;
-	case 0b011: show = "D:%03d  C:%c)"; break;
-	case 0b100: show = "H:0x%02x)"; break;
-	case 0b010: show = "D:%03d)"; break;
+	case 0b111: show = "HEX:0x%02x  DEC:%03d  C:%c"; break;
+	case 0b110: show = "HEX:0x%02x  DEC:%03d)"; break;
+	case 0b101: show = "HEX:0x%02x  C:%c"; break;
+	case 0b011: show = "DEC:%03d  C:%c)"; break;
+	case 0b100: show = "HEX:0x%02x)"; break;
+	case 0b010: show = "DEC:%03d)"; break;
 	case 0b001: show = "C:%c)"; break;
-	default:    show = "H:0x%02x  D:%03d  C:%c)"; break;
+	default:    show = "HEX:0x%02x  DEC:%03d  C:%c)"; break;
 	}
-	printf("ASCII STANDARD: %s\n", standard == C89 ? "ISO/IEC 646:1991" : "ISO/IEC 646:1999");
+	printf("ASCII STANDARDEC: %s\n", standard == C89 ? "ISO/IEC 646:1991" : "ISO/IEC 646:1999");
 	for (int i = 0; i < size; i ++) {
 		printf(show, i, i, i);
 		printf("\n");

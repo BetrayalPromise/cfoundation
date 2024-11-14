@@ -73,21 +73,21 @@ void cstringdescribe(char * cstr, unsigned short flag) {
 	
 	char * show = NULL;
 	switch (flag) {
-	case 0b111: show = "    (%ld Byte  H:0x%02x  D:%03d  C:%c)"; break;
-	case 0b110: show = "    (%ld Byte  H:0x%02x  D:%03d)"; break;
-	case 0b101: show = "    (%ld Byte  H:0x%02x  C:%c)"; break;
-	case 0b011: show = "    (%ld Byte  D:%03d  C:%c)"; break;
-	case 0b100: show = "    (%ld Byte  H:0x%02x)"; break;
-	case 0b010: show = "    (%ld Byte  D:%03d)"; break;
+	case 0b111: show = "    (%ld Byte  HEX:0x%02x  DEC:%03d  C:%c)"; break;
+	case 0b110: show = "    (%ld Byte  HEX:0x%02x  DEC:%03d)"; break;
+	case 0b101: show = "    (%ld Byte  HEX:0x%02x  C:%c)"; break;
+	case 0b011: show = "    (%ld Byte  DEC:%03d  C:%c)"; break;
+	case 0b100: show = "    (%ld Byte  HEX:0x%02x)"; break;
+	case 0b010: show = "    (%ld Byte  DEC:%03d)"; break;
 	case 0b001: show = "    (%ld Byte  C:%c)"; break;
-	default:    show = "    (%ld Byte  H:0x%02x  D:%03d  C:%c)"; break;
+	default:    show = "    (%ld Byte  HEX:0x%02x  DEC:%03d  C:%c)"; break;
 	}
 
     long volume = cstringvolume(cstr);
-	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Chars.volume = %ld),\n", basesize(), volume, volume, volume);
+	printf("    (%ld Byte  HEX:0x%016lx  DEC:%032ld  Chars.volume = %ld),\n", basesize(), volume, volume, volume);
 
     long length = cstringlength(cstr);
-	printf("    (%ld Byte  H:0x%016lx  D:%032ld  Chars.length = %ld)", basesize(), length, length, length);
+	printf("    (%ld Byte  HEX:0x%016lx  DEC:%032ld  Chars.length = %ld)", basesize(), length, length, length);
 	
 	if (length != 0) {
 		printf(",");
