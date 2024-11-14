@@ -80,12 +80,16 @@ void testcarrayinit() {
 	// 	carraydescribe(p);
 	// 	carrayfree(p);
 	// }
-	// if (true) {
-	// 	double a[] = {6};
-	// 	double * p  = carrayinit(a, ARRAY_COUNT(a), cbasedouble);
-	// 	double * p1 = carrayinit(a, ARRAY_COUNT(a), cbasedouble);
-	// 	carrayinsert1$(p, 0, p1);
-	// }
+	if (true) {
+		for (int i = -1; i < 5; i ++) {
+			double a[] = {1, 2, 5, 6};
+			double b[] = {7.0, 8.0};
+			double * p  = carrayinit(a, ARRAY_COUNT(a), cbasedouble);
+			double * p1 = carrayinit(b, ARRAY_COUNT(b), cbasedouble);
+			carrayinsert1$(p, i, p1);
+			carraydescribe(p);
+		}
+	}
 }
 
 #endif

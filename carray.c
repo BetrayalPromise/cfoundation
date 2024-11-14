@@ -228,12 +228,19 @@ bool carrayinsert1(void * ca, long idx, long pc, ...) {
 	}
     if (idx < 0) { idx = 0; } else if (idx < length + 1) { ; } else { idx = length; }
 
-    for (int i = 0; i < total; i ++) {
-    
+    for (int i = 0; i < pc; i ++) {
+        if (carraytype(temp[i]) != type) {
+            printf("information: type inconsistency!\n");
+            return false;
+        }
     }
-    
-
-
+    memmove(ca + (idx + total) * step, ca + idx * step, (length - idx) * step);
+    void * start = ca + idx * step;
+    for (int i = 0; i < pc; i ++) {
+        long itemlength = carraylength(temp[i]);
+        memcpy(start, temp[i], itemlength * step);
+        start += itemlength * step;
+    }
     setcarraylength(ca, length + total);
     va_end(list);
 	return true;
