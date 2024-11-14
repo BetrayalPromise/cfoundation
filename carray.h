@@ -81,9 +81,29 @@ typedef enum cainsert {
 //     #warning "information: duplicate define macro 'carrayinsert$'
 // #endif
 
+
+//  插入函数
+//  @return             返回追加操作是否成功.
+//  @paramater ca       carray型.
+//  @paramater idx      追加位置,总是以cstr作为0为参照.
+//  @paramater pc       插入元素个数
+//  @paramater ...      插入元素(char,short,int,long,uchar,ushort,uint,ulong,float,double,必须保证ca类型与元素类型一致,否则结果有问题),接受多个不定参数.
 bool carrayinsert0(void * ca, long idx, long pc, ...);
 #if !defined (carrayinsert0$)
     #define carrayinsert0$(a, b, ...) carrayinsert0(a, b, ARGC(__VA_ARGS__), ##__VA_ARGS__)
+#else
+    #warning "information: duplicate define macro 'carrayinsert$'
+#endif
+
+//  插入函数
+//  @return             返回追加操作是否成功.
+//  @paramater ca       carray型.
+//  @paramater idx      追加位置,总是以cstr作为0为参照.
+//  @paramater pc       插入元素个数
+//  @paramater ...      插入数组(carray型,必须保证ca类型与元素类型一致,否则结果有问题),接受多个不定参数.
+bool carrayinsert1(void * ca, long idx, long pc, ...);
+#if !defined (carrayinsert1$)
+    #define carrayinsert1$(a, b, ...) carrayinsert1(a, b, ARGC(__VA_ARGS__), ##__VA_ARGS__)
 #else
     #warning "information: duplicate define macro 'carrayinsert$'
 #endif

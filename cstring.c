@@ -15,7 +15,7 @@
 
 static bool cstringremove0(char * cstr, char * data);
 static bool cstringremove1(char * cstr, char c);
-static bool cstringremove2(char * cstr, long index);
+static bool cstringremove2(char * cstr, long idx);
 
 static bool cstringcheck(char * cstr) {
 	return cstr == NULL ? false : true;
@@ -94,9 +94,9 @@ void cstringdescribe(char * cstr, unsigned short flag) {
 	}
 	printf("\n");
 
-	long index = length <= volume ? length : volume;
+	long idx = length <= volume ? length : volume;
 
-	for (int i = 0; i < index; i ++) {
+	for (int i = 0; i < idx; i ++) {
 		printf(show, sizeof(char), cstr[i], cstr[i], cstr[i]);
 		if (i != length - 1) {
 			printf(",\n");
@@ -109,9 +109,9 @@ void cstringdescribe(char * cstr, unsigned short flag) {
 
 char * cstringcopy(char * cstr) {
 	if (!cstringcheck(cstr)) { return NULL; }
-	char * index = NULL;
-	memcpy(index, cstr, cstringlength(cstr) + basesize());
-	return index - basesize();
+	char * idx = NULL;
+	memcpy(idx, cstr, cstringlength(cstr) + basesize());
+	return idx - basesize();
 }
 
 void cstringfree(char * cstr) {
@@ -319,14 +319,14 @@ static bool cstringremove0(char * cstr, char * data) {
 	long length = cstringlength(cstr);
 	long size = cstringlength(data); 
 	if (length <= 0 || size <= 0 || size > length) { return - 1; }
-	int indexes[length / size];
-	memset(indexes, -1, length / size * sizeof(int));
-	int index = 0, count = 0;
+	int idxes[length / size];
+	memset(idxes, -1, length / size * sizeof(int));
+	int idx = 0, count = 0;
 	int i = 0, j = 0;
 	while (i < length && j < size) {
 		if (cstr[i] == data[j]) {
 			if (j == size - 1) {
-				indexes[index] = i; ++ index; ++ count;
+				idxes[idx] = i; ++ idx; ++ count;
 				i -= (j - 1); j = 0;
 			} else {
 				++ i; ++ j;
@@ -343,8 +343,8 @@ static bool cstringremove0(char * cstr, char * data) {
 		   211212
 	*/
 	for (int i = count - 1; i >= 0; i --) {
-		printf("%ld--%d--%ld\n", indexes[i] - size + 1, indexes[i] + 1, length - indexes[i]);
-		memmove(cstr + indexes[i] - size + 1, cstr + indexes[i] + 1, length - indexes[i]);
+		printf("%ld--%d--%ld\n", idxes[i] - size + 1, idxes[i] + 1, length - idxes[i]);
+		memmove(cstr + idxes[i] - size + 1, cstr + idxes[i] + 1, length - idxes[i]);
 	}
 	setcstringlength(cstr, length - count * size);
 	return true;
@@ -360,35 +360,35 @@ static bool cstringremove1(char * cstr, char c) {
 			++ count;
 		}
 	}
-	long indexes[count];
+	long idxes[count];
 		// 为了节省空间,所以采用了牺牲运行时间的方法处理
 	({
-		long index = 0;
+		long idx = 0;
 		for (int i = 0; i < length; i ++) {
 			if (c == cstr[i]) {
-				indexes[index] = i;
-				++ index;
+				idxes[idx] = i;
+				++ idx;
 			}
 		}
 	});
 
 	for (int i = 0; i < count; i ++) {
-		memmove(cstr + indexes[i] - i, cstr + indexes[i] + 1 - i, length - indexes[i] - 1 + i);
+		memmove(cstr + idxes[i] - i, cstr + idxes[i] + 1 - i, length - idxes[i] - 1 + i);
 		memmove(cstr + length - 1, &c, 1);
 	}
 	setcstringlength(cstr, length - count);
 	return true;
 }
 
-static bool cstringremove2(char * cstr, long index) {
+static bool cstringremove2(char * cstr, long idx) {
 	if (!cstringcheck(cstr)) { return false; }
 
 	long length = cstringlength(cstr);
 
-	if (index > length - 1 || index < 0) {
+	if (idx > length - 1 || idx < 0) {
 		return false;
 	} else {
-		memmove(cstr + index, cstr + index + 1, length - index - 1);
+		memmove(cstr + idx, cstr + idx + 1, length - idx - 1);
 		setcstringlength(cstr, length - 1);
 		return true;
 	}
@@ -397,7 +397,7 @@ static bool cstringremove2(char * cstr, long index) {
 long cstringsearch(char * cstr, cssearch_t t, long times, ...) {
 	if (!cstringcheck(cstr)) { return false; }
 	long length = cstringlength(cstr);
-	long index = -1;
+	long idx = -1;
 	long total = 0;
 	if (times < 0 || times > length) { return -1; }
 	va_list list;
@@ -409,14 +409,14 @@ long cstringsearch(char * cstr, cssearch_t t, long times, ...) {
 			if (data == cstr[i]) {
 				++ total;
 				if (total == times) {
-					index = i; break;
+					idx = i; break;
 				} else {
 					continue;
 				}
 			}
 		}
 		va_end(list);
-		return index;
+		return idx;
 	} break;
 	case searchcstring: {
 		char * data = (void *)va_arg(list, uint64_t);
@@ -434,7 +434,7 @@ long cstringsearch(char * cstr, cssearch_t t, long times, ...) {
 		while (i < length && j < size) {
 			if (cstr[i] == data[j]) {
 				if (j == size - 1) {
-					++ total == times ? index = i : ({});
+					++ total == times ? idx = i : ({});
 					ctl && flag == true ? ({ ++ i; j = 0; }) : ({ i -= (j - 1); j = 0; });
 				} else {
 					++ i; ++ j;
@@ -444,7 +444,7 @@ long cstringsearch(char * cstr, cssearch_t t, long times, ...) {
 			}
 		}
 		va_end(list);
-		return index;
+		return idx;
 	} break;
 	}
 }
@@ -503,31 +503,31 @@ bool cstringchange(char * cstr, long pos, ...) {
 	}
 
 	long loc = 0;
-	long index = 0;
+	long idx = 0;
 	long size = 0;
 	if (pos < 0) {
 		if (pos + cstringlength(data) <= 0) {
 			return false;
 		} else {
-			index = labs(pos);
+			idx = labs(pos);
 			size = pos + cstringlength(data) < cstringlength(cstr) ? pos + cstringlength(data) : cstringlength(cstr);
 			loc = 0;
 		}
 	} else if (pos == 0) {
-		index = 0;
+		idx = 0;
 		size = cstringlength(cstr) > cstringlength(data) ? cstringlength(data) : cstringlength(cstr);
 		loc = 0;
 	} else {
 		if (pos >= cstringlength(cstr)) {
 			return false;
 		} else {
-			index = 0;
+			idx = 0;
 			size = pos + cstringlength(data) < cstringlength(cstr) ? cstringlength(data) : cstringlength(cstr) - pos;
 			loc = pos;
 		}
 	}
 	long i = loc;
-	long j = index;
+	long j = idx;
 	for (; i < size + loc; i ++) {
 		cstr[i] = data[j];
 		j ++;
@@ -541,14 +541,14 @@ bool cstringchange(char * cstr, long pos, ...) {
 // 	va_start(list, times);
 // 	uint64_t result = va_arg(list, uint64_t);
 // 	long count = 0;
-// 	long index = cstringsearch(cstr, character, times, result);
-// 	if (index < 0) {
+// 	long idx = cstringsearch(cstr, character, times, result);
+// 	if (idx < 0) {
 // 		va_end(list);
 // 		return NULL;
 // 	} else {
 // 		char * p = cstringinit(NULL, false);
 // 		size_t volume = cstringvolume(p);
-// 		for (int i = 0; i < index; i ++) {
+// 		for (int i = 0; i < idx; i ++) {
 // 			p[i] = cstr[i];
 // 		}
 // 		va_end(list);

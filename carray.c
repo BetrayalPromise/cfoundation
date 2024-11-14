@@ -81,7 +81,7 @@ void * carrayinit(void * src, size_t length, cbasetype_t type) {
     void * ca = space + base;
     switch (type) {
     case cbasechar: case cbaseuchar: case cbaseshort: case cbaseushort: case cbaseint: case cbaseuint: case cbaselong: case cbaseulong: {
-        memcpy(src, ca, step * length);
+        memcpy(ca, src, step * length);
     } break;
     case cbasefloat: {
         float * sf = src; float * tf = ca;
@@ -163,70 +163,8 @@ bool carrayinsert(void * ca, cainsert_t t, long idx, long pc, ...) {
     if (!ca) { return false; }
     va_list list;
 	va_start(list, pc);
-
-	long length      = carraylength(ca);
-	long volume      = carrayvolume(ca);
-    cbasetype_t type = carraytype(ca);
-    long step        = carraystep(ca);
-
-    switch (t) {
-    case single: {
-        while (length + pc > volume) {
-			carraytelescope(&ca, true, 2);
-			volume = carrayvolume(ca);
-		}
-
-        bool floatflag = false;
-
-        switch (type) {
-        case cbasechar: case cbaseuchar: case cbaseshort: case cbaseushort: case cbaseint: case cbaseuint: {
-            int temp[pc];
-            for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, int); }
-            if (idx < 0) { idx = 0; } else if (idx < length + 1) { ; } else { idx = length; }
-            memmove(ca + idx, ca + idx + step * length, step * length);
-            for (int i = 0; i < pc; i ++) {
-                memcpy(ca + idx + i * step, temp + i, step);
-            }
-        } break;
-        case cbaselong: case cbaseulong: {
-            long temp[pc];
-            for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, long); }
-            if (idx < 0) { idx = 0; } else if (idx < length + 1) { ; } else { idx = length; }
-            memmove(ca + idx, ca + idx + step * length, step * length);
-            for (int i = 0; i < pc; i ++) {
-                memcpy(ca + idx + i * step, temp + i, step);
-            }
-        } break;
-        case cbasefloat: floatflag = true;
-        case cbasedouble: {
-            double temp[pc]; float temp1[pc];
-            for (int i = 0; i < pc; i ++) { 
-                double x = va_arg(list, double);
-                temp[i] = x;
-            }
-            if (idx < 0) { idx = 0; } else if (idx < length + 1) { ; } else { idx = length; }
-            if (floatflag) {
-                for (size_t i = 0; i < pc; i++) {
-                    temp1[i] = (float)(temp[i]);
-                }
-                memmove(ca + idx, ca + idx + step * length, step * length);
-                for (int i = 0; i < pc; i ++) {
-                    memcpy(ca + idx + i * step, temp1 + i, step);
-                }
-            } else {
-                memmove(ca + idx, ca + idx + step * length, step * length);
-                for (int i = 0; i < pc; i ++) {
-                    memcpy(ca + idx + i * step, temp + i, step);
-                }
-            }
-        } break;
-        }
-        setcarraylength(ca, length + pc);
-    } break;
-    case carray: {
-
-    } break;
-    }
+    // carrayinsert0(ca, idx, pc, ...);
+    va_end(list);
 	return true;
 }
 
@@ -284,6 +222,38 @@ bool carrayinsert0(void * ca, long idx, long pc, ...) {
     } break;
     }
     setcarraylength(ca, length + pc);
+	return true;
+}
+
+bool carrayinsert1(void * ca, long idx, long pc, ...) {
+    if (!ca) { return false; }
+    va_list list;
+	va_start(list, pc);
+
+	long length      = carraylength(ca);
+	long volume      = carrayvolume(ca);
+    cbasetype_t type = carraytype(ca);
+    long step        = carraystep(ca);
+    long total = 0;
+    void * temp[pc];
+    for (int i = 0; i < pc; i ++) {
+        temp[i] = (void *)va_arg(list, unsigned long);
+        total += carraylength(temp[i]);
+    }
+    while (length * step + total * step  > volume) {
+		carraytelescope(&ca, true, 2);
+		volume = carrayvolume(ca);
+	}
+    if (idx < 0) { idx = 0; } else if (idx < length + 1) { ; } else { idx = length; }
+
+    for (int i = 0; i < total; i ++) {
+    
+    }
+    
+
+
+    setcarraylength(ca, length + total);
+    va_end(list);
 	return true;
 }
 
