@@ -85,17 +85,11 @@ void * carrayinit(void * src, size_t length, cbasetype_t type) {
     } break;
     case cbasefloat: {
         float * sf = src; float * tf = ca;
-        for (int i = 0; i < length; i ++) {
-            float temp = sf[i];
-            tf[i] = temp;
-        }
+        for (int i = 0; i < length; i ++) { float temp = sf[i]; tf[i] = temp; }
     } break;
     case cbasedouble: {
         double * sd = src; double * td = ca;
-        for (int i = 0; i < length; i ++) {
-            double temp = sd[i];
-            td[i] = temp;
-        }
+        for (int i = 0; i < length; i ++) { double temp = sd[i]; td[i] = temp; }
     } break;
     }
     setcarraytype(ca, type);
@@ -185,40 +179,28 @@ bool carrayinsert0(void * ca, long idx, long pc, ...) {
 
     if (idx < 0) { idx = 0; } else if (idx < length + 1) { ; } else { idx = length; }
 
+    memmove(ca + (idx + pc) * step, ca + idx * step, (length - idx) * step);
+
     switch (type) {
     case cbasechar: case cbaseuchar: case cbaseshort: case cbaseushort: case cbaseint: case cbaseuint: {
         int temp[pc];
         for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, int); }
-        memmove(ca + idx, ca + idx + step * length, step * length);
-        for (int i = 0; i < pc; i ++) {
-            memcpy(ca + idx + i * step, temp + i, step);
-        }
+        for (int i = 0; i < pc; i ++) { memcpy(ca + idx + i * step, temp + i, step); }
     } break;
     case cbaselong: case cbaseulong: {
         long temp[pc]; 
         for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, long); }
-        memmove(ca + idx, ca + idx + step * length, step * length);
-        for (int i = 0; i < pc; i ++) {
-            memcpy(ca + idx + i * step, temp + i, step);
-        }
+        for (int i = 0; i < pc; i ++) { memcpy(ca + idx + i * step, temp + i, step); }
     } break;
-    case cbasefloat: {
+    case cbasefloat: { // 防止出现整形数据按照整形存储
         double temp[pc];
         for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, double); }
-        memmove(ca + (idx + pc) * sizeof(float), ca + idx * sizeof(float), (length - idx) * sizeof(float));
-        for (int i = 0; i < pc; i ++) {
-            float value = (float)temp[i];
-            ((float *)ca)[i + idx] = value;
-        }
+        for (int i = 0; i < pc; i ++) { float value = (float)temp[i]; ((float *)ca)[i + idx] = value; }
     } break;
-    case cbasedouble: {
+    case cbasedouble: { // 防止出现整形数据按照整形存储
         double temp[pc];
         for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, double); }
-        memmove(ca + (idx + pc) * sizeof(double), ca + idx * sizeof(double), (length - idx) * sizeof(double));
-        for (int i = 0; i < pc; i ++) {
-            double value = (double)temp[i];
-            ((double *)ca)[i + idx] = value;
-        }
+        for (int i = 0; i < pc; i ++) { double value = (double)temp[i]; ((double *)ca)[i + idx] = value; }
     } break;
     }
     setcarraylength(ca, length + pc);
