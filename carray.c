@@ -137,29 +137,20 @@ void carraydescribe(void * ca) {
 	printf("\n");
 	for (int i = 0; i < length; i ++) {
         switch (type) {
-        case cbasechar:   printf("    (%d  BIN:", ((char *)ca)[i]); BitDisplay(char, ((char *)ca)[i]); break;
-        case cbaseuchar:  printf("    (%d  BIN:", ((unsigned char *)ca)[i]); BitDisplay(unsigned char, ((unsigned char *)ca)[i]); break;
-        case cbaseshort:  printf("    (%d  BIN:", ((short *)ca)[i]); BitDisplay(short, ((short *)ca)[i]); break;
-        case cbaseushort: printf("    (%d  BIN:", ((unsigned short *)ca)[i]); BitDisplay(unsigned short, ((unsigned short *)ca)[i]); break;
-        case cbaseint:    printf("    (%d  BIN:", ((int *)ca)[i]); BitDisplay(int, ((int *)ca)[i]); break;
-        case cbaseuint:   printf("    (%d  BIN:", ((unsigned int *)ca)[i]); BitDisplay(unsigned int, ((unsigned int *)ca)[i]); break;
-        case cbasefloat:  printf("    (%f  BIN:", ((float *)ca)[i]); BitDisplay(float, ((float *)ca)[i]); break;
-        case cbaselong:   printf("    (%ld  BIN:", ((long *)ca)[i]); BitDisplay(long, ((long *)ca)[i]); break;
-        case cbaseulong:  printf("    (%ld  BIN:", ((unsigned long *)ca)[i]); BitDisplay(unsigned long, ((unsigned long *)ca)[i]); break;
-        case cbasedouble: printf("    (%lf  BIN:", ((double *)ca)[i]); BitDisplay(double, ((double *)ca)[i]); break;
+        case cbasechar:   printf("    (%d  BIN:", ((char *)ca)[i]); BIT_DISPLAY(char, ((char *)ca)[i]); break;
+        case cbaseuchar:  printf("    (%d  BIN:", ((unsigned char *)ca)[i]); BIT_DISPLAY(unsigned char, ((unsigned char *)ca)[i]); break;
+        case cbaseshort:  printf("    (%d  BIN:", ((short *)ca)[i]); BIT_DISPLAY(short, ((short *)ca)[i]); break;
+        case cbaseushort: printf("    (%d  BIN:", ((unsigned short *)ca)[i]); BIT_DISPLAY(unsigned short, ((unsigned short *)ca)[i]); break;
+        case cbaseint:    printf("    (%d  BIN:", ((int *)ca)[i]); BIT_DISPLAY(int, ((int *)ca)[i]); break;
+        case cbaseuint:   printf("    (%d  BIN:", ((unsigned int *)ca)[i]); BIT_DISPLAY(unsigned int, ((unsigned int *)ca)[i]); break;
+        case cbasefloat:  printf("    (%f  BIN:", ((float *)ca)[i]); BIT_DISPLAY(float, ((float *)ca)[i]); break;
+        case cbaselong:   printf("    (%ld  BIN:", ((long *)ca)[i]); BIT_DISPLAY(long, ((long *)ca)[i]); break;
+        case cbaseulong:  printf("    (%ld  BIN:", ((unsigned long *)ca)[i]); BIT_DISPLAY(unsigned long, ((unsigned long *)ca)[i]); break;
+        case cbasedouble: printf("    (%lf  BIN:", ((double *)ca)[i]); BIT_DISPLAY(double, ((double *)ca)[i]); break;
         }
 		printf("),\n");
 	}
 	printf("]\n\n");
-}
-
-bool carrayinsert(void * ca, cainsert_t t, long idx, long pc, ...) {
-    if (!ca) { return false; }
-    va_list list;
-	va_start(list, pc);
-    // carrayinsert0(ca, idx, pc, ...);
-    va_end(list);
-	return true;
 }
 
 bool carrayinsert0(void * ca, long idx, long pc, ...) {

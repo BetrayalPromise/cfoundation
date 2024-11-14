@@ -26,29 +26,22 @@ typedef unsigned long  ulong;
 // 针对动态链接库,用它定义的符号将不被导出，并且不能从其它对象进行使用，动态库中的函数是被隐藏的。
 #define private __attribute__((visibility("hidden")))
 
-#if !defined (__$NAMESPACE$__) && !defined (__NAMESPACE__)
-    #define __$NAMESPACE$__(s, Module, File, Name) Module##s##File##s##Name
-    #define __NAMESPACE__(s, Module, File, Name) __$NAMESPACE$__(s, Module, File, Name)
-#else
-    #warning "information: duplicate define macro '__$NAMESPACE$__', '__NAMESPACE__'!"
-#endif
+// #if !defined (__$NAMESPACE$__) && !defined (__NAMESPACE__)
+//     #define __$NAMESPACE$__(s, Module, File, Name) Module##s##File##s##Name
+//     #define __NAMESPACE__(s, Module, File, Name) __$NAMESPACE$__(s, Module, File, Name)
+// #else
+//     #warning "information: duplicate define macro '__$NAMESPACE$__', '__NAMESPACE__'!"
+// #endif
     
-#if !defined(func)
-    // Module: 模块名称
-    // File: 文件名称不带后缀
-    // Name: 函数名
-    // s:分割符号 C语言允许的函数名分隔符只有两种(_和$)其他的不允许使用
-    #define func(s, Module, File, Name) __NAMESPACE__(s, Module, File, Name)
-#else
-    #warning "information: duplicate define macro 'func'!"
-#endif
-
-#if !defined ($$) && !defined (__)
-    #define $$(Module, File, Name) func($, Module, File, Name)
-    #define __(Module, File, Name) func(_, Module, File, Name)
-#else
-    #warning "information: duplicate define macro '$$', '__'!"
-#endif
+// #if !defined(func)
+//     // Module: 模块名称
+//     // File: 文件名称不带后缀
+//     // Name: 函数名
+//     // s:分割符号 C语言允许的函数名分隔符只有两种(_和$)其他的不允许使用
+//     #define func(s, Module, File, Name) __NAMESPACE__(s, Module, File, Name)
+// #else
+//     #warning "information: duplicate define macro 'func'!"
+// #endif
 
 
 #if !defined (init) && !defined (deinit)
@@ -71,17 +64,17 @@ typedef unsigned long  ulong;
     #warning "information: duplicate define macro 'weak', 'strong'!"
 #endif
 
-#if !defined(FlexFor)
-    #define FlexFor(var, start, end, ...) for(int var = start; var <= end; __VA_ARGS__)
+#if !defined(FLEXFOR)
+    #define FLEXFOR(var, start, end, ...) for(int var = start; var <= end; __VA_ARGS__)
 #else
-    #warning "information: duplicate define macro 'EasyFor'!"
+    #warning "information: duplicate define macro 'FLEXFOR'!"
 #endif
 
-#if !defined(Minimum) && !defined (Maximum)
-    #define Minimum(type, x, y) ({ type __min1 = (x); type __min2 = (y); __min1 < __min2 ? __min1 : __min2; })
-    #define Maximum(type, x, y) ({ type __max1 = (x); type __max2 = (y); __max1 > __max2 ? __max1 : __max2; })
+#if !defined(MINIMUM) && !defined (MAXIMUM)
+    #define MINIMUM(type, x, y) ({ type __min1 = (x); type __min2 = (y); __min1 < __min2 ? __min1 : __min2; })
+    #define MAXIMUM(type, x, y) ({ type __max1 = (x); type __max2 = (y); __max1 > __max2 ? __max1 : __max2; })
 #else
-    #warning "information: duplicate define macro 'Minimum', 'Maximum'!"
+    #warning "information: duplicate define macro 'MINIMUM', 'MAXIMUM'!"
 #endif
 
 #if !defined(_LABEL_) && !defined(__LABEL__) && !defined(___LABEL___)
@@ -120,25 +113,25 @@ typedef unsigned long  ulong;
     #warning "information: duplicate define macro 'DeferBegin', 'defer', 'DeferEnd'!"
 #endif
 
-#if !defined(BitGet) && !defined(BitNOT) && !defined(BitSET1) && !defined(BitSET0)
-    #define BitGet(n, p)  ((n) >> (p)&1)
-    #define BitNOT(n, p)  ((n) ^= 1<<(p))
-    #define BitSET1(n, p) ((n)|= 1<<(p))
-    #define BitSET0(n, p) ((n) &= ~(1<<(p)))
+#if !defined(BIT_GET) && !defined(BIT_NOT) && !defined(BIT_SET1) && !defined(BIT_SET0)
+    #define BIT_GET(n, p)  ((n) >> (p)&1)
+    #define BIT_NOT(n, p)  ((n) ^= 1<<(p))
+    #define BIT_SET1(n, p) ((n)|= 1<<(p))
+    #define BIT_SET0(n, p) ((n) &= ~(1<<(p)))
 #else
-    #warning "information: duplicate define macro 'BitGet', 'BitNOT', 'BitSET0', 'BitSET1'!"
+    #warning "information: duplicate define macro 'BIT_GET', 'BIT_NOT', 'BIT_SET0', 'BIT_SET1'!"
 #endif
 
-#if !defined(BitDisplay)
-	#define BitDisplay(type, value) do {\
+#if !defined(BIT_DISPLAY)
+	#define BIT_DISPLAY(type, value) do {\
         type x = value;\
         uint64_t * temp = ((uint64_t *) &x);\
         for (int i = 0; i < 8 * sizeof(type); i ++) {\
-		    printf("%llu", BitGet(*temp, i));\
+		    printf("%llu", BIT_GET(*temp, i));\
 	    }\
 	} while(0)
 #else
-    #warning "information: duplicate define macro 'ShowBit'!"
+    #warning "information: duplicate define macro 'BIT_DISPLAY'!"
 #endif
 
 #if !defined(EXCHANGE)
@@ -155,8 +148,6 @@ typedef unsigned long  ulong;
 
 #define  WORD_LOW(xxx)    ((byte) ((word)(var) & 255))
 #define  WORD_HIGH(xxx)   ((byte) ((word)(var) >> 8))
-
-#define  POINTER( var )  ((void *) &(var))
 
 #define FPOS( type, field ) ((dword)&((type *)0)->field)
 #define FSIZ( type, field ) sizeof(((type *) 0)->field)

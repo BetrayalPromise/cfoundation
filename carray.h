@@ -70,18 +70,6 @@ extern size_t       carraylength(void * ca);
 extern void         carraydescribe(void * ca);
 
 
-typedef enum cainsert {
-    single,   // 单个元素
-    carray,   // 数组元素
-} cainsert_t;
-// extern bool         carrayinsert(void * ca, cainsert_t t, long idx, long pc, ...);
-// #if !defined (carrayinsert$)
-//     #define carrayinsert$(a, b, c, ...) carrayinsert(a, b, c, ARGC(__VA_ARGS__), ##__VA_ARGS__)
-// #else
-//     #warning "information: duplicate define macro 'carrayinsert$'
-// #endif
-
-
 //  插入函数
 //  @return             返回追加操作是否成功.
 //  @paramater ca       carray型.
@@ -94,6 +82,7 @@ bool carrayinsert0(void * ca, long idx, long pc, ...);
 #else
     #warning "information: duplicate define macro 'carrayinsert$'
 #endif
+
 
 //  插入函数
 //  @return             返回追加操作是否成功.
@@ -108,6 +97,6 @@ bool carrayinsert1(void * ca, long idx, long pc, ...);
     #warning "information: duplicate define macro 'carrayinsert$'
 #endif
 
-void showcolor();
+extern void showcolor();
 
 #endif
