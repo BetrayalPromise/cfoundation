@@ -17,14 +17,14 @@ static long basesize(void) {
 	return sizeof(long);
 }
 
-static void setcarraytype(void * ca, cbasetype_t value) {
+static void setcarraytype(void * ca, ctype_t value) {
     if (ca == NULL) { return; }
 	*(size_t *)(ca - 4 * basesize()) = value;
 }
 
-cbasetype_t carraytype(void * ca) {
+ctype_t carraytype(void * ca) {
 	if (ca == NULL) { return -1; }
-    return *(cbasetype_t *)(ca - 4 * basesize());
+    return *(ctype_t *)(ca - 4 * basesize());
 }
 
 static void setcarraystep(void * ca, size_t value) {
@@ -57,20 +57,20 @@ size_t carraylength(void * ca) {
     return *(size_t *)(ca - 1 * basesize());
 }
 
-void * carrayinit(void * src, size_t length, cbasetype_t type) {
+void * carrayinit(void * src, size_t length, ctype_t type) {
     if (!src || length < 0) { return NULL; }
     size_t step = 0;
     switch (type) {
-    case cbasechar:   step = sizeof(char); break;
-    case cbaseuchar:  step = sizeof(unsigned char); break;
-    case cbaseshort:  step = sizeof(short); break;
-    case cbaseushort: step = sizeof(unsigned short); break;
-    case cbaseint:    step = sizeof(int); break;
-    case cbaseuint:   step = sizeof(unsigned int); break;
-    case cbasefloat:  step = sizeof(float); break;
-    case cbaselong:   step = sizeof(long); break;
-    case cbaseulong:  step = sizeof(unsigned long); break;
-    case cbasedouble: step = sizeof(double); break;
+    case cchar:   step = sizeof(char); break;
+    case cuchar:  step = sizeof(unsigned char); break;
+    case cshort:  step = sizeof(short); break;
+    case cushort: step = sizeof(unsigned short); break;
+    case cint:    step = sizeof(int); break;
+    case cuint:   step = sizeof(unsigned int); break;
+    case cfloat:  step = sizeof(float); break;
+    case clong:   step = sizeof(long); break;
+    case culong:  step = sizeof(unsigned long); break;
+    case cdouble: step = sizeof(double); break;
     }
     long base = 4 * basesize();
     long volume = 32;
@@ -80,14 +80,14 @@ void * carrayinit(void * src, size_t length, cbasetype_t type) {
     void * space = malloc(base + volume);
     void * ca = space + base;
     switch (type) {
-    case cbasechar: case cbaseuchar: case cbaseshort: case cbaseushort: case cbaseint: case cbaseuint: case cbaselong: case cbaseulong: {
+    case cchar: case cuchar: case cshort: case cushort: case cint: case cuint: case clong: case culong: {
         memcpy(ca, src, step * length);
     } break;
-    case cbasefloat: {
+    case cfloat: {
         float * sf = src; float * tf = ca;
         for (int i = 0; i < length; i ++) { float temp = sf[i]; tf[i] = temp; }
     } break;
-    case cbasedouble: {
+    case cdouble: {
         double * sd = src; double * td = ca;
         for (int i = 0; i < length; i ++) { double temp = sd[i]; td[i] = temp; }
     } break;
@@ -108,19 +108,19 @@ void carrayfree(void * ca) {
 void carraydescribe(void * ca) {
 	if (!ca) { return; }
     printf("\n[type(8 Byte)|step(8 Bytpe)|volume(8 Byte)|length(8 Byte)|data...]: (%p)\n[\n", ca);
-    cbasetype_t type = carraytype(ca);
+    ctype_t type = carraytype(ca);
     char * info = NULL;
     switch (type) {
-    case cbasechar:   info = "char"; break;
-    case cbaseuchar:  info = "uchar"; break;
-    case cbaseshort:  info = "short"; break;
-    case cbaseushort: info = "ushort"; break;
-    case cbaseint:    info = "int"; break;
-    case cbaseuint:   info = "uint"; break;
-    case cbasefloat:  info = "float"; break;
-    case cbaselong:   info = "long"; break;
-    case cbaseulong:  info = "ulong"; break;
-    case cbasedouble: info = "double"; break;
+    case cchar:   info = "char"; break;
+    case cuchar:  info = "uchar"; break;
+    case cshort:  info = "short"; break;
+    case cushort: info = "ushort"; break;
+    case cint:    info = "int"; break;
+    case cuint:   info = "uint"; break;
+    case cfloat:  info = "float"; break;
+    case clong:   info = "long"; break;
+    case culong:  info = "ulong"; break;
+    case cdouble: info = "double"; break;
     }
 
     printf("    (%ld Byte  HEX:0x%016x  DEC:%032u  Array.type = %s),\n", basesize(), type, type, info);
@@ -137,16 +137,16 @@ void carraydescribe(void * ca) {
 	printf("\n");
 	for (int i = 0; i < length; i ++) {
         switch (type) {
-        case cbasechar:   printf("    (%d  BIN:", ((char *)ca)[i]); BIT_DISPLAY(char, ((char *)ca)[i]); break;
-        case cbaseuchar:  printf("    (%d  BIN:", ((unsigned char *)ca)[i]); BIT_DISPLAY(unsigned char, ((unsigned char *)ca)[i]); break;
-        case cbaseshort:  printf("    (%d  BIN:", ((short *)ca)[i]); BIT_DISPLAY(short, ((short *)ca)[i]); break;
-        case cbaseushort: printf("    (%d  BIN:", ((unsigned short *)ca)[i]); BIT_DISPLAY(unsigned short, ((unsigned short *)ca)[i]); break;
-        case cbaseint:    printf("    (%d  BIN:", ((int *)ca)[i]); BIT_DISPLAY(int, ((int *)ca)[i]); break;
-        case cbaseuint:   printf("    (%d  BIN:", ((unsigned int *)ca)[i]); BIT_DISPLAY(unsigned int, ((unsigned int *)ca)[i]); break;
-        case cbasefloat:  printf("    (%f  BIN:", ((float *)ca)[i]); BIT_DISPLAY(float, ((float *)ca)[i]); break;
-        case cbaselong:   printf("    (%ld  BIN:", ((long *)ca)[i]); BIT_DISPLAY(long, ((long *)ca)[i]); break;
-        case cbaseulong:  printf("    (%ld  BIN:", ((unsigned long *)ca)[i]); BIT_DISPLAY(unsigned long, ((unsigned long *)ca)[i]); break;
-        case cbasedouble: printf("    (%lf  BIN:", ((double *)ca)[i]); BIT_DISPLAY(double, ((double *)ca)[i]); break;
+        case cchar:   printf("    (%d  BIN:", ((char *)ca)[i]); BIT_DISPLAY(char, ((char *)ca)[i]); break;
+        case cuchar:  printf("    (%d  BIN:", ((unsigned char *)ca)[i]); BIT_DISPLAY(unsigned char, ((unsigned char *)ca)[i]); break;
+        case cshort:  printf("    (%d  BIN:", ((short *)ca)[i]); BIT_DISPLAY(short, ((short *)ca)[i]); break;
+        case cushort: printf("    (%d  BIN:", ((unsigned short *)ca)[i]); BIT_DISPLAY(unsigned short, ((unsigned short *)ca)[i]); break;
+        case cint:    printf("    (%d  BIN:", ((int *)ca)[i]); BIT_DISPLAY(int, ((int *)ca)[i]); break;
+        case cuint:   printf("    (%d  BIN:", ((unsigned int *)ca)[i]); BIT_DISPLAY(unsigned int, ((unsigned int *)ca)[i]); break;
+        case cfloat:  printf("    (%f  BIN:", ((float *)ca)[i]); BIT_DISPLAY(float, ((float *)ca)[i]); break;
+        case clong:   printf("    (%ld  BIN:", ((long *)ca)[i]); BIT_DISPLAY(long, ((long *)ca)[i]); break;
+        case culong:  printf("    (%ld  BIN:", ((unsigned long *)ca)[i]); BIT_DISPLAY(unsigned long, ((unsigned long *)ca)[i]); break;
+        case cdouble: printf("    (%lf  BIN:", ((double *)ca)[i]); BIT_DISPLAY(double, ((double *)ca)[i]); break;
         }
 		printf("),\n");
 	}
@@ -160,7 +160,7 @@ bool carrayinsert0(void * ca, long idx, long pc, ...) {
 
 	long length      = carraylength(ca);
 	long volume      = carrayvolume(ca);
-    cbasetype_t type = carraytype(ca);
+    ctype_t type = carraytype(ca);
     long step        = carraystep(ca);
 
     while (length * step + pc * step  > volume) {
@@ -173,22 +173,22 @@ bool carrayinsert0(void * ca, long idx, long pc, ...) {
     memmove(ca + (idx + pc) * step, ca + idx * step, (length - idx) * step);
 
     switch (type) {
-    case cbasechar: case cbaseuchar: case cbaseshort: case cbaseushort: case cbaseint: case cbaseuint: {
+    case cchar: case cuchar: case cshort: case cushort: case cint: case cuint: {
         int temp[pc];
         for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, int); }
         for (int i = 0; i < pc; i ++) { memcpy(ca + idx + i * step, temp + i, step); }
     } break;
-    case cbaselong: case cbaseulong: {
+    case clong: case culong: {
         long temp[pc]; 
         for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, long); }
         for (int i = 0; i < pc; i ++) { memcpy(ca + idx + i * step, temp + i, step); }
     } break;
-    case cbasefloat: { // 防止出现整形数据按照整形存储
+    case cfloat: { // 防止出现整形数据按照整形存储
         double temp[pc];
         for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, double); }
         for (int i = 0; i < pc; i ++) { float value = (float)temp[i]; ((float *)ca)[i + idx] = value; }
     } break;
-    case cbasedouble: { // 防止出现整形数据按照整形存储
+    case cdouble: { // 防止出现整形数据按照整形存储
         double temp[pc];
         for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, double); }
         for (int i = 0; i < pc; i ++) { double value = (double)temp[i]; ((double *)ca)[i + idx] = value; }
@@ -205,7 +205,7 @@ bool carrayinsert1(void * ca, long idx, long pc, ...) {
 
 	long length      = carraylength(ca);
 	long volume      = carrayvolume(ca);
-    cbasetype_t type = carraytype(ca);
+    ctype_t type = carraytype(ca);
     long step        = carraystep(ca);
     long total = 0;
     void * temp[pc];
@@ -303,6 +303,7 @@ void typebytelength(void) {
 	printf("[long long].size = %lu Bype\n", sizeof(long long));
 	printf("[float].size = %lu Bype\n", sizeof(float));
 	printf("[double].size = %lu Bype\n", sizeof(double));
+    printf("[double].size = %lu Bype\n", sizeof(long double));
 
 	printf("[void *].size = %lu Bype\n", sizeof(void *));
 	printf("[char *].size = %lu Bype\n", sizeof(char *));
@@ -311,7 +312,238 @@ void typebytelength(void) {
 	printf("[long *].size = %lu Bype\n", sizeof(long *));
 	printf("[long long *].size = %lu Bype\n", sizeof(long long *));
 	printf("[float *].size = %lu Bype\n", sizeof(float *));
-	printf("[double *].size = %lu Bype\n", sizeof(double *));	
+	printf("[double *].size = %lu Bype\n", sizeof(double *));
+    printf("[long double *].size = %lu Bype\n", sizeof(long double *));
+}
+
+void swap(void * n1, void * n2, int width) {
+	char buffer[width];
+	memcpy(buffer, n1, width);
+	memcpy(n1, n2, width);
+	memcpy(n2, buffer, width);
+}
+
+int typebyte(ctype_t t) {
+	switch (t) {
+	case cchar: case cuchar:
+		return sizeof(char);
+	case cshort: case cushort:
+		return sizeof(short);
+	case cint: case cuint:
+		return sizeof(int);
+	case cfloat:
+		return sizeof(float);
+	case clong:case culong:
+		return sizeof(long);
+	case cdouble:
+		return sizeof(double);
+	}
+}
+
+int unique(void * idxes, ctype_t t, int length) {
+    unsigned int width = typebyte(t);
+    switch (t) {
+    case cchar: {
+        char * src = idxes;
+        for (int i = 0; i < length - 1; i ++) {
+            for(int j = i + 1; j < length; j ++){
+                if (*(src + i) > *(src + j)) {
+				    swap(src + i, src + j, width);
+                }
+            }
+        }
+        int count = 0;
+        for (int i = 0; i < length - 1; i ++) {
+            if (*(src + i) != *(src + i + 1)) {
+                src[count] = src[i];
+                count ++;
+            }
+        }
+        src[count] = src[length - 1];
+        count ++;
+        return count;
+    } break;
+    case cuchar: {
+        unsigned char * src = idxes;
+        for (int i = 0; i < length - 1; i ++) {
+            for(int j = i + 1; j < length; j ++){
+                if (*(src + i) > *(src + j)) {
+				    swap(src + i, src + j, width);
+                }
+            }
+        }
+        int count = 0;
+        for (int i = 0; i < length - 1; i ++) {
+            if (*(src + i) != *(src + i + 1)) {
+                src[count] = src[i];
+                count ++;
+            }
+        }
+        src[count] = src[length - 1];
+        count ++;
+        return count;
+    } break;
+    case cshort: {
+        short * src = idxes;
+        for (int i = 0; i < length - 1; i ++) {
+            for(int j = i + 1; j < length; j ++){
+                if (*(src + i) > *(src + j)) {
+				    swap(src + i, src + j, width);
+                }
+            }
+        }
+        int count = 0;
+        for (int i = 0; i < length - 1; i ++) {
+            if (*(src + i) != *(src + i + 1)) {
+                src[count] = src[i];
+                count ++;
+            }
+        }
+        src[count] = src[length - 1];
+        count ++;
+        return count;
+    } break;
+    case cushort: {
+        unsigned short * src = idxes;
+        for (int i = 0; i < length - 1; i ++) {
+            for(int j = i + 1; j < length; j ++){
+                if (*(src + i) > *(src + j)) {
+				    swap(src + i, src + j, width);
+                }
+            }
+        }
+        int count = 0;
+        for (int i = 0; i < length - 1; i ++) {
+            if (*(src + i) != *(src + i + 1)) {
+                src[count] = src[i];
+                count ++;
+            }
+        }
+        src[count] = src[length - 1];
+        count ++;
+        return count;
+    } break;
+    case cint: {
+        int * src = idxes;
+        for (int i = 0; i < length - 1; i ++) {
+            for(int j = i + 1; j < length; j ++){
+                if (*(src + i) > *(src + j)) {
+				    swap(src + i, src + j, width);
+                }
+            }
+        }
+        int count = 0;
+        for (int i = 0; i < length - 1; i ++) {
+            if (*(src + i) != *(src + i + 1)) {
+                src[count] = src[i];
+                count ++;
+            }
+        }
+        src[count] = src[length - 1];
+        count ++;
+        return count;
+    } break;
+    case cuint: {
+        unsigned int * src = idxes;
+        for (int i = 0; i < length - 1; i ++) {
+            for(int j = i + 1; j < length; j ++){
+                if (*(src + i) > *(src + j)) {
+				    swap(src + i, src + j, width);
+                }
+            }
+        }
+        int count = 0;
+        for (int i = 0; i < length - 1; i ++) {
+            if (*(src + i) != *(src + i + 1)) {
+                src[count] = src[i];
+                count ++;
+            }
+        }
+        src[count] = src[length - 1];
+        count ++;
+        return count;
+    } break;
+    case cfloat: {
+        float * src = idxes;
+        for (int i = 0; i < length - 1; i ++) {
+            for(int j = i + 1; j < length; j ++){
+                if (*(src + i) > *(src + j)) {
+				    swap(src + i, src + j, width);
+                }
+            }
+        }
+        int count = 0;
+        for (int i = 0; i < length - 1; i ++) {
+            if (*(src + i) != *(src + i + 1)) {
+                src[count] = src[i];
+                count ++;
+            }
+        }
+        src[count] = src[length - 1];
+        count ++;
+        return count;
+    } break;
+    case clong: {
+        long * src = idxes;
+        for (int i = 0; i < length - 1; i ++) {
+            for(int j = i + 1; j < length; j ++){
+                if (*(src + i) > *(src + j)) {
+				    swap(src + i, src + j, width);
+                }
+            }
+        }
+        int count = 0;
+        for (int i = 0; i < length - 1; i ++) {
+            if (*(src + i) != *(src + i + 1)) {
+                src[count] = src[i];
+                count ++;
+            }
+        }
+        src[count] = src[length - 1];
+        count ++;
+        return count;
+    } break;
+    case culong: {
+        unsigned long * src = idxes;
+        for (int i = 0; i < length - 1; i ++) {
+            for(int j = i + 1; j < length; j ++){
+                if (*(src + i) > *(src + j)) {
+				    swap(src + i, src + j, width);
+                }
+            }
+        }
+        int count = 0;
+        for (int i = 0; i < length - 1; i ++) {
+            if (*(src + i) != *(src + i + 1)) {
+                src[count] = src[i];
+                count ++;
+            }
+        }
+        src[count] = src[length - 1];
+        count ++;
+        return count;
+    } break;
+    case cdouble: {
+        double * src = idxes;
+        for (int i = 0; i < length - 1; i ++) {
+            for(int j = i + 1; j < length; j ++){
+                if (*(src + i) > *(src + j)) {
+				    swap(src + i, src + j, width);
+                }
+            }
+        }
+        int count = 0;
+        for (int i = 0; i < length - 1; i ++) {
+            if (*(src + i) != *(src + i + 1)) {
+                src[count] = src[i];
+                count ++;
+            }
+        }
+        src[count] = src[length - 1];
+        count ++;
+        return count;
+    } break;
+    }
 }
 
 #endif

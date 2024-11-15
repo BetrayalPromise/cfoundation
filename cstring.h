@@ -162,6 +162,13 @@ extern bool     cstringremove(char * cstr, csremove_t t, size_t pc, ...);
 #endif
 
 
+// extern bool cstringremove22(char * cstr, long pc, ...);
+// #if !defined (cstringremove22$)
+//     #define cstringremove22$(a, b, ...) cstringremove22(a, ARGC(__VA_ARGS__), b, ##__VA_ARGS__)
+// #else
+//     #warning "information: duplicate define macro 'cstringremove$'
+// #endif
+
 typedef enum cssearch {
     searchcharacter,  // 单个字符
     searchcstring,    // 字符串

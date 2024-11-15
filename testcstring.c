@@ -175,7 +175,7 @@ void testcstringremove() {
 	if (true) {
 		char * p0 = cstringinit$(NULL);
 		char c  = 0x00;
-		cstringremove(p0, removecharacter, c);
+		// cstringremove22$(p0, 1, 2);
 		cstringdescribe(p0, 0b001);
 	}
 	if (true) {

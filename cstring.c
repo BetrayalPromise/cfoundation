@@ -9,7 +9,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
+#include "carray.h"
 #include "cstring.h"
+#include "cutils.h"
 #include <stdarg.h>
 #include <sys/_types/_va_list.h>
 
@@ -335,15 +337,8 @@ static bool cstringremove0(char * cstr, char * data) {
 			i -= (j - 1); j = 0;
 		}
 	}
-	/*
-		123211212
-		12   1212
-		  321
-		123
-		   211212
-	*/
 	for (int i = count - 1; i >= 0; i --) {
-		printf("%ld--%d--%ld\n", idxes[i] - size + 1, idxes[i] + 1, length - idxes[i]);
+		// printf("%ld--%d--%ld\n", idxes[i] - size + 1, idxes[i] + 1, length - idxes[i]);
 		memmove(cstr + idxes[i] - size + 1, cstr + idxes[i] + 1, length - idxes[i]);
 	}
 	setcstringlength(cstr, length - count * size);
@@ -392,6 +387,34 @@ static bool cstringremove2(char * cstr, long idx) {
 		setcstringlength(cstr, length - 1);
 		return true;
 	}
+}
+
+bool cstringremove22(char * cstr, size_t mask, long pc, ...) {
+	if (!cstringcheck(cstr)) { return false; }
+	va_list list;
+	va_start(list, pc);
+	long length = cstringlength(cstr);
+	if (mask == 1) {
+		char temp[pc];
+		for (int i = 0; i < pc; i ++) { temp[i] = (char)va_arg(list, int); }
+		for (int i = 0; i < pc; i ++) { cstringremove1(cstr, temp[i]); }
+		va_end(list);
+		return true;
+	} else if (mask == 2 || mask == 4) {
+		int temp[pc];
+		for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, int); }
+		int count = unique(temp, pc, mask);
+		for (int i = count - 1; i >= 0; i --) { cstringremove2(cstr, temp[i]); }
+		va_end(list);
+		return true;
+	} else if (mask == 8) {
+		void * temp[pc];
+		for (int i = 0; i < pc; i ++) { temp[i] = (void *)va_arg(list, unsigned long); }
+	}
+	
+	// setcstringlength(cstr, length - count);
+	va_end(list);
+	return true;
 }
 
 long cstringsearch(char * cstr, cssearch_t t, long times, ...) {
