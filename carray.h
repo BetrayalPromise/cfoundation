@@ -101,6 +101,6 @@ extern void showcolor();
 
 extern int          unique(void * idxes, ctype_t t, int length);
 extern int          typebyte(ctype_t t);
-extern void         swap(void * vp1, void * vp2, int width);
+extern void         swap(void * n1, void * n2, int width);
 
 #endif

@@ -253,69 +253,6 @@ bool cstringcatenate(char * cstr, ...) {
 	}
 }
 
-bool cstringremove(char * cstr, csremove_t t, size_t pc, ...) {
-	if (!cstringcheck(cstr)) { return false; }
-	va_list list;
-	va_start(list, pc);
-	if (cstringlength(cstr) < 1 ) { return false; }
-
-	switch (t) {
-	case removecharacter: {
-		for (long i = 0; i < pc; i ++) {
-			int value = va_arg(list, int);
-			cstringremove1(cstr, value);
-		}
-	} break;
-	case removeposition: {
-		long source[pc];
-		memset(source, -1, sizeof(long) * pc);
-		long count = 0;
-		long length = cstringlength(cstr);
-		for (long i = 0; i < pc; i ++) {
-			long result = va_arg(list, int);
-			if (result < length && result >= 0) {
-				bool flag = false;
-				for (long j = 0; j < i; j ++) {
-					if (source[j] != result) { continue; }
-					else { flag = !flag; break; }
-				}
-				if (!flag) { source[count ++] = result; }
-			}
-		}
-		long gap = count;    //定义增量
-		while(gap > 1) {
-			gap = gap / 2;    //将增量减小
-			long j;
-			for(j = 0; j < count - gap; j ++) {
-				long end = j;
-				long temp = source[end + gap];
-				while(end >= 0) {
-					// 从大往小排列
-					if(source[end] < temp) {
-						source[gap + end] = source[end];
-						end -= gap;
-					} else {
-						break;
-					}
-				}
-				source[end + gap] = temp;
-			}
-		}
-		for (long i = 0; i < count; i ++) {
-			cstringremove2(cstr, source[i]);
-		}
-	} break;
-	case removecstring: {
-		for (long i = 0; i < pc; i ++) {
-			long value = va_arg(list, long);
-			cstringremove0(cstr, (char *)value);
-		}
-	} break;
-	}
-	va_end(list);
-	return true;
-}
-
 static bool cstringremove0(char * cstr, char * data) {
 	if (!cstringcheck(cstr)) { return false; }
 	long length = cstringlength(cstr);
@@ -389,35 +326,38 @@ static bool cstringremove2(char * cstr, long idx) {
 	}
 }
 
-bool cstringremove22(char * cstr, size_t mask, long pc, ...) {
+bool cstringremove(char * cstr, remove_t t, size_t pc, ...) {
 	if (!cstringcheck(cstr)) { return false; }
 	va_list list;
 	va_start(list, pc);
 	long length = cstringlength(cstr);
-	if (mask == 1) {
+	switch (t) {
+	case removecharacter: {
 		char temp[pc];
 		for (int i = 0; i < pc; i ++) { temp[i] = (char)va_arg(list, int); }
 		for (int i = 0; i < pc; i ++) { cstringremove1(cstr, temp[i]); }
 		va_end(list);
 		return true;
-	} else if (mask == 2 || mask == 4) {
+	} break;
+	case removeposition: {
 		int temp[pc];
 		for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, int); }
-		int count = unique(temp, pc, mask);
+		int count = unique(temp, cint, pc);
 		for (int i = count - 1; i >= 0; i --) { cstringremove2(cstr, temp[i]); }
 		va_end(list);
 		return true;
-	} else if (mask == 8) {
-		void * temp[pc];
+	} break;
+	case removecstring: {
+		char * temp[pc];
 		for (int i = 0; i < pc; i ++) { temp[i] = (void *)va_arg(list, unsigned long); }
+		for (int i = pc - 1; i >= 0; i --) { cstringremove0(cstr, temp[i]); }
+		va_end(list);
+		return true;
+	} break;
 	}
-	
-	// setcstringlength(cstr, length - count);
-	va_end(list);
-	return true;
 }
 
-long cstringsearch(char * cstr, cssearch_t t, long times, ...) {
+long cstringsearch(char * cstr, search_t t, long times, ...) {
 	if (!cstringcheck(cstr)) { return false; }
 	long length = cstringlength(cstr);
 	long idx = -1;

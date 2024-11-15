@@ -144,17 +144,17 @@ extern bool     cstringinsert(char * cstr, long index, ...);
 extern bool     cstringcatenate(char * cstr, ...);
 
 
-typedef enum csremove {
+typedef enum remove {
     removecharacter,  // 单个字符
     removeposition,   // 位置索引
     removecstring,    // 字符串
-} csremove_t;
+} remove_t;
 //  @return             返回删除操作是否成功.
 //  @paramater cstr     cstring型.
 //  @paramater t        csremove_t型.
 //  @paramater pc       不定参数个数.
 //  @paramater ...      清空内容(int, char型或cstring型),接受最多32个不定参数.
-extern bool     cstringremove(char * cstr, csremove_t t, size_t pc, ...);
+extern bool     cstringremove(char * cstr, remove_t t, size_t pc, ...);
 #if !defined (cstringremove$)
     #define cstringremove$(a, b, ...) cstringremove(a, b, ARGC(__VA_ARGS__), ##__VA_ARGS__)
 #else
@@ -162,24 +162,17 @@ extern bool     cstringremove(char * cstr, csremove_t t, size_t pc, ...);
 #endif
 
 
-// extern bool cstringremove22(char * cstr, long pc, ...);
-// #if !defined (cstringremove22$)
-//     #define cstringremove22$(a, b, ...) cstringremove22(a, ARGC(__VA_ARGS__), b, ##__VA_ARGS__)
-// #else
-//     #warning "information: duplicate define macro 'cstringremove$'
-// #endif
-
-typedef enum cssearch {
+typedef enum search {
     searchcharacter,  // 单个字符
     searchcstring,    // 字符串
-} cssearch_t;
+} search_t;
 //  功能类似char *strchr(const char *s, int c); char *strstr(const char *s1, const char *s2);
 //  @return             返回第times次出现检索内容的索引值,若为-1则未找到.
 //  @paramater cstr     cstring型.
 //  @paramater t        cssearch_t型.
 //  @paramater times    检索内容第times次出现次数.
 //  @paramater ...      检索内容(char型或cstring型),若为int型,接受一个不定参数,若为char型,接受一个不定参数,若为cstring型,还需传入一个bool型(针对cstring型[111],[222]...,控制索引方式),接受两个不定参数.
-extern long     cstringsearch(char * cstr, cssearch_t t, long times, ...);
+extern long     cstringsearch(char * cstr, search_t t, long times, ...);
 #if !defined (cstringsearch$)
     #define cstringsearch$(a, b, c, ...) cstringremove(a, b, c, NULL, ##__VA_ARGS__)
 #else
