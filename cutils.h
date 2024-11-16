@@ -64,11 +64,6 @@ typedef unsigned long  ulong;
     #warning "information: duplicate define macro 'weak', 'strong'!"
 #endif
 
-#if !defined(FLEXFOR)
-    #define FLEXFOR(var, start, end, ...) for(int var = start; var <= end; __VA_ARGS__)
-#else
-    #warning "information: duplicate define macro 'FLEXFOR'!"
-#endif
 
 #if !defined(MINIMUM) && !defined (MAXIMUM)
     #define MINIMUM(type, x, y) ({ type __min1 = (x); type __min2 = (y); __min1 < __min2 ? __min1 : __min2; })
@@ -151,6 +146,8 @@ typedef unsigned long  ulong;
 
 #define FPOS( type, field ) ((dword)&((type *)0)->field)
 #define FSIZ( type, field ) sizeof(((type *) 0)->field)
+
+#define ffor(var, start, end, ...) for(int var = start; var <= end; __VA_ARGS__)
 
 // 删除
 typedef enum rm {

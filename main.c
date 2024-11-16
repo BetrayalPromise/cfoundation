@@ -76,7 +76,13 @@ int main(int argc, char ** argv) {
 
 	// testcarrayinit();
 
-	SELECT(0) (DONE();, DONE();, DONE(););
+	// UNSELECT(1) (printf("A");, printf("B");, printf("C"););
+
+	// IF(1) (printf("A"), printf("B"));
+	ffor(i, 0, 1, i ++) {
+		
+	}
+
 
 	return EXIT_SUCCESS;
 }
