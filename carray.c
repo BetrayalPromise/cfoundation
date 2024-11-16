@@ -12,6 +12,8 @@
 #include <stdarg.h>
 
 void carraytelescope(void ** pcarray, bool ctl, size_t m);
+static bool carrayinsert0(void * ca, long idx, long pc, ...);
+static bool carrayinsert1(void * ca, long idx, long pc, ...);
 
 static long basesize(void) {
 	return sizeof(long);
@@ -153,19 +155,70 @@ void carraydescribe(void * ca) {
 	printf("]\n\n");
 }
 
-bool carrayinsert(void * ca, long idx, long pc, ...) {
-    return false;
+bool carrayinsert(void * ca, is_t t, long idx, long pc, ...) {
+    if (!ca) { return false; }
+    va_list list;
+	va_start(list, pc);
+    switch (t) {
+    case issin: {
+	    long length  = carraylength(ca);
+	    long volume  = carrayvolume(ca);
+        ctype_t type = carraytype(ca);
+        long step    = carraystep(ca);
+        while (length * step + pc * step  > volume) {
+		    carraytelescope(&ca, true, 2);
+		    volume = carrayvolume(ca);
+	    }
+        if (idx < 0) { idx = 0; } else if (idx < length + 1) { ; } else { idx = length; }
+        memmove(ca + (idx + pc) * step, ca + idx * step, (length - idx) * step);
+        switch (type) {
+        case cchar: case cuchar: case cshort: case cushort: case cint: case cuint: {
+            int temp[pc];
+            for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, int); }
+            for (int i = 0; i < pc; i ++) { memcpy(ca + idx + i * step, temp + i, step); }
+        } break;
+        case clong: case culong: {
+            long temp[pc]; 
+            for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, long); }
+            for (int i = 0; i < pc; i ++) { memcpy(ca + idx + i * step, temp + i, step); }
+        } break;
+        case cfloat: { // 防止出现整形数据按照整形存储
+            double temp[pc];
+            for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, double); }
+            for (int i = 0; i < pc; i ++) { float value = (float)temp[i]; ((float *)ca)[i + idx] = value; }
+        } break;
+        case cdouble: { // 防止出现整形数据按照整形存储
+            double temp[pc];
+            for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, double); }
+            for (int i = 0; i < pc; i ++) { double value = (double)temp[i]; ((double *)ca)[i + idx] = value; }
+        } break;
+        }
+        setcarraylength(ca, length + pc);
+        return true;
+    } break;
+    case isdup: {
+        void * temp[pc];
+        for (int i = 0; i < pc; i ++) {
+            temp[i] = (void *)va_arg(list, unsigned long);
+        }
+        for (int i = pc - 1; i >= 0; i --) {
+            carrayinsert1(ca, idx, 1, temp[i]);
+        }
+        va_end(list);
+        return false; 
+    } break;
+    }
 }
 
-bool carrayinsert0(void * ca, long idx, long pc, ...) {
+static bool carrayinsert0(void * ca, long idx, long pc, ...) {
     if (!ca) { return false; }
     va_list list;
 	va_start(list, pc);
 
-	long length      = carraylength(ca);
-	long volume      = carrayvolume(ca);
+	long length  = carraylength(ca);
+	long volume  = carrayvolume(ca);
     ctype_t type = carraytype(ca);
-    long step        = carraystep(ca);
+    long step    = carraystep(ca);
 
     while (length * step + pc * step  > volume) {
 		carraytelescope(&ca, true, 2);
@@ -202,7 +255,7 @@ bool carrayinsert0(void * ca, long idx, long pc, ...) {
 	return true;
 }
 
-bool carrayinsert1(void * ca, long idx, long pc, ...) {
+static bool carrayinsert1(void * ca, long idx, long pc, ...) {
     if (!ca) { return false; }
     va_list list;
 	va_start(list, pc);

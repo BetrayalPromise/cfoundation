@@ -14,11 +14,6 @@
     type        step        volume      length      data
      容量(0-...)  数量(0-...)  存储位置
 */
-enum insert {
-    single,
-    duplicate,
-} insert_t;
-
 
 typedef enum ISO_IEC_646 {
     C89,// ISO/IEC 646:1991 
@@ -53,7 +48,7 @@ extern void         carrayfree(void * ca);
 
 //  @return             存在类型.
 //  @paramater ca       数据结构carray数组.
-extern ctype_t  carraytype(void * ca);
+extern ctype_t      carraytype(void * ca);
 
 
 //  @return             存在单元基本长度.
@@ -75,37 +70,13 @@ extern size_t       carraylength(void * ca);
 extern void         carraydescribe(void * ca);
 
 
-extern bool         carrayinsert(void * ca, long idx, long pc, ...);
-
-
-//  插入函数
-//  @return             返回追加操作是否成功.
-//  @paramater ca       carray型.
-//  @paramater idx      追加位置,总是以cstr作为0为参照.
-//  @paramater pc       插入元素个数
-//  @paramater ...      插入元素(char,short,int,long,uchar,ushort,uint,ulong,float,double,必须保证ca类型与元素类型一致,否则结果有问题),接受多个不定参数.
-extern bool         carrayinsert0(void * ca, long idx, long pc, ...);
-#if !defined (carrayinsert0$)
-    #define carrayinsert0$(a, b, ...) carrayinsert0(a, b, ARGC(__VA_ARGS__), ##__VA_ARGS__)
+extern bool         carrayinsert(void * ca, is_t t, long idx, long pc, ...);
+#if !defined (carrayinsert$)
+    #define carrayinsert$(a, b, c, ...) carrayinsert(a, b, c, ARGC(__VA_ARGS__), ##__VA_ARGS__)
 #else
     #warning "information: duplicate define macro 'carrayinsert$'
 #endif
 
-
-//  插入函数
-//  @return             返回追加操作是否成功.
-//  @paramater ca       carray型.
-//  @paramater idx      追加位置,总是以cstr作为0为参照.
-//  @paramater pc       插入元素个数
-//  @paramater ...      插入数组(carray型,必须保证ca类型与元素类型一致,否则结果有问题),接受多个不定参数.
-extern bool         carrayinsert1(void * ca, long idx, long pc, ...);
-#if !defined (carrayinsert1$)
-    #define carrayinsert1$(a, b, ...) carrayinsert1(a, b, ARGC(__VA_ARGS__), ##__VA_ARGS__)
-#else
-    #warning "information: duplicate define macro 'carrayinsert$'
-#endif
-
-extern void showcolor();
 
 extern int          unique(void * idxes, ctype_t t, int length);
 extern int          typebyte(ctype_t t);

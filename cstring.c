@@ -11,7 +11,6 @@
 #include <strings.h>
 #include "carray.h"
 #include "cstring.h"
-#include "cutils.h"
 #include <stdarg.h>
 #include <sys/_types/_va_list.h>
 
@@ -332,14 +331,14 @@ bool cstringremove(char * cstr, rm_t t, size_t pc, ...) {
 	va_start(list, pc);
 	long length = cstringlength(cstr);
 	switch (t) {
-	case rc: {
+	case rmsin: {
 		char temp[pc];
 		for (int i = 0; i < pc; i ++) { temp[i] = (char)va_arg(list, int); }
 		for (int i = 0; i < pc; i ++) { cstringremove1(cstr, temp[i]); }
 		va_end(list);
 		return true;
 	} break;
-	case ri: {
+	case rmidx: {
 		int temp[pc];
 		for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, int); }
 		int count = unique(temp, cint, pc);
@@ -347,7 +346,7 @@ bool cstringremove(char * cstr, rm_t t, size_t pc, ...) {
 		va_end(list);
 		return true;
 	} break;
-	case rs: {
+	case rmdup: {
 		char * temp[pc];
 		for (int i = 0; i < pc; i ++) { temp[i] = (void *)va_arg(list, unsigned long); }
 		for (int i = pc - 1; i >= 0; i --) { cstringremove0(cstr, temp[i]); }
@@ -366,7 +365,7 @@ long cstringsearch(char * cstr, sc_t t, long times, ...) {
 	va_list list;
 	va_start(list, times);
 	switch (t) {
-	case sc: {
+	case scsin: {
 		char data = va_arg(list, int);
 		for (int i = 0; i < length; i ++) {
 			if (data == cstr[i]) {
@@ -381,7 +380,7 @@ long cstringsearch(char * cstr, sc_t t, long times, ...) {
 		va_end(list);
 		return idx;
 	} break;
-	case ss: {
+	case scdup: {
 		char * data = (void *)va_arg(list, uint64_t);
 		long size = cstringlength(data); 
 		if (length <= 0 || size <= 0 || size > length) { return - 1; }

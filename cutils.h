@@ -152,4 +152,23 @@ typedef unsigned long  ulong;
 #define FPOS( type, field ) ((dword)&((type *)0)->field)
 #define FSIZ( type, field ) sizeof(((type *) 0)->field)
 
+// 删除
+typedef enum rm {
+    rmsin,  // 单个元素
+    rmdup,  // 数组元素
+    rmidx,  // 位置索引
+} rm_t;
+
+// 搜索
+typedef enum sc {
+    scsin,  // 单个元素
+    scdup,  // 数组元素
+} sc_t;
+
+// 嵌入
+typedef enum is {
+    issin,  // 单个元素
+    isdup,  // 数组元素
+} is_t;
+
 #endif
