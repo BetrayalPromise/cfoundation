@@ -116,9 +116,8 @@ char * cstringcopy(char * cstr) {
 }
 
 void cstringfree(char * cstr) {
-	char * src = cstr - 2 * basesize();
-	free(src);
-	src = NULL;
+	if (!cstr) { return; }
+	free(cstr - 0x10);
 	cstr = NULL;
 }
 

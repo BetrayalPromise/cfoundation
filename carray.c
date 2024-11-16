@@ -331,8 +331,8 @@ void showcolor() {
     printf("\033[47m"); printf("\033[0m\r\n");	
 }
  
-void ASCII(ISO_IEC_646_t standard, unsigned short flag) {
-	int size = standard == C89 ? 128 : 256;
+void ASCII(ISO_IEC_646_t std, unsigned short flag) {
+	int size = std == C89 ? 128 : 256;
 	char * show = NULL;
 	switch (flag) {
 	case 0b111: show = "HEX:0x%02x  DEC:%03d  C:%c"; break;
@@ -344,7 +344,7 @@ void ASCII(ISO_IEC_646_t standard, unsigned short flag) {
 	case 0b001: show = "C:%c)"; break;
 	default:    show = "HEX:0x%02x  DEC:%03d  C:%c)"; break;
 	}
-	printf("ASCII STANDARDEC: %s\n", standard == C89 ? "ISO/IEC 646:1991" : "ISO/IEC 646:1999");
+	printf("ASCII STANDARDEC: %s\n", std == C89 ? "ISO/IEC 646:1991" : "ISO/IEC 646:1999");
 	for (int i = 0; i < size; i ++) {
 		printf(show, i, i, i);
 		printf("\n");
@@ -397,209 +397,38 @@ int typebyte(ctype_t t) {
 	}
 }
 
+// 私有宏
+#define BUILD(t) \
+    t * src = idxes;\
+    for (int i = 0; i < length - 1; i ++) {\
+        for(int j = i + 1; j < length; j ++) {\
+            if (*(src + i) > *(src + j)) {\
+			    swap(src + i, src + j, width);\
+            }\
+        }\
+    }\
+    int count = 0;\
+    for (int i = 0; i < length - 1; i ++) {\
+        if (*(src + i) != *(src + i + 1)) {\
+            src[count] = src[i]; count ++;\
+        }\
+    }\
+    src[count] = src[length - 1]; count ++;\
+    return count
+
 int unique(void * idxes, ctype_t t, int length) {
     unsigned int width = typebyte(t);
     switch (t) {
-    case cchar: {
-        char * src = idxes;
-        for (int i = 0; i < length - 1; i ++) {
-            for(int j = i + 1; j < length; j ++){
-                if (*(src + i) > *(src + j)) {
-				    swap(src + i, src + j, width);
-                }
-            }
-        }
-        int count = 0;
-        for (int i = 0; i < length - 1; i ++) {
-            if (*(src + i) != *(src + i + 1)) {
-                src[count] = src[i];
-                count ++;
-            }
-        }
-        src[count] = src[length - 1];
-        count ++;
-        return count;
-    } break;
-    case cuchar: {
-        unsigned char * src = idxes;
-        for (int i = 0; i < length - 1; i ++) {
-            for(int j = i + 1; j < length; j ++){
-                if (*(src + i) > *(src + j)) {
-				    swap(src + i, src + j, width);
-                }
-            }
-        }
-        int count = 0;
-        for (int i = 0; i < length - 1; i ++) {
-            if (*(src + i) != *(src + i + 1)) {
-                src[count] = src[i];
-                count ++;
-            }
-        }
-        src[count] = src[length - 1];
-        count ++;
-        return count;
-    } break;
-    case cshort: {
-        short * src = idxes;
-        for (int i = 0; i < length - 1; i ++) {
-            for(int j = i + 1; j < length; j ++){
-                if (*(src + i) > *(src + j)) {
-				    swap(src + i, src + j, width);
-                }
-            }
-        }
-        int count = 0;
-        for (int i = 0; i < length - 1; i ++) {
-            if (*(src + i) != *(src + i + 1)) {
-                src[count] = src[i];
-                count ++;
-            }
-        }
-        src[count] = src[length - 1];
-        count ++;
-        return count;
-    } break;
-    case cushort: {
-        unsigned short * src = idxes;
-        for (int i = 0; i < length - 1; i ++) {
-            for(int j = i + 1; j < length; j ++){
-                if (*(src + i) > *(src + j)) {
-				    swap(src + i, src + j, width);
-                }
-            }
-        }
-        int count = 0;
-        for (int i = 0; i < length - 1; i ++) {
-            if (*(src + i) != *(src + i + 1)) {
-                src[count] = src[i];
-                count ++;
-            }
-        }
-        src[count] = src[length - 1];
-        count ++;
-        return count;
-    } break;
-    case cint: {
-        int * src = idxes;
-        for (int i = 0; i < length - 1; i ++) {
-            for(int j = i + 1; j < length; j ++){
-                if (*(src + i) > *(src + j)) {
-				    swap(src + i, src + j, width);
-                }
-            }
-        }
-        int count = 0;
-        for (int i = 0; i < length - 1; i ++) {
-            if (*(src + i) != *(src + i + 1)) {
-                src[count] = src[i];
-                count ++;
-            }
-        }
-        src[count] = src[length - 1];
-        count ++;
-        return count;
-    } break;
-    case cuint: {
-        unsigned int * src = idxes;
-        for (int i = 0; i < length - 1; i ++) {
-            for(int j = i + 1; j < length; j ++){
-                if (*(src + i) > *(src + j)) {
-				    swap(src + i, src + j, width);
-                }
-            }
-        }
-        int count = 0;
-        for (int i = 0; i < length - 1; i ++) {
-            if (*(src + i) != *(src + i + 1)) {
-                src[count] = src[i];
-                count ++;
-            }
-        }
-        src[count] = src[length - 1];
-        count ++;
-        return count;
-    } break;
-    case cfloat: {
-        float * src = idxes;
-        for (int i = 0; i < length - 1; i ++) {
-            for(int j = i + 1; j < length; j ++){
-                if (*(src + i) > *(src + j)) {
-				    swap(src + i, src + j, width);
-                }
-            }
-        }
-        int count = 0;
-        for (int i = 0; i < length - 1; i ++) {
-            if (*(src + i) != *(src + i + 1)) {
-                src[count] = src[i];
-                count ++;
-            }
-        }
-        src[count] = src[length - 1];
-        count ++;
-        return count;
-    } break;
-    case clong: {
-        long * src = idxes;
-        for (int i = 0; i < length - 1; i ++) {
-            for(int j = i + 1; j < length; j ++){
-                if (*(src + i) > *(src + j)) {
-				    swap(src + i, src + j, width);
-                }
-            }
-        }
-        int count = 0;
-        for (int i = 0; i < length - 1; i ++) {
-            if (*(src + i) != *(src + i + 1)) {
-                src[count] = src[i];
-                count ++;
-            }
-        }
-        src[count] = src[length - 1];
-        count ++;
-        return count;
-    } break;
-    case culong: {
-        unsigned long * src = idxes;
-        for (int i = 0; i < length - 1; i ++) {
-            for(int j = i + 1; j < length; j ++){
-                if (*(src + i) > *(src + j)) {
-				    swap(src + i, src + j, width);
-                }
-            }
-        }
-        int count = 0;
-        for (int i = 0; i < length - 1; i ++) {
-            if (*(src + i) != *(src + i + 1)) {
-                src[count] = src[i];
-                count ++;
-            }
-        }
-        src[count] = src[length - 1];
-        count ++;
-        return count;
-    } break;
-    case cdouble: {
-        double * src = idxes;
-        for (int i = 0; i < length - 1; i ++) {
-            for(int j = i + 1; j < length; j ++){
-                if (*(src + i) > *(src + j)) {
-				    swap(src + i, src + j, width);
-                }
-            }
-        }
-        int count = 0;
-        for (int i = 0; i < length - 1; i ++) {
-            if (*(src + i) != *(src + i + 1)) {
-                src[count] = src[i];
-                count ++;
-            }
-        }
-        src[count] = src[length - 1];
-        count ++;
-        return count;
-    } break;
+    case cchar:   { BUILD(char); } break;
+    case cuchar:  { BUILD(unsigned char); } break;
+    case cshort:  { BUILD(short); } break;
+    case cushort: { BUILD(unsigned short); } break;
+    case cint:    { BUILD(int); } break;
+    case cuint:   { BUILD(unsigned int); } break;
+    case cfloat:  { BUILD(float); } break;
+    case clong:   { BUILD(long); } break;
+    case culong:  { BUILD(unsigned long); } break;
+    case cdouble: { BUILD(double); } break;
     }
 }
 

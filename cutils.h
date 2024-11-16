@@ -113,11 +113,11 @@ typedef unsigned long  ulong;
     #warning "information: duplicate define macro 'DeferBegin', 'defer', 'DeferEnd'!"
 #endif
 
-#if !defined(BIT_GET) && !defined(BIT_NOT) && !defined(BIT_SET1) && !defined(BIT_SET0)
+#if !defined(BIT_GET) && !defined(BIT_NOT) && !defined(BIT_SET0) && !defined(BIT_SET1)
     #define BIT_GET(n, p)  ((n) >> (p)&1)
     #define BIT_NOT(n, p)  ((n) ^= 1<<(p))
-    #define BIT_SET1(n, p) ((n)|= 1<<(p))
     #define BIT_SET0(n, p) ((n) &= ~(1<<(p)))
+    #define BIT_SET1(n, p) ((n)|= 1<<(p))
 #else
     #warning "information: duplicate define macro 'BIT_GET', 'BIT_NOT', 'BIT_SET0', 'BIT_SET1'!"
 #endif

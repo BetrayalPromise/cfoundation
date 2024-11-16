@@ -13,6 +13,7 @@
 #include "carray.h"
 #include "testcarray.h"
 #include "cutils.h"
+#include "macro.h"
 
 // 0x0;
 // __asm__ __volatile__("movq %%## #r, %0" : "=r"(value))
@@ -73,7 +74,10 @@ int main(int argc, char ** argv) {
     // int b = *p;
 	// printf("b: %d\n",b);
 
-	testcarrayinit();
+	// testcarrayinit();
+
+	SELECT(0) (DONE();, DONE();, DONE(););
+
 	return EXIT_SUCCESS;
 }
 

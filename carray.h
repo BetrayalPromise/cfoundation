@@ -81,5 +81,6 @@ extern bool         carrayinsert(void * ca, is_t t, long idx, long pc, ...);
 extern int          unique(void * idxes, ctype_t t, int length);
 extern int          typebyte(ctype_t t);
 extern void         swap(void * n1, void * n2, int width);
+extern void         ASCII(ISO_IEC_646_t std, unsigned short flag);
 
 #endif
