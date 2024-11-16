@@ -14,6 +14,11 @@
     type        step        volume      length      data
      容量(0-...)  数量(0-...)  存储位置
 */
+enum insert {
+    single,
+    duplicate,
+} insert_t;
+
 
 typedef enum ISO_IEC_646 {
     C89,// ISO/IEC 646:1991 
@@ -68,6 +73,9 @@ extern size_t       carraylength(void * ca);
 
 //  @paramater ca       数据结构carray数组.
 extern void         carraydescribe(void * ca);
+
+
+extern bool         carrayinsert(void * ca, long idx, long pc, ...);
 
 
 //  插入函数

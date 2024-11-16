@@ -326,20 +326,20 @@ static bool cstringremove2(char * cstr, long idx) {
 	}
 }
 
-bool cstringremove(char * cstr, remove_t t, size_t pc, ...) {
+bool cstringremove(char * cstr, rm_t t, size_t pc, ...) {
 	if (!cstringcheck(cstr)) { return false; }
 	va_list list;
 	va_start(list, pc);
 	long length = cstringlength(cstr);
 	switch (t) {
-	case removecharacter: {
+	case rc: {
 		char temp[pc];
 		for (int i = 0; i < pc; i ++) { temp[i] = (char)va_arg(list, int); }
 		for (int i = 0; i < pc; i ++) { cstringremove1(cstr, temp[i]); }
 		va_end(list);
 		return true;
 	} break;
-	case removeposition: {
+	case ri: {
 		int temp[pc];
 		for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, int); }
 		int count = unique(temp, cint, pc);
@@ -347,7 +347,7 @@ bool cstringremove(char * cstr, remove_t t, size_t pc, ...) {
 		va_end(list);
 		return true;
 	} break;
-	case removecstring: {
+	case rs: {
 		char * temp[pc];
 		for (int i = 0; i < pc; i ++) { temp[i] = (void *)va_arg(list, unsigned long); }
 		for (int i = pc - 1; i >= 0; i --) { cstringremove0(cstr, temp[i]); }
@@ -357,7 +357,7 @@ bool cstringremove(char * cstr, remove_t t, size_t pc, ...) {
 	}
 }
 
-long cstringsearch(char * cstr, search_t t, long times, ...) {
+long cstringsearch(char * cstr, sc_t t, long times, ...) {
 	if (!cstringcheck(cstr)) { return false; }
 	long length = cstringlength(cstr);
 	long idx = -1;
@@ -366,7 +366,7 @@ long cstringsearch(char * cstr, search_t t, long times, ...) {
 	va_list list;
 	va_start(list, times);
 	switch (t) {
-	case searchcharacter: {
+	case sc: {
 		char data = va_arg(list, int);
 		for (int i = 0; i < length; i ++) {
 			if (data == cstr[i]) {
@@ -381,7 +381,7 @@ long cstringsearch(char * cstr, search_t t, long times, ...) {
 		va_end(list);
 		return idx;
 	} break;
-	case searchcstring: {
+	case ss: {
 		char * data = (void *)va_arg(list, uint64_t);
 		long size = cstringlength(data); 
 		if (length <= 0 || size <= 0 || size > length) { return - 1; }
