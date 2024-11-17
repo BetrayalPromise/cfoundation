@@ -11,7 +11,7 @@
 #include <string.h>
 #include <stdarg.h>
 
-void carraytelescope(void ** pcarray, bool ctl, size_t m);
+void carraytelescope(void ** pca, bool ctl, size_t m);
 static bool carrayinsert0(void * ca, long idx, long pc, ...);
 static bool carrayinsert1(void * ca, long idx, long pc, ...);
 
@@ -294,22 +294,22 @@ static bool carrayinsert1(void * ca, long idx, long pc, ...) {
 	return true;
 }
 
-void carraytelescope(void ** pcarray, bool ctl, size_t m) {
-	if (!(*pcarray)) { return; }
-	long volume = carrayvolume(* pcarray);
-	long length = carraylength(* pcarray);
+void carraytelescope(void ** pca, bool ctl, size_t m) {
+	if (!(*pca)) { return; }
+	long volume = carrayvolume(* pca);
+	long length = carraylength(* pca);
 	
 	volume = ctl == true ? volume * m : volume / m;
 
-	if (volume < length) { printf("WARNNING: caing.volume(%ld) < caing.length(%ld), operation will lose information.\n", volume, length); }
+	if (volume < length) { printf("WARNNING: carray.volume(%ld) < carray.length(%ld), operation will lose information.\n", volume, length); }
 	if (volume <= 1) { return; }
 
 	char * space = malloc(4 * basesize() + volume);
-	memcpy(space, *pcarray, 4 * basesize() + volume);
-	printf("caing: (%p) -> (%p)\n", * pcarray, space);
-	free(*pcarray - 4 * basesize());
-	* pcarray = space + 4 * basesize();
-	*(long *)(* pcarray - 2 * basesize()) = volume;
+	memcpy(space, *pca, 4 * basesize() + volume);
+	printf("carray: (%p) -> (%p)\n", * pca, space);
+	free(*pca - 4 * basesize());
+	* pca = space + 4 * basesize();
+	*(long *)(* pca - 2 * basesize()) = volume;
 } 
 
 void showcolor() {
