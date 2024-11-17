@@ -1,9 +1,6 @@
 #ifndef __CARRAY_H__
 #define __CARRAY_H__
 
-#include <stdint.h>
-#include <sys/_types/_size_t.h>
-#include <sys/_types/_u_int16_t.h>
 #include <stdbool.h>
 #include "cutils.h"
 
@@ -39,7 +36,7 @@ typedef enum ctype {
 //  @paramater src      常规数组.
 //  @paramater length   存在长度.
 //  @paramater type     存在类型.因为C语言数组参数入参时降级为指针,无法根据其获取类型,故而需要指定类型.
-extern void *       carrayinit(void * src, size_t length, ctype_t type);
+extern void *       carrayinit(void * src, long length, ctype_t type);
 
 
 //  @paramater ca       数据结构carray数组.
@@ -53,17 +50,17 @@ extern ctype_t      carraytype(void * ca);
 
 //  @return             存在单元基本长度.
 //  @paramater ca       数据结构carray数组.
-extern size_t       carraystep(void * ca);
+extern long         carraystep(void * ca);
 
 
 //  @return             存在容量.
 //  @paramater ca       数据结构carray数组.
-extern size_t       carrayvolume(void * ca);
+extern long         carrayvolume(void * ca);
 
 
 //  @return             存在长度.
 //  @paramater ca       数据结构carray数组.
-extern size_t       carraylength(void * ca);
+extern long         carraylength(void * ca);
 
 
 //  @paramater ca       数据结构carray数组.

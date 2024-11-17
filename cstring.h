@@ -2,8 +2,6 @@
 #define __CSTRING_H__
 
 #include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
 #include "cutils.h"
 
 /*
@@ -75,15 +73,15 @@ extern char *   cstringinit(char * str, bool ctl);
 #endif
 
 
-//  功能类似于size_t strlen(const char *s);
+//  功能类似于long strlen(const char *s);
 //  @return             返回包含信息的字符串的长度.长度包含字符串末尾的0x00,即\0的存储位置也计算在内
 //  @paramater str      cstring型.
-extern size_t   cstringlength(char * cstr);
+extern long     cstringlength(char * cstr);
 
 
 //  @return             返回包含信息的字符串的长度的容量,与存储内容无关.
 //  @paramater str      cstring型.
-extern size_t   cstringvolume(char * cstr);
+extern long     cstringvolume(char * cstr);
 
 
 //  只针对使用cstringinit函数处理过的字符串,即为堆字符串;使用POINTER2CSTRING,STRING2CSTRING,CHAR2CSTRING宏构建的为栈字符串,无法改变容量
@@ -91,7 +89,7 @@ extern size_t   cstringvolume(char * cstr);
 //  @paramater pstr     cstring*型.cstring的二级的指针.
 //  @paramater ctl      false:代表减少容量,true:代表增加容量.
 //  @paramater m        容量增加或者减少的倍率.
-extern void     cstringtelescope(char ** pcstr, bool ctl, size_t m);
+extern void     cstringtelescope(char ** pcstr, bool ctl, long m);
 #if !defined (cstringtelescope$)
     #define cstringtelescope$(a, b, c) cstringtelescope(a, DEFAULTARGC(b, true), DEFAULTARGC(c, 2))
 #else
@@ -99,7 +97,7 @@ extern void     cstringtelescope(char ** pcstr, bool ctl, size_t m);
 #endif
 
 
-//  @return             无返回值.
+//  @return             格式化打印,无返回值.
 //  @paramater cstr     cstring型.
 //  @paramater flag     显示标记(0b111, 0b110, 0b101, 0b011, 0b100, 0b010, 0b001)共计7种,三位数字代表十六进制显示,十进制显示,字符显示.
 extern void     cstringdescribe(char * cstr, unsigned short flag);
@@ -116,7 +114,7 @@ extern void     cstringdescribe(char * cstr, unsigned short flag);
 extern char *   cstringcopy(char * cstr);
 
 
-//  @return             无返回值.
+//  @return             是否内存,无返回值.
 //  @paramater cstr     cstring型.
 extern void     cstringfree(char * cstr);
 
@@ -147,7 +145,7 @@ extern bool     cstringcatenate(char * cstr, ...);
 //  @paramater t        rm_t型.
 //  @paramater pc       不定参数个数.
 //  @paramater ...      清空内容(int, char型或cstring型),接受最多32个不定参数.
-extern bool     cstringremove(char * cstr, rm_t t, size_t pc, ...);
+extern bool     cstringremove(char * cstr, rm_t t, long pc, ...);
 #if !defined (cstringremove$)
     #define cstringremove$(a, b, ...) cstringremove(a, b, ARGC(__VA_ARGS__), ##__VA_ARGS__)
 #else
@@ -170,13 +168,13 @@ extern long     cstringsearch(char * cstr, sc_t t, long times, ...);
 
 
 //  数组去重复元素
-//  @return             无返回值.
+//  @return             返回操作是否成功.
 //  @paramater cstr     cstring型.
 //  @paramater flag     bool型.为true:重复元素保留一个;为false:重复元素一个不保留.
 extern bool     cstringunique(char * cstr, bool flag);
 
 
-//  @return             无返回值.
+//  @return             返回操作是否成功.
 //  @paramater cstr     cstring型.
 //  @paramater pos      操作起始索引.
 //  @paramater ...      改变内容(char型或cstring型),接受一个不定参数.

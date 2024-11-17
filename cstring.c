@@ -1,47 +1,37 @@
 #ifndef __CSTRING_C__
 #define __CSTRING_C__
 
-#include <_types/_uint64_t.h>
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <strings.h>
 #include "carray.h"
 #include "cstring.h"
 #include <stdarg.h>
-#include <sys/_types/_va_list.h>
 
 static bool cstringremove0(char * cstr, char * data);
 static bool cstringremove1(char * cstr, char c);
 static bool cstringremove2(char * cstr, long idx);
 
-static bool cstringcheck(char * cstr) {
-	return cstr == NULL ? false : true;
-}
-
 static long basesize(void) {
 	return sizeof(long);
 }
 
-static void setcstringvolume(char * cstr, size_t value) {
-	*(size_t *)(cstr - 2 * basesize()) = value;
+static void setcstringvolume(char * cstr, long value) {
+	*(long *)(cstr - 2 * basesize()) = value;
 }
 
-size_t cstringvolume(char * cstr) {
-	if (!cstringcheck(cstr)) { return -1; }
-    return *(size_t *)(cstr - 2 * basesize());
+long cstringvolume(char * cstr) {
+	if (!cstr) { return -1; }
+    return *(long *)(cstr - 2 * basesize());
 }
 
-static void setcstringlength(char * cstr, size_t value) {
+static void setcstringlength(char * cstr, long value) {
 	*(long *)(cstr - basesize()) = value;
 }
 
-size_t cstringlength(char * cstr) {
-	if (!cstringcheck(cstr)) { return -1; }
-    return *(size_t *)(cstr - basesize());
+long cstringlength(char * cstr) {
+	if (!cstr) { return -1; }
+    return *(long *)(cstr - basesize());
 }
 
 char * cstringinit(char * str, bool ctl) {
@@ -69,7 +59,7 @@ char * cstringinit(char * str, bool ctl) {
 }
 
 void cstringdescribe(char * cstr, unsigned short flag) {
-	if (!cstringcheck(cstr)) { return; }
+	if (!cstr) { return; }
     printf("\n[lvolume(8 Byte)|length(8 Byte)|char...]: (%p)\n[\n", cstr);
 	
 	char * show = NULL;
@@ -109,7 +99,7 @@ void cstringdescribe(char * cstr, unsigned short flag) {
 }
 
 char * cstringcopy(char * cstr) {
-	if (!cstringcheck(cstr)) { return NULL; }
+	if (!cstr) { return NULL; }
 	char * idx = NULL;
 	memcpy(idx, cstr, cstringlength(cstr) + basesize());
 	return idx - basesize();
@@ -122,7 +112,7 @@ void cstringfree(char * cstr) {
 }
 
 bool cstringcompare(char * cstr, char * data) {
-	if (!cstringcheck(cstr)) { return false; }
+	if (!cstr) { return false; }
 	long ssize = cstringlength(cstr);
 	long dsize = cstringlength(data);
 	if (ssize != dsize) {
@@ -139,8 +129,8 @@ bool cstringcompare(char * cstr, char * data) {
 	}
 }
 
-void cstringtelescope(char ** pcstr, bool ctl, size_t m) {
-	if (!cstringcheck(*pcstr)) { return; }
+void cstringtelescope(char ** pcstr, bool ctl, long m) {
+	if (!(*pcstr)) { return; }
 	long volume = cstringvolume(* pcstr);
 	long length = cstringlength(* pcstr);
 	
@@ -174,7 +164,7 @@ bool cstringinsert(char * cstr, long idx, ...) {
 	// uint64_t r9 = 0x0;
     // __asm__ __volatile__("movq %%r9, %%rax;\n\t" : "=a"(r9));
 
-	if (!cstringcheck(cstr)) { return false; }
+	if (!cstr) { return false; }
 
 	va_list list;
 	va_start(list, idx);
@@ -218,7 +208,7 @@ bool cstringinsert(char * cstr, long idx, ...) {
 }
 
 bool cstringcatenate(char * cstr, ...) {
-	if (!cstringcheck(cstr)) { return false; }
+	if (!cstr) { return false; }
 
 	va_list list;
 	va_start(list, cstr);
@@ -252,7 +242,7 @@ bool cstringcatenate(char * cstr, ...) {
 }
 
 static bool cstringremove0(char * cstr, char * data) {
-	if (!cstringcheck(cstr)) { return false; }
+	if (!cstr) { return false; }
 	long length = cstringlength(cstr);
 	long size = cstringlength(data); 
 	if (length <= 0 || size <= 0 || size > length) { return - 1; }
@@ -281,7 +271,7 @@ static bool cstringremove0(char * cstr, char * data) {
 }
 
 static bool cstringremove1(char * cstr, char c) {
-	if (!cstringcheck(cstr)) { return false; }
+	if (!cstr) { return false; }
 
 	long length = cstringlength(cstr);
 	long count = 0;
@@ -311,7 +301,7 @@ static bool cstringremove1(char * cstr, char c) {
 }
 
 static bool cstringremove2(char * cstr, long idx) {
-	if (!cstringcheck(cstr)) { return false; }
+	if (!cstr) { return false; }
 
 	long length = cstringlength(cstr);
 
@@ -324,8 +314,8 @@ static bool cstringremove2(char * cstr, long idx) {
 	}
 }
 
-bool cstringremove(char * cstr, rm_t t, size_t pc, ...) {
-	if (!cstringcheck(cstr)) { return false; }
+bool cstringremove(char * cstr, rm_t t, long pc, ...) {
+	if (!cstr) { return false; }
 	va_list list;
 	va_start(list, pc);
 	long length = cstringlength(cstr);
@@ -356,7 +346,7 @@ bool cstringremove(char * cstr, rm_t t, size_t pc, ...) {
 }
 
 long cstringsearch(char * cstr, sc_t t, long times, ...) {
-	if (!cstringcheck(cstr)) { return false; }
+	if (!cstr) { return false; }
 	long length = cstringlength(cstr);
 	long idx = -1;
 	long total = 0;
@@ -411,7 +401,7 @@ long cstringsearch(char * cstr, sc_t t, long times, ...) {
 }
 
 bool cstringunique(char * cstr, bool flag) {
-	if (!cstringcheck(cstr)) { return false; }
+	if (!cstr) { return false; }
 	long length = cstringlength(cstr);
 	if (length <= 1) { return false; }
 
@@ -450,7 +440,7 @@ bool cstringunique(char * cstr, bool flag) {
 }
 
 bool cstringchange(char * cstr, long pos, ...) {
-	if (!cstringcheck(cstr)) { return false; }
+	if (!cstr) { return false; }
 
 	va_list list;
 	va_start(list, pos);
@@ -497,7 +487,7 @@ bool cstringchange(char * cstr, long pos, ...) {
 	return true;
 }
 
-// char * cstringtoken(char * cstr, size_t times, ...) {
+// char * cstringtoken(char * cstr, long times, ...) {
 // 	va_list list;
 // 	va_start(list, times);
 // 	uint64_t result = va_arg(list, uint64_t);
@@ -508,7 +498,7 @@ bool cstringchange(char * cstr, long pos, ...) {
 // 		return NULL;
 // 	} else {
 // 		char * p = cstringinit(NULL, false);
-// 		size_t volume = cstringvolume(p);
+// 		long volume = cstringvolume(p);
 // 		for (int i = 0; i < idx; i ++) {
 // 			p[i] = cstr[i];
 // 		}

@@ -1,9 +1,7 @@
 #ifndef __CARRAY_C__
 #define __CARRAY_C__
 
-#include <stdbool.h>
 #include <stddef.h>
-#include <stdint.h>
 #include <stdio.h>
 #include "carray.h"
 #include <math.h>
@@ -11,7 +9,7 @@
 #include <string.h>
 #include <stdarg.h>
 
-void carraytelescope(void ** pca, bool ctl, size_t m);
+void carraytelescope(void ** pca, bool ctl, long m);
 static bool carrayinsert0(void * ca, long idx, long pc, ...);
 static bool carrayinsert1(void * ca, long idx, long pc, ...);
 
@@ -21,7 +19,7 @@ static long basesize(void) {
 
 static void setcarraytype(void * ca, ctype_t value) {
     if (ca == NULL) { return; }
-	*(size_t *)(ca - 4 * basesize()) = value;
+	*(long *)(ca - 4 * basesize()) = value;
 }
 
 ctype_t carraytype(void * ca) {
@@ -29,39 +27,39 @@ ctype_t carraytype(void * ca) {
     return *(ctype_t *)(ca - 4 * basesize());
 }
 
-static void setcarraystep(void * ca, size_t value) {
+static void setcarraystep(void * ca, long value) {
     if (ca == NULL) { return; }
-	*(size_t *)(ca - 3 * basesize()) = value;
+	*(long *)(ca - 3 * basesize()) = value;
 }
 
-size_t carraystep(void * ca) {
+long carraystep(void * ca) {
 	if (ca == NULL) { return -1; }
-    return *(size_t *)(ca - 3 * basesize());
+    return *(long *)(ca - 3 * basesize());
 }
 
-static void setcarrayvolume(void * ca, size_t value) {
+static void setcarrayvolume(void * ca, long value) {
     if (ca == NULL) { return; }
-	*(size_t *)(ca - 2 * basesize()) = value;
+	*(long *)(ca - 2 * basesize()) = value;
 }
 
-size_t carrayvolume(void * ca) {
+long carrayvolume(void * ca) {
 	if (ca == NULL) { return -1; }
-    return *(size_t *)(ca - 2 * basesize());
+    return *(long *)(ca - 2 * basesize());
 }
 
-static void setcarraylength(void * ca, size_t value) {
+static void setcarraylength(void * ca, long value) {
     if (ca == NULL) { return; }
 	*(long *)(ca - 1 * basesize()) = value;
 }
 
-size_t carraylength(void * ca) {
+long carraylength(void * ca) {
 	if (ca == NULL) { return -1; }
-    return *(size_t *)(ca - 1 * basesize());
+    return *(long *)(ca - 1 * basesize());
 }
 
-void * carrayinit(void * src, size_t length, ctype_t type) {
+void * carrayinit(void * src, long length, ctype_t type) {
     if (!src || length < 0) { return NULL; }
-    size_t step = 0;
+    long step = 0;
     switch (type) {
     case cchar:   step = sizeof(char); break;
     case cuchar:  step = sizeof(unsigned char); break;
@@ -294,7 +292,7 @@ static bool carrayinsert1(void * ca, long idx, long pc, ...) {
 	return true;
 }
 
-void carraytelescope(void ** pca, bool ctl, size_t m) {
+void carraytelescope(void ** pca, bool ctl, long m) {
 	if (!(*pca)) { return; }
 	long volume = carrayvolume(* pca);
 	long length = carraylength(* pca);
