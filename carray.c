@@ -397,19 +397,22 @@ int typebyte(ctype_t t) {
 }
 
 // 私有宏
-#define BUILD(t, name) \
-    t * src = name;\
-    for (int i = 0; i < length - 1; i ++) {\
-        for(int j = i + 1; j < length; j ++) {\
-            if (*(src + i) > *(src + j)) { swap(src + i, src + j, width); }\
+#define BUILD(type, name)\
+    do {\
+        type * src = name;\
+        for (int i = 0; i < length - 1; i ++) {\
+            for(int j = i + 1; j < length; j ++) {\
+                if (*(src + i) > *(src + j)) { swap(src + i, src + j, width); }\
+            }\
         }\
-    }\
-    long count = 0;\
-    for (int i = 0; i < length - 1; i ++) {\
-        if (*(src + i) != *(src + i + 1)) { src[count] = src[i]; count ++; }\
-    }\
-    src[count] = src[length - 1]; count ++;\
-    return count
+        long count = 0;\
+        for (int i = 0; i < length - 1; i ++) {\
+            if (*(src + i) != *(src + i + 1)) { src[count] = src[i]; count ++; }\
+        }\
+        src[count] = src[length - 1];\
+        return ++ count;\
+    } while (0)
+
 
 long unique(void * array, ctype_t t, long length) {
     unsigned int width = typebyte(t);

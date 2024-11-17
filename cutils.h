@@ -26,23 +26,6 @@ typedef unsigned long  ulong;
 // 针对动态链接库,用它定义的符号将不被导出，并且不能从其它对象进行使用，动态库中的函数是被隐藏的。
 #define private __attribute__((visibility("hidden")))
 
-// #if !defined (__$NAMESPACE$__) && !defined (__NAMESPACE__)
-//     #define __$NAMESPACE$__(s, Module, File, Name) Module##s##File##s##Name
-//     #define __NAMESPACE__(s, Module, File, Name) __$NAMESPACE$__(s, Module, File, Name)
-// #else
-//     #warning "information: duplicate define macro '__$NAMESPACE$__', '__NAMESPACE__'!"
-// #endif
-    
-// #if !defined(func)
-//     // Module: 模块名称
-//     // File: 文件名称不带后缀
-//     // Name: 函数名
-//     // s:分割符号 C语言允许的函数名分隔符只有两种(_和$)其他的不允许使用
-//     #define func(s, Module, File, Name) __NAMESPACE__(s, Module, File, Name)
-// #else
-//     #warning "information: duplicate define macro 'func'!"
-// #endif
-
 
 #if !defined (init) && !defined (deinit)
     #define init(type, n) ((type *)malloc((n) * sizeof(type)))
@@ -51,8 +34,8 @@ typedef unsigned long  ulong;
     #warning "information: duplicate define macro 'init', 'deinit'!"
 #endif
 
-#if !defined (Stringfy)
-    #define Stringfy(x) #x
+#if !defined (STRINGFY)
+    #define STRINGFY(x) #x
 #else
     #warning "information: duplicate define macro 'Stringfy'!"
 #endif
