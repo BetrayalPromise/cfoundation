@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include "macro.h"
 
 void carraytelescope(void ** pca, bool ctl, long m);
 static bool carrayinsert0(void * ca, long idx, long pc, ...);
@@ -396,37 +397,33 @@ int typebyte(ctype_t t) {
 }
 
 // 私有宏
-#define BUILD(t) \
-    t * src = idxes;\
+#define BUILD(t, name) \
+    t * src = name;\
     for (int i = 0; i < length - 1; i ++) {\
         for(int j = i + 1; j < length; j ++) {\
-            if (*(src + i) > *(src + j)) {\
-			    swap(src + i, src + j, width);\
-            }\
+            if (*(src + i) > *(src + j)) { swap(src + i, src + j, width); }\
         }\
     }\
-    int count = 0;\
+    long count = 0;\
     for (int i = 0; i < length - 1; i ++) {\
-        if (*(src + i) != *(src + i + 1)) {\
-            src[count] = src[i]; count ++;\
-        }\
+        if (*(src + i) != *(src + i + 1)) { src[count] = src[i]; count ++; }\
     }\
     src[count] = src[length - 1]; count ++;\
     return count
 
-int unique(void * idxes, ctype_t t, int length) {
+long unique(void * array, ctype_t t, long length) {
     unsigned int width = typebyte(t);
     switch (t) {
-    case cchar:   { BUILD(char); } break;
-    case cuchar:  { BUILD(unsigned char); } break;
-    case cshort:  { BUILD(short); } break;
-    case cushort: { BUILD(unsigned short); } break;
-    case cint:    { BUILD(int); } break;
-    case cuint:   { BUILD(unsigned int); } break;
-    case cfloat:  { BUILD(float); } break;
-    case clong:   { BUILD(long); } break;
-    case culong:  { BUILD(unsigned long); } break;
-    case cdouble: { BUILD(double); } break;
+    case cchar:   { BUILD(char, array); } break;
+    case cuchar:  { BUILD(unsigned char, array); } break;
+    case cshort:  { BUILD(short, array); } break;
+    case cushort: { BUILD(unsigned short, array); } break;
+    case cint:    { BUILD(int, array); } break;
+    case cuint:   { BUILD(unsigned int, array); } break;
+    case cfloat:  { BUILD(float, array); } break;
+    case clong:   { BUILD(long, array); } break;
+    case culong:  { BUILD(unsigned long, array); } break;
+    case cdouble: { BUILD(double, array); } break;
     }
 }
 

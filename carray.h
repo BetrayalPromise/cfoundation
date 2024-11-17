@@ -9,7 +9,7 @@
     ------------------0++++++++++++++++++
     [---long---][---long---][---long---][---long---][data.......]
     type        step        volume      length      data
-    容量(0-...)  数量(0-...)  存储位置
+    类型(0-...)  字长(0-...)  容量(0-...)  数量(0-...) 存储位置
 */
 
 typedef enum ISO_IEC_646 {
@@ -30,7 +30,6 @@ typedef enum ctype {
     cdouble = 0x09UL,
 } ctype_t;
 
-// #define Double(x) (x * 1.0000000f)
 
 //  @return             返回一个如7行所示的包含信息的数据结构carray,结构与其一致.
 //  @paramater src      常规数组.
@@ -75,7 +74,7 @@ extern bool         carrayinsert(void * ca, is_t t, long idx, long pc, ...);
 #endif
 
 
-extern int          unique(void * idxes, ctype_t t, int length);
+extern long         unique(void * array, ctype_t t, long length);
 extern int          typebyte(ctype_t t);
 extern void         swap(void * n1, void * n2, int width);
 extern void         ASCII(ISO_IEC_646_t std, unsigned short flag);
