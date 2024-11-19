@@ -18,22 +18,22 @@ typedef enum ISO_IEC_646 {
 } ISO_IEC_646_t;
 
 typedef enum ctype {
-    cschar   = 0x00UL,
+    cschar  = 0x00UL,
     cuchar  = 0x01UL,
-    csshort  = 0x02UL,
+    csshort = 0x02UL,
     cushort = 0x03UL,
-    csint    = 0x04UL,
+    csint   = 0x04UL,
     cuint   = 0x05UL,
     cfloat  = 0x06UL,
-    cslong   = 0x07UL,
+    cslong  = 0x07UL,
     culong  = 0x08UL,
     cdouble = 0x09UL,
 } ctype_t;
 
-union store {
+typedef union store {
     schar   scharvalue;
     uchar   ucharvalue;
-    sshort  shortvalue;
+    sshort  sshortvalue;
     ushort  ushortvalue;
     sint    sintvalue;
     uint    uintvalue;

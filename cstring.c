@@ -330,7 +330,7 @@ bool cstringremove(char * cstr, rm_t t, long pc, ...) {
 	case rmidx: {
 		int temp[pc];
 		for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, int); }
-		int count = unique(temp, cint, pc);
+		int count = unique(temp, csint, pc);
 		for (int i = count - 1; i >= 0; i --) { cstringremove2(cstr, temp[i]); }
 		va_end(list);
 		return true;

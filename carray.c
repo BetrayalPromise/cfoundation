@@ -427,15 +427,15 @@ long unique(void * array, ctype_t t, long length) {
     unsigned int width = typebyte(t);
     switch (t) {
     case cschar:   { BUILD(char, array); } break;
-    case cuchar:  { BUILD(unsigned char, array); } break;
+    case cuchar:   { BUILD(unsigned char, array); } break;
     case csshort:  { BUILD(short, array); } break;
-    case cushort: { BUILD(unsigned short, array); } break;
+    case cushort:  { BUILD(unsigned short, array); } break;
     case csint:    { BUILD(int, array); } break;
-    case cuint:   { BUILD(unsigned int, array); } break;
-    case cfloat:  { BUILD(float, array); } break;
+    case cuint:    { BUILD(unsigned int, array); } break;
+    case cfloat:   { BUILD(float, array); } break;
     case cslong:   { BUILD(long, array); } break;
-    case culong:  { BUILD(unsigned long, array); } break;
-    case cdouble: { BUILD(double, array); } break;
+    case culong:   { BUILD(unsigned long, array); } break;
+    case cdouble:  { BUILD(double, array); } break;
     }
 }
 

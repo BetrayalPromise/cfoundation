@@ -75,6 +75,19 @@ int main(int argc, char ** argv) {
 
 	// testcarrayinit();
 
+	store_t t = { 10 };
+
+	printf("%d\n", t.scharvalue);
+	printf("%d\n", t.ucharvalue);
+	printf("%d\n", t.sshortvalue);
+	printf("%d\n", t.ushortvalue);
+	printf("%d\n", t.sintvalue);
+	printf("%d\n", t.uintvalue);
+	printf("%ld\n", t.slongvalue);
+	printf("%ld\n", t.ulongvalue);
+	printf("%f\n", t.floatvalue);
+	printf("%lf\n", t.doublevalue);
+
 	return EXIT_SUCCESS;
 }
 
