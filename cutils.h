@@ -1,10 +1,14 @@
 #ifndef __CUTILS_H__
 #define __CUTILS_H__
 
-typedef unsigned char  uchar;
-typedef unsigned short ushort;
-typedef unsigned int   uint;
-typedef unsigned long  ulong;
+typedef unsigned char   uchar;
+typedef signed char     schar;
+typedef unsigned short  ushort;
+typedef signed short    sshort;
+typedef unsigned int    uint;
+typedef signed int      sint;
+typedef unsigned long   ulong;
+typedef signed long     slong;
 
 #if !defined (__ARGS) && !defined (__ARGC_N) && !defined (__ARGC) && !defined (ARGC) 
     #define __ARGS(X) (X)

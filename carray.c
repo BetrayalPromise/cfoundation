@@ -1,6 +1,7 @@
 #ifndef __CARRAY_C__
 #define __CARRAY_C__
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include "carray.h"
@@ -62,14 +63,14 @@ void * carrayinit(void * src, long length, ctype_t type) {
     if (!src || length < 0) { return NULL; }
     long step = 0;
     switch (type) {
-    case cchar:   step = sizeof(char); break;
+    case cschar:   step = sizeof(char); break;
     case cuchar:  step = sizeof(unsigned char); break;
-    case cshort:  step = sizeof(short); break;
+    case csshort:  step = sizeof(short); break;
     case cushort: step = sizeof(unsigned short); break;
-    case cint:    step = sizeof(int); break;
+    case csint:    step = sizeof(int); break;
     case cuint:   step = sizeof(unsigned int); break;
     case cfloat:  step = sizeof(float); break;
-    case clong:   step = sizeof(long); break;
+    case cslong:   step = sizeof(long); break;
     case culong:  step = sizeof(unsigned long); break;
     case cdouble: step = sizeof(double); break;
     }
@@ -81,7 +82,7 @@ void * carrayinit(void * src, long length, ctype_t type) {
     void * space = malloc(base + volume);
     void * ca = space + base;
     switch (type) {
-    case cchar: case cuchar: case cshort: case cushort: case cint: case cuint: case clong: case culong: {
+    case cschar: case cuchar: case csshort: case cushort: case csint: case cuint: case cslong: case culong: {
         memcpy(ca, src, step * length);
     } break;
     case cfloat: {
@@ -112,14 +113,14 @@ void carraydescribe(void * ca) {
     ctype_t type = carraytype(ca);
     char * info = NULL;
     switch (type) {
-    case cchar:   info = "char"; break;
+    case cschar:   info = "char"; break;
     case cuchar:  info = "uchar"; break;
-    case cshort:  info = "short"; break;
+    case csshort:  info = "short"; break;
     case cushort: info = "ushort"; break;
-    case cint:    info = "int"; break;
+    case csint:    info = "int"; break;
     case cuint:   info = "uint"; break;
     case cfloat:  info = "float"; break;
-    case clong:   info = "long"; break;
+    case cslong:   info = "long"; break;
     case culong:  info = "ulong"; break;
     case cdouble: info = "double"; break;
     }
@@ -138,14 +139,14 @@ void carraydescribe(void * ca) {
 	printf("\n");
 	for (int i = 0; i < length; i ++) {
         switch (type) {
-        case cchar:   printf("    (%d  BIN:", ((char *)ca)[i]); BIT_DISPLAY(char, ((char *)ca)[i]); break;
+        case cschar:   printf("    (%d  BIN:", ((char *)ca)[i]); BIT_DISPLAY(char, ((char *)ca)[i]); break;
         case cuchar:  printf("    (%d  BIN:", ((unsigned char *)ca)[i]); BIT_DISPLAY(unsigned char, ((unsigned char *)ca)[i]); break;
-        case cshort:  printf("    (%d  BIN:", ((short *)ca)[i]); BIT_DISPLAY(short, ((short *)ca)[i]); break;
+        case csshort:  printf("    (%d  BIN:", ((short *)ca)[i]); BIT_DISPLAY(short, ((short *)ca)[i]); break;
         case cushort: printf("    (%d  BIN:", ((unsigned short *)ca)[i]); BIT_DISPLAY(unsigned short, ((unsigned short *)ca)[i]); break;
-        case cint:    printf("    (%d  BIN:", ((int *)ca)[i]); BIT_DISPLAY(int, ((int *)ca)[i]); break;
+        case csint:    printf("    (%d  BIN:", ((int *)ca)[i]); BIT_DISPLAY(int, ((int *)ca)[i]); break;
         case cuint:   printf("    (%d  BIN:", ((unsigned int *)ca)[i]); BIT_DISPLAY(unsigned int, ((unsigned int *)ca)[i]); break;
         case cfloat:  printf("    (%f  BIN:", ((float *)ca)[i]); BIT_DISPLAY(float, ((float *)ca)[i]); break;
-        case clong:   printf("    (%ld  BIN:", ((long *)ca)[i]); BIT_DISPLAY(long, ((long *)ca)[i]); break;
+        case cslong:   printf("    (%ld  BIN:", ((long *)ca)[i]); BIT_DISPLAY(long, ((long *)ca)[i]); break;
         case culong:  printf("    (%ld  BIN:", ((unsigned long *)ca)[i]); BIT_DISPLAY(unsigned long, ((unsigned long *)ca)[i]); break;
         case cdouble: printf("    (%lf  BIN:", ((double *)ca)[i]); BIT_DISPLAY(double, ((double *)ca)[i]); break;
         }
@@ -171,12 +172,12 @@ bool carrayinsert(void * ca, is_t t, long idx, long pc, ...) {
         if (idx < 0) { idx = 0; } else if (idx < length + 1) { ; } else { idx = length; }
         memmove(ca + (idx + pc) * step, ca + idx * step, (length - idx) * step);
         switch (type) {
-        case cchar: case cuchar: case cshort: case cushort: case cint: case cuint: {
+        case cschar: case cuchar: case csshort: case cushort: case csint: case cuint: {
             int temp[pc];
             for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, int); }
             for (int i = 0; i < pc; i ++) { memcpy(ca + idx + i * step, temp + i, step); }
         } break;
-        case clong: case culong: {
+        case cslong: case culong: {
             long temp[pc]; 
             for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, long); }
             for (int i = 0; i < pc; i ++) { memcpy(ca + idx + i * step, temp + i, step); }
@@ -229,12 +230,12 @@ static bool carrayinsert0(void * ca, long idx, long pc, ...) {
     memmove(ca + (idx + pc) * step, ca + idx * step, (length - idx) * step);
 
     switch (type) {
-    case cchar: case cuchar: case cshort: case cushort: case cint: case cuint: {
+    case cschar: case cuchar: case csshort: case cushort: case csint: case cuint: {
         int temp[pc];
         for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, int); }
         for (int i = 0; i < pc; i ++) { memcpy(ca + idx + i * step, temp + i, step); }
     } break;
-    case clong: case culong: {
+    case cslong: case culong: {
         long temp[pc]; 
         for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, long); }
         for (int i = 0; i < pc; i ++) { memcpy(ca + idx + i * step, temp + i, step); }
@@ -309,7 +310,15 @@ void carraytelescope(void ** pca, bool ctl, long m) {
 	free(*pca - 4 * basesize());
 	* pca = space + 4 * basesize();
 	*(long *)(* pca - 2 * basesize()) = volume;
-} 
+}
+
+bool carraymap(void ** pca, ctype_t t) {
+    if (!(*pca)) { return false; }
+    long volume = carrayvolume(* pca);
+	long length = carraylength(* pca);
+
+    return true;
+}
 
 void showcolor() {
 	printf("\033[30m"); printf("\033[0m\r\n");
@@ -381,15 +390,15 @@ void swap(void * n1, void * n2, int width) {
 
 int typebyte(ctype_t t) {
 	switch (t) {
-	case cchar: case cuchar:
+	case cschar: case cuchar:
 		return sizeof(char);
-	case cshort: case cushort:
+	case csshort: case cushort:
 		return sizeof(short);
-	case cint: case cuint:
+	case csint: case cuint:
 		return sizeof(int);
 	case cfloat:
 		return sizeof(float);
-	case clong:case culong:
+	case cslong:case culong:
 		return sizeof(long);
 	case cdouble:
 		return sizeof(double);
@@ -417,14 +426,14 @@ int typebyte(ctype_t t) {
 long unique(void * array, ctype_t t, long length) {
     unsigned int width = typebyte(t);
     switch (t) {
-    case cchar:   { BUILD(char, array); } break;
+    case cschar:   { BUILD(char, array); } break;
     case cuchar:  { BUILD(unsigned char, array); } break;
-    case cshort:  { BUILD(short, array); } break;
+    case csshort:  { BUILD(short, array); } break;
     case cushort: { BUILD(unsigned short, array); } break;
-    case cint:    { BUILD(int, array); } break;
+    case csint:    { BUILD(int, array); } break;
     case cuint:   { BUILD(unsigned int, array); } break;
     case cfloat:  { BUILD(float, array); } break;
-    case clong:   { BUILD(long, array); } break;
+    case cslong:   { BUILD(long, array); } break;
     case culong:  { BUILD(unsigned long, array); } break;
     case cdouble: { BUILD(double, array); } break;
     }

@@ -18,17 +18,30 @@ typedef enum ISO_IEC_646 {
 } ISO_IEC_646_t;
 
 typedef enum ctype {
-    cchar   = 0x00UL,
+    cschar   = 0x00UL,
     cuchar  = 0x01UL,
-    cshort  = 0x02UL,
+    csshort  = 0x02UL,
     cushort = 0x03UL,
-    cint    = 0x04UL,
+    csint    = 0x04UL,
     cuint   = 0x05UL,
     cfloat  = 0x06UL,
-    clong   = 0x07UL,
+    cslong   = 0x07UL,
     culong  = 0x08UL,
     cdouble = 0x09UL,
 } ctype_t;
+
+union store {
+    schar   scharvalue;
+    uchar   ucharvalue;
+    sshort  shortvalue;
+    ushort  ushortvalue;
+    sint    sintvalue;
+    uint    uintvalue;
+    float   floatvalue;
+    slong   slongvalue;
+    ulong   ulongvalue;
+    double  doublevalue;
+} store_t;
 
 
 //  @return             返回一个如7行所示的包含信息的数据结构carray,结构与其一致.
