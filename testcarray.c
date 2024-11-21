@@ -92,8 +92,9 @@ void testcarrayinit() {
 	// }
 
 	float a[] = {0, 3.1, 0, 8, 3, 8};
-	classify(a, cfloat, 6, false);
-	classify(a, cfloat, 6, true);
+	carrayclassify(a, cfloat, 6, false);
+	carrayclassify(a, cfloat, 6, true);
+	int idx = carrayunique(a, cfloat, 6);
 }
 
 #endif

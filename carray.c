@@ -396,7 +396,7 @@ bool carrayremove(void * ca, rm_t t, long idx, long pc, ...) {
         for (int i = 0; i < pc; i ++) {
             temp[i] = va_arg(list, int);
         }
-        int count = unique(ca, csint, pc);
+        int count = carrayunique(ca, csint, pc);
         for (int i = 0; i < count; i ++) {
             
         }
@@ -474,14 +474,6 @@ bool carrayremove(void * ca, rm_t t, long idx, long pc, ...) {
 // 	}
 // }
 
-bool carraymap(void ** pca, ctype_t t) {
-    if (!(*pca)) { return false; }
-    long volume = carrayvolume(* pca);
-	long length = carraylength(* pca);
-
-    return true;
-}
-
 void showcolor() {
 	printf("\033[30m"); printf("\033[0m\r\n");
     printf("\033[31m"); printf("\033[0m\r\n");
@@ -543,14 +535,14 @@ void typebytelength(void) {
     printf("[long double *].size = %lu Bype\n", sizeof(long double *));
 }
 
-void swap(void * n1, void * n2, int width) {
-	char buffer[width];
-	memcpy(buffer, n1, width);
+void carrayswap(void * n1, void * n2, int width) {
+	char buf[width];
+	memcpy(buf, n1, width);
 	memcpy(n1, n2, width);
-	memcpy(n2, buffer, width);
+	memcpy(n2, buf, width);
 }
 
-int typebyte(ctype_t t) {
+int carraytypebyte(ctype_t t) {
 	switch (t) {
 	case cschar: case cuchar:
 		return sizeof(char);
@@ -567,7 +559,7 @@ int typebyte(ctype_t t) {
 	}
 }
 
-long unique(void * array, ctype_t t, long length) {
+long carrayunique(void * array, ctype_t t, long length) {
 #if !defined (HANDLER)
     #define HANDLER(type, name)\
         type * src = name;\
@@ -578,9 +570,10 @@ long unique(void * array, ctype_t t, long length) {
         src[count] = src[length - 1];\
         return ++ count
 #else
-    #warning "information: duplicate define macro 'BUILD'
+    #warning "information: duplicate define macro 'HANDLER'
 #endif
-    int width = typebyte(t);
+    int width = carraytypebyte(t);
+    carrayclassify(array, t, length, false);
     switch (t) {
     case cschar:   { HANDLER(char, array); } break;
     case cuchar:   { HANDLER(unsigned char, array); } break;
@@ -596,25 +589,25 @@ long unique(void * array, ctype_t t, long length) {
 #undef HANDLER
 }
 
-bool classify(void * array, ctype_t t, long length, bool flag) {
+bool carrayclassify(void * array, ctype_t t, long length, bool flag) {
     if (!array || length < 0) {
         return false;
     }
-    int width = typebyte(t);
+    int width = carraytypebyte(t);
 #if !defined (HANDLER)
     #define HANDLER(type, name)\
         type * src = array;\
         for (int i = 0; i < length - 1; i ++) {\
             for(int j = i + 1; j < length; j ++) {\
                 if (!flag) {\
-                    if (*(src + i) > *(src + j)) { swap(src + i, src + j, width); }\
+                    if (*(src + i) > *(src + j)) { carrayswap(src + i, src + j, width); }\
                 } else {\
-                    if (*(src + i) < *(src + j)) { swap(src + i, src + j, width); }\
+                    if (*(src + i) < *(src + j)) { carrayswap(src + i, src + j, width); }\
                 }\
             }\
         }
 #else
-    #warning "information: duplicate define macro 'BUILD'
+    #warning "information: duplicate define macro 'HANDLER'
 #endif
     switch (t) {
     case cschar: {
