@@ -143,16 +143,10 @@ typedef enum rm {
     rmidx,  // 位置索引
 } rm_t;
 
-// 搜索
+// 搜索,嵌入
 typedef enum sc {
     scsin,  // 单个元素
     scdup,  // 数组元素
 } sc_t;
-
-// 嵌入
-typedef enum is {
-    issin,  // 单个元素
-    isdup,  // 数组元素
-} is_t;
 
 #endif

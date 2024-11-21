@@ -30,25 +30,12 @@ typedef enum ctype {
     cdouble = 0x09UL,
 } ctype_t;
 
-typedef union store {
-    schar   scharvalue;
-    uchar   ucharvalue;
-    sshort  sshortvalue;
-    ushort  ushortvalue;
-    sint    sintvalue;
-    uint    uintvalue;
-    float   floatvalue;
-    slong   slongvalue;
-    ulong   ulongvalue;
-    double  doublevalue;
-} store_t;
-
 
 //  @return             返回一个如7行所示的包含信息的数据结构carray,结构与其一致.
 //  @paramater src      常规数组.
 //  @paramater length   存在长度.
 //  @paramater type     存在类型.因为C语言数组参数入参时降级为指针,无法根据其获取类型,故而需要指定类型.
-extern void *       carrayinit(void * src, long length, ctype_t type);
+extern void *       carrayinit(void * src, ctype_t type, long length);
 
 
 //  @paramater ca       数据结构carray数组.
@@ -79,14 +66,14 @@ extern long         carraylength(void * ca);
 extern void         carraydescribe(void * ca);
 
 
-extern bool         carrayinsert(void * ca, is_t t, long idx, long pc, ...);
+extern bool         carrayinsert(void * ca, sc_t t, long idx, long pc, ...);
 #if !defined (carrayinsert$)
     #define carrayinsert$(a, b, c, ...) carrayinsert(a, b, c, ARGC(__VA_ARGS__), ##__VA_ARGS__)
 #else
     #warning "information: duplicate define macro 'carrayinsert$'
 #endif
 
-
+extern bool         classify(void * array, ctype_t t, long length, bool flag);
 extern long         unique(void * array, ctype_t t, long length);
 extern int          typebyte(ctype_t t);
 extern void         swap(void * n1, void * n2, int width);

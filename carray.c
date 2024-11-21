@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include "cutils.h"
 #include "macro.h"
 
 void carraytelescope(void ** pca, bool ctl, long m);
@@ -59,18 +60,18 @@ long carraylength(void * ca) {
     return *(long *)(ca - 1 * basesize());
 }
 
-void * carrayinit(void * src, long length, ctype_t type) {
+void * carrayinit(void * src, ctype_t type, long length) {
     if (!src || length < 0) { return NULL; }
     long step = 0;
     switch (type) {
-    case cschar:   step = sizeof(char); break;
+    case cschar:  step = sizeof(char); break;
     case cuchar:  step = sizeof(unsigned char); break;
-    case csshort:  step = sizeof(short); break;
+    case csshort: step = sizeof(short); break;
     case cushort: step = sizeof(unsigned short); break;
-    case csint:    step = sizeof(int); break;
+    case csint:   step = sizeof(int); break;
     case cuint:   step = sizeof(unsigned int); break;
     case cfloat:  step = sizeof(float); break;
-    case cslong:   step = sizeof(long); break;
+    case cslong:  step = sizeof(long); break;
     case culong:  step = sizeof(unsigned long); break;
     case cdouble: step = sizeof(double); break;
     }
@@ -113,14 +114,14 @@ void carraydescribe(void * ca) {
     ctype_t type = carraytype(ca);
     char * info = NULL;
     switch (type) {
-    case cschar:   info = "char"; break;
+    case cschar:  info = "char"; break;
     case cuchar:  info = "uchar"; break;
-    case csshort:  info = "short"; break;
+    case csshort: info = "short"; break;
     case cushort: info = "ushort"; break;
-    case csint:    info = "int"; break;
+    case csint:   info = "int"; break;
     case cuint:   info = "uint"; break;
     case cfloat:  info = "float"; break;
-    case cslong:   info = "long"; break;
+    case cslong:  info = "long"; break;
     case culong:  info = "ulong"; break;
     case cdouble: info = "double"; break;
     }
@@ -155,12 +156,12 @@ void carraydescribe(void * ca) {
 	printf("]\n\n");
 }
 
-bool carrayinsert(void * ca, is_t t, long idx, long pc, ...) {
+bool carrayinsert(void * ca, sc_t t, long idx, long pc, ...) {
     if (!ca) { return false; }
     va_list list;
 	va_start(list, pc);
     switch (t) {
-    case issin: {
+    case scsin: {
 	    long length  = carraylength(ca);
 	    long volume  = carrayvolume(ca);
         ctype_t type = carraytype(ca);
@@ -196,7 +197,62 @@ bool carrayinsert(void * ca, is_t t, long idx, long pc, ...) {
         setcarraylength(ca, length + pc);
         return true;
     } break;
-    case isdup: {
+    case scdup: {
+        void * temp[pc];
+        for (int i = 0; i < pc; i ++) {
+            temp[i] = (void *)va_arg(list, unsigned long);
+        }
+        for (int i = pc - 1; i >= 0; i --) {
+            carrayinsert1(ca, idx, 1, temp[i]);
+        }
+        va_end(list);
+        return false; 
+    } break;
+    }
+}
+
+bool carraysearch(void * ca, sc_t t, long idx, long pc, ...) {
+    if (!ca) { return false; }
+    va_list list;
+	va_start(list, pc);
+    long length  = carraylength(ca);
+    long volume  = carrayvolume(ca);
+    ctype_t type = carraytype(ca);
+    long step    = carraystep(ca);
+    switch (t) {
+    case scsin: {
+        while (length * step + pc * step  > volume) {
+		    carraytelescope(&ca, true, 2);
+		    volume = carrayvolume(ca);
+	    }
+        if (idx < 0) { idx = 0; } else if (idx < length + 1) { ; } else { idx = length; }
+        memmove(ca + (idx + pc) * step, ca + idx * step, (length - idx) * step);
+        switch (type) {
+        case cschar: case cuchar: case csshort: case cushort: case csint: case cuint: {
+            int temp[pc];
+            for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, int); }
+            for (int i = 0; i < pc; i ++) { memcpy(ca + idx + i * step, temp + i, step); }
+        } break;
+        case cslong: case culong: {
+            long temp[pc]; 
+            for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, long); }
+            for (int i = 0; i < pc; i ++) { memcpy(ca + idx + i * step, temp + i, step); }
+        } break;
+        case cfloat: { // 防止出现整形数据按照整形存储
+            double temp[pc];
+            for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, double); }
+            for (int i = 0; i < pc; i ++) { float value = (float)temp[i]; ((float *)ca)[i + idx] = value; }
+        } break;
+        case cdouble: { // 防止出现整形数据按照整形存储
+            double temp[pc];
+            for (int i = 0; i < pc; i ++) { temp[i] = va_arg(list, double); }
+            for (int i = 0; i < pc; i ++) { double value = (double)temp[i]; ((double *)ca)[i + idx] = value; }
+        } break;
+        }
+        setcarraylength(ca, length + pc);
+        return true;
+    } break;
+    case scdup: {
         void * temp[pc];
         for (int i = 0; i < pc; i ++) {
             temp[i] = (void *)va_arg(list, unsigned long);
@@ -312,6 +368,112 @@ void carraytelescope(void ** pca, bool ctl, long m) {
 	*(long *)(* pca - 2 * basesize()) = volume;
 }
 
+bool carrayremove(void * ca, rm_t t, long idx, long pc, ...) {
+    if (!ca) { return false; }
+    va_list list;
+	va_start(list, pc);
+    long length  = carraylength(ca);
+    long volume  = carrayvolume(ca);
+    ctype_t type = carraytype(ca);
+    long step    = carraystep(ca);
+    switch (t) {
+    case rmsin: {
+        return true;
+    } break;
+    case rmdup: {
+        void * temp[pc];
+        for (int i = 0; i < pc; i ++) {
+            temp[i] = (void *)va_arg(list, unsigned long);
+        }
+        for (int i = pc - 1; i >= 0; i --) {
+            carrayinsert1(ca, idx, 1, temp[i]);
+        }
+        va_end(list);
+        return false; 
+    } break;
+    case rmidx: {
+        int temp[pc];
+        for (int i = 0; i < pc; i ++) {
+            temp[i] = va_arg(list, int);
+        }
+        int count = unique(ca, csint, pc);
+        for (int i = 0; i < count; i ++) {
+            
+        }
+        return true;
+    } break;
+    }
+}
+
+// static bool carrayremove0(char * cstr, char * data) {
+// 	if (!cstr) { return false; }
+// 	long length = carraylength(cstr);
+// 	long size = carraylength(data); 
+// 	if (length <= 0 || size <= 0 || size > length) { return - 1; }
+// 	int idxes[length / size];
+// 	memset(idxes, -1, length / size * sizeof(int));
+// 	int idx = 0, count = 0;
+// 	int i = 0, j = 0;
+// 	while (i < length && j < size) {
+// 		if (cstr[i] == data[j]) {
+// 			if (j == size - 1) {
+// 				idxes[idx] = i; ++ idx; ++ count;
+// 				i -= (j - 1); j = 0;
+// 			} else {
+// 				++ i; ++ j;
+// 			}
+// 		} else {
+// 			i -= (j - 1); j = 0;
+// 		}
+// 	}
+// 	for (int i = count - 1; i >= 0; i --) {
+// 		memmove(cstr + idxes[i] - size + 1, cstr + idxes[i] + 1, length - idxes[i]);
+// 	}
+// 	setcarraylength(cstr, length - count * size);
+// 	return true;
+// }
+
+// static bool carrayremove1(char * cstr, char c) {
+// 	if (!cstr) { return false; }
+// 	long length = carraylength(cstr);
+// 	long count = 0;
+// 	for (int i = 0; i < length; i ++) {
+// 		if (c == cstr[i]) {
+// 			++ count;
+// 		}
+// 	}
+// 	long idxes[count];
+// 	// 为了节省空间,所以采用了牺牲运行时间的方法处理
+// 	({
+// 		long idx = 0;
+// 		for (int i = 0; i < length; i ++) {
+// 			if (c == cstr[i]) {
+// 				idxes[idx] = i;
+// 				++ idx;
+// 			}
+// 		}
+// 	});
+
+// 	for (int i = 0; i < count; i ++) {
+// 		memmove(cstr + idxes[i] - i, cstr + idxes[i] + 1 - i, length - idxes[i] - 1 + i);
+// 		memmove(cstr + length - 1, &c, 1);
+// 	}
+// 	setcarraylength(cstr, length - count);
+// 	return true;
+// }
+
+// static bool carrayremove2(void * ca, long idx) {
+// 	if (!ca) { return false; }
+// 	long length = carraylength(ca);
+// 	if (idx > length - 1 || idx < 0) {
+// 		return false;
+// 	} else {
+// 		memmove(ca + idx, ca + idx + 1, length - idx - 1);
+// 		setcarraylength(ca, length - 1);
+// 		return true;
+// 	}
+// }
+
 bool carraymap(void ** pca, ctype_t t) {
     if (!(*pca)) { return false; }
     long volume = carrayvolume(* pca);
@@ -405,38 +567,89 @@ int typebyte(ctype_t t) {
 	}
 }
 
-// 私有宏
-#define BUILD(type, name)\
-    do {\
+long unique(void * array, ctype_t t, long length) {
+#if !defined (HANDLER)
+    #define HANDLER(type, name)\
         type * src = name;\
-        for (int i = 0; i < length - 1; i ++) {\
-            for(int j = i + 1; j < length; j ++) {\
-                if (*(src + i) > *(src + j)) { swap(src + i, src + j, width); }\
-            }\
-        }\
         long count = 0;\
         for (int i = 0; i < length - 1; i ++) {\
             if (*(src + i) != *(src + i + 1)) { src[count] = src[i]; count ++; }\
         }\
         src[count] = src[length - 1];\
-        return ++ count;\
-    } while (0)
-
-
-long unique(void * array, ctype_t t, long length) {
-    unsigned int width = typebyte(t);
+        return ++ count
+#else
+    #warning "information: duplicate define macro 'BUILD'
+#endif
+    int width = typebyte(t);
     switch (t) {
-    case cschar:   { BUILD(char, array); } break;
-    case cuchar:   { BUILD(unsigned char, array); } break;
-    case csshort:  { BUILD(short, array); } break;
-    case cushort:  { BUILD(unsigned short, array); } break;
-    case csint:    { BUILD(int, array); } break;
-    case cuint:    { BUILD(unsigned int, array); } break;
-    case cfloat:   { BUILD(float, array); } break;
-    case cslong:   { BUILD(long, array); } break;
-    case culong:   { BUILD(unsigned long, array); } break;
-    case cdouble:  { BUILD(double, array); } break;
+    case cschar:   { HANDLER(char, array); } break;
+    case cuchar:   { HANDLER(unsigned char, array); } break;
+    case csshort:  { HANDLER(short, array); } break;
+    case cushort:  { HANDLER(unsigned short, array); } break;
+    case csint:    { HANDLER(int, array); } break;
+    case cuint:    { HANDLER(unsigned int, array); } break;
+    case cfloat:   { HANDLER(float, array); } break;
+    case cslong:   { HANDLER(long, array); } break;
+    case culong:   { HANDLER(unsigned long, array); } break;
+    case cdouble:  { HANDLER(double, array); } break;
     }
+#undef HANDLER
+}
+
+bool classify(void * array, ctype_t t, long length, bool flag) {
+    if (!array || length < 0) {
+        return false;
+    }
+    int width = typebyte(t);
+#if !defined (HANDLER)
+    #define HANDLER(type, name)\
+        type * src = array;\
+        for (int i = 0; i < length - 1; i ++) {\
+            for(int j = i + 1; j < length; j ++) {\
+                if (!flag) {\
+                    if (*(src + i) > *(src + j)) { swap(src + i, src + j, width); }\
+                } else {\
+                    if (*(src + i) < *(src + j)) { swap(src + i, src + j, width); }\
+                }\
+            }\
+        }
+#else
+    #warning "information: duplicate define macro 'BUILD'
+#endif
+    switch (t) {
+    case cschar: {
+        HANDLER(char, array);
+    } break;
+    case cuchar: {
+        HANDLER(unsigned char, array);
+    } break;
+    case csshort: {
+        HANDLER(short, array);
+    } break;
+    case cushort: {
+        HANDLER(unsigned short, array);
+    } break;
+    case csint: {
+        HANDLER(int, array);
+    } break;
+    case cuint: {
+        HANDLER(unsigned int, array);
+    } break;
+    case cfloat: {
+        HANDLER(float, array);
+    } break;
+    case cslong: {
+        HANDLER(long, array);
+    } break;
+    case culong: {
+        HANDLER(unsigned long, array);
+    } break;
+    case cdouble: {
+        HANDLER(double, array);
+    } break;
+    }
+#undef HANDLER
+    return true;
 }
 
 #endif

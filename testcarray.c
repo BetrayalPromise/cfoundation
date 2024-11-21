@@ -92,10 +92,8 @@ void testcarrayinit() {
 	// }
 
 	float a[] = {0, 3.1, 0, 8, 3, 8};
-	int b = unique(a, cfloat, 6);
-
-	int c = sizeof(long double);
-
+	classify(a, cfloat, 6, false);
+	classify(a, cfloat, 6, true);
 }
 
 #endif
